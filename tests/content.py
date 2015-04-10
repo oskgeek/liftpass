@@ -262,13 +262,13 @@ suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, confi
 suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
 suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
 
-# Tests using server
-suite.addTests(discoverTests(TestGame, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# # Tests using server
+# suite.addTests(discoverTests(TestGame, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
 
 unittest.TextTestRunner(verbosity=2).run(suite)
 

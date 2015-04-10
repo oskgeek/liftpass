@@ -1,4 +1,8 @@
 from flask import jsonify
+from flask import request
+import hmac
+import hashlib
+
 
 ERROR_BAD_REQUEST = 400
 ERROR_UNAUTHORIZED = 401
@@ -19,3 +23,25 @@ def errorResponse(error):
 	res = jsonify({'error': error['message']})
 	res.status_code = error['status']
 	return res
+
+def userAuthenticate(secretLookup):
+	def wrap(f): 
+		def aux(*args, **kwargs):
+			
+			# JSON must include time and user key
+			if not all(map(lambda k: k in request.json, ['gondola-time', 'gondola-user'])):
+				return errorResponse({'error': ERROR_UNAUTHORIZED, message:'JSON missing gondola-time and/or gondola-user keys'})
+
+			# HTTP header must include hash for all requests
+			if 'gondola-hash' not in request.headers:
+				return errorResponse({'error': ERROR_UNAUTHORIZED, message:'HTTP request missing gondola-hash in header'})
+
+			secret = secretLookup(request.json['gondola-user'])
+			digest = hmac.new(secret, request.get_data(), hashlib.sha256).hexdigest()
+
+			if digest != request.headers['gondola-hash']:
+				return errorResponse({'error': ERROR_UNAUTHORIZED, message:'Failed to authenticate'})
+			
+			return f(*args, **kwargs)
+		return aux
+	return wrap

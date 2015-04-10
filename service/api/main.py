@@ -1,6 +1,7 @@
 import hmac
 import hashlib
 import json
+
 from flask import Flask
 from flask import request
 
@@ -15,26 +16,9 @@ import util.debug as debug
 
 app = Flask(__name__)
 
-def userAuthenticate(f):
-	def aux(*args, **kwargs):
-		# JSON must include time and user key
-		if not all(map(lambda k: k in request.json, ['gondola-time', 'gondola-user'])):
-			return rest.errorResponse(errors.RequestMissingArguments)
 
-		# HTTP header must include hash for all requests
-		if 'gondola-hash' not in request.headers:
-			return rest.errorResponse(errors.RequestMissingArguments)
-
-		digest = hmac.new(config.UserSecret, request.get_data(), hashlib.sha256).hexdigest()
-
-		if digest != request.headers['gondola-hash']:
-			return rest.errorResponse(errors.FailedToAuthenticate)
-		
-		return f(*args, **kwargs)
-	return aux
-
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/games/add/<version>/', methods=['POST'])
-@userAuthenticate
 def gameAdd(version):
 	"""
 	Adds new game to the system. 
@@ -48,6 +32,7 @@ def gameAdd(version):
 	
 	return rest.successResponse(game.as_dict())
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/games/list/<version>/', methods=['GET'])
 def gameList(version):
 	"""
@@ -60,6 +45,7 @@ def gameList(version):
 	
 	return rest.successResponse({'games': result})
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/games/delete/<version>/', methods=['DELETE'])
 def gameDelete(version):
 	"""
@@ -75,6 +61,7 @@ def gameDelete(version):
 		return rest.successResponse({'deleted': success>0})
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/games/get/<version>/', methods=['GET'])
 def gameGet(version):
 	"""
@@ -90,6 +77,7 @@ def gameGet(version):
 	
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/games/update/<version>/', methods=['PUT'])
 def gameUpdate(version):
 	"""
@@ -108,6 +96,7 @@ def gameUpdate(version):
 		return rest.successResponse(game.as_dict())
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/currencies/get/<version>/', methods=['GET'])
 def currencyGet(version):
 	"""
@@ -123,6 +112,7 @@ def currencyGet(version):
 		return rest.successResponse(currency.as_dict())
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/currencies/update/<version>/', methods=['PUT'])
 def currencyUpdate(version):
 	"""
@@ -140,12 +130,14 @@ def currencyUpdate(version):
 		return rest.successResponse(currency.as_dict())
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/goods/add/<version>/', methods=['POST'])
 def goodsAdd(version):
 	content = factory.getContent()
 	good = content.addGood(request.json['key'], request.json['name'])
 	return rest.successResponse(good.as_dict())
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/goods/get/<version>/', methods=['GET'])
 def goodsGet(version):
 	content = factory.getContent()
@@ -154,6 +146,7 @@ def goodsGet(version):
 		return rest.successResponse(good.as_dict())
 	return rest.errorResponse(errors.GoodKeyDoesNotExist)
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/goods/list/<version>/', methods=['GET'])
 def goodsList(version):
 	content = factory.getContent()
@@ -161,12 +154,14 @@ def goodsList(version):
 	results = list(map(lambda g: g.as_dict(), goods))
 	return rest.successResponse({'goods': results})
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/goods/delete/<version>/', methods=['DELETE'])
 def goodsDelete(version):
 	content = factory.getContent()
 	res = content.deleteGood(request.json['key'])
 	return rest.successResponse({'deleted':res>0})
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/goods/update/<version>/', methods=['PUT'])
 def goodsUpdate(version):
 	content = factory.getContent()
@@ -175,6 +170,7 @@ def goodsUpdate(version):
 		return rest.successResponse(good.as_dict())
 	return rest.errorResponse(errors.GoodKeyDoesNotExist)
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/abtest/get/<version>/', methods=['GET'])
 def abtestGet(version):
 	content = factory.getContent()
@@ -183,12 +179,14 @@ def abtestGet(version):
 		return rest.successResponse(abtest.as_dict())
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/abtest/update/<version>/', methods=['PUT'])
 def abtestUpdate(version):
 	content = factory.getContent()
 	abtest = content.setABTest(request.json['key'], request.json)
 	return rest.successResponse(abtest.as_dict())
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/metrics/get/<version>/', methods=['GET'])
 def metricsGet(version):
 	content = factory.getContent()
@@ -197,12 +195,14 @@ def metricsGet(version):
 		return rest.successResponse(metrics.as_dict())
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/metrics/update/<version>/', methods=['PUT'])
 def metricsUpdate(version):
 	content = factory.getContent()
 	metrics = content.setMetrics(request.json['key'], request.json)
 	return rest.successResponse(metrics.as_dict())
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/prices/list/<version>/', methods=['GET'])
 def pricesList(version):
 	content = factory.getContent()
@@ -210,6 +210,7 @@ def pricesList(version):
 	prices = list(map(lambda p: p.as_dict(), prices))
 	return rest.successResponse({'prices':prices})
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/prices/get/<version>/', methods=['GET'])
 def pricesGet(version):
 	content = factory.getContent()
@@ -218,12 +219,14 @@ def pricesGet(version):
 		return rest.successResponse(prices.as_dict())
 	return rest.errorResponse(errors.PricesKeyDoesNotExist)
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/prices/delete/<version>/', methods=['DELETE'])
 def pricesDelete(version):
 	content = factory.getContent()
 	res = content.deletePrices(request.json['key'])
 	return rest.successResponse({'deleted': res>0})
 
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/prices/add/<version>/', methods=['POST'])
 def pricesAdd(version):
 	content = factory.getContent()

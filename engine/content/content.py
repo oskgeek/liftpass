@@ -10,7 +10,7 @@ class Content:
 
 
 	def __init__(self):
-		debug.log('[%s] Init'%self)
+		pass
 
 
 	def addGame(self, name):	
@@ -153,12 +153,10 @@ class Content:
 		# Check if prices is currently used
 		count =  session.query(models.ABTest).join(models.Game).filter(models.Game.key == models.ABTest.game_key).filter(models.ABTest.dynamicPrices_key == prices_key).count()
 		if count != 0:
-			# debug.error("Prices cannot be deleted while still active")
 			return 0
 		
 		count =  session.query(models.ABTest).join(models.Game).filter(models.Game.key == models.ABTest.game_key).filter(models.ABTest.staticPrices_key == prices_key).count()
 		if count != 0:
-			# debug.error("Prices cannot be deleted while still active")
 			return 0
 
 		res = session.query(models.Prices).filter_by(key = prices_key).delete()
