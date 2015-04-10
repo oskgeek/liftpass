@@ -25,11 +25,15 @@ def updateObjectWithJSON(object, json, ignore = []):
 		if key in ignore:
 			continue
 
+		# Skip if it begins with gondola-
+		if key.find('gondola-') == 0:
+			continue
+
 		# Set attribute if object has it
 		if hasattr(object, key):
 			setattr(object, key, val)
 		else: 
-			print('ABTest does not have attribute "%s"'%key)
+			print('%s model object does not have attribute "%s"'%(type(object).__name__, key))
 			# ABTest does not have specified attribute
 			pass
 	return object

@@ -4,6 +4,10 @@ import requests
 import sys
 import string
 import random
+import subprocess
+import os
+import signal
+import time
 
 import config
 import service.api.errors as errors
@@ -244,24 +248,29 @@ class TestABTest(APITest):
 		(status, h) = self.request('DELETE', '/prices/delete/v1/', {'key': b['key']})
 		self.assertEqual(h['deleted'], True)
 
+# Start server
+server = subprocess.Popen(['python3.4','%s/manage.py'%config.BasePath,'API','start'], preexec_fn=os.setsid, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+time.sleep(2)
 
 suite = unittest.TestSuite()
 
 # Tests without testing server
-suite.addTests(discoverTests(TestGame, config.APIAddress, config.APIPort, main.app))
-suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, main.app))
-suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, main.app))
-suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, main.app))
-suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, main.app))
-suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, main.app))
+suite.addTests(discoverTests(TestGame, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
 
 # Tests using server
-# suite.addTests(discoverTests(TestGame, config.APIAddress, config.APIPort))
-# suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort))
-# suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort))
-# suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort))
-# suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort))
-# suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort))
+suite.addTests(discoverTests(TestGame, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
 
 unittest.TextTestRunner(verbosity=2).run(suite)
 
+# Kill server
+os.killpg(server.pid, signal.SIGTERM)

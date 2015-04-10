@@ -1,18 +1,40 @@
+import hmac
+import hashlib
+import json
+from flask import Flask
+from flask import request
+
+
 import service.service as service
 import config
 
 from core import factory
 import service.api.errors as errors
 import util.rest as rest
-
-from flask import Flask
-from flask import request
+import util.debug as debug
 
 app = Flask(__name__)
 
+def userAuthenticate(f):
+	def aux(*args, **kwargs):
+		# JSON must include time and user key
+		if not all(map(lambda k: k in request.json, ['gondola-time', 'gondola-user'])):
+			return rest.errorResponse(errors.RequestMissingArguments)
 
+		# HTTP header must include hash for all requests
+		if 'gondola-hash' not in request.headers:
+			return rest.errorResponse(errors.RequestMissingArguments)
+
+		digest = hmac.new(config.UserSecret, request.get_data(), hashlib.sha256).hexdigest()
+
+		if digest != request.headers['gondola-hash']:
+			return rest.errorResponse(errors.FailedToAuthenticate)
+		
+		return f(*args, **kwargs)
+	return aux
 
 @app.route('/games/add/<version>/', methods=['POST'])
+@userAuthenticate
 def gameAdd(version):
 	"""
 	Adds new game to the system. 
@@ -21,7 +43,9 @@ def gameAdd(version):
 	name -- the key for the game
 	"""
 	content = factory.getContent()	
+
 	game = content.addGame(request.json['name'])
+	
 	return rest.successResponse(game.as_dict())
 
 @app.route('/games/list/<version>/', methods=['GET'])
@@ -205,6 +229,11 @@ def pricesAdd(version):
 	content = factory.getContent()
 	prices = content.addPrices(request.json['key'], request.json['engine'], request.json['data'], request.json['path'])
 	return rest.successResponse(prices.as_dict())
+
+@app.errorhandler(500)
+def page_not_found(e):
+	debug.error('%s'%e)
+	return rest.errorResponse({'status': 500, 'message':str(e)})
 
 def start():
 	global app
