@@ -13,7 +13,7 @@ import core.pricing.pricing as pricing
 import core.content.errors as errors
 import core.util.rest as rest
 import core.util.debug as debug
-import core.util.extras as axtras
+import core.util.extras as extras
 
 app = Flask(__name__)
 
@@ -263,7 +263,7 @@ def update(version):
 	backend = content.Content()
 
 	# Check minimum number of keys required in JSON update
-	if axtras.keysInDict(request.json, ['player', 'events']) == False:
+	if extras.keysInDict(request.json, ['player', 'events']) == False:
 		return rest.errorResponse(errors.GameUpdateIncomplete)
 
 	# Events must have at least one item
@@ -285,8 +285,14 @@ def update(version):
 		playerPrices = prices.getPrices(request.json['player'], request.json['events'][-1]['progress'])
 	except pricing.NoPricingForGroup:
 		return rest.errorResponse(errors.GameHasNoPriceForPlayer)
+
+	# Save update
+	key = '%s-%s-%s.json'%(request.json['gondola-application'], extras.datetimeStamp(), request.json['player'])
+	theStorage.save(key, json.dumps(request.json))
+
+
 # {
-# 	application: game key
+# 	gondola-application: game key
 # 	player: player UUID
 # 	events: [
 # 		{
