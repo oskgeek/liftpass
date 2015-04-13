@@ -1,15 +1,14 @@
 import uuid
 import os
 
-from engine.storage import Storage
+from core.storage.storage import Storage
 import config
 
 
 class Filesystem(Storage):
 
 	def __init__(self):
-		print('[%s] Init'%self)
-		
+		pass
 
 	def save(self, data, datatype = 'json'):
 		filename = '%s/%s.%s'%(config.StoragePath, uuid.uuid4().hex, datatype)

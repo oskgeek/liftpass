@@ -10,9 +10,11 @@ import signal
 import time
 
 import config
-import service.api.errors as errors
-import service.api.main as main
-from util.test import *
+import core.content.errors as errors
+import core.content.main as main
+import core.content.content as content
+
+from core.util.test import *
 
 def genRandomStrings(count, length):
 	return map(lambda c: ''.join(map(lambda i: random.choice(string.ascii_uppercase), range(length))), range(count))
@@ -248,6 +250,54 @@ class TestABTest(APITest):
 		(status, h) = self.request('DELETE', '/prices/delete/v1/', {'key': b['key']})
 		self.assertEqual(h['deleted'], True)
 
+class TestSDK(APITest):
+
+	def testCall(self):
+
+		backend = content.Content()
+		a = backend.addGame('Test')
+		
+		jsonPricesA = backend.addPrices(a.key, 'JSON', json.dumps({'sword':1000}), None)
+		jsonPricesB = backend.addPrices(a.key, 'JSON', json.dumps({'sword':2000}), None)
+		
+		backend.setABTest(a.key, {'dynamicPrices_key': jsonPricesA.key})
+		backend.setABTest(a.key, {'staticPrices_key': jsonPricesB.key})
+		
+		data = {
+			'application': a.key,
+			'player': '0'*32,
+			'events': [
+				{
+					'progress': ['','','','','','','','']+[0]*24,
+				}
+			]
+		}
+
+		(status, b) = self.request('POST', '/update/v1/', data)
+		self.assertEqual(b['sword'], 1000)
+
+		data['player'] = '1'*32
+		(status, c) = self.request('POST', '/update/v1/', data)
+		self.assertEqual(c['sword'], 2000)
+		
+
+	def testCallWithMissingData(self):
+		(status, a) = self.request('POST', '/update/v1/', {'player':'', 'events':[{}]})
+		self.assertEqual(status, errors.GameUpdateIncomplete['status'])
+		
+		(status, a) = self.request('POST', '/update/v1/', {'application':123, 'events':[{}]})
+		self.assertEqual(status, errors.GameUpdateIncomplete['status'])
+		
+		(status, a) = self.request('POST', '/update/v1/', {'application':123, 'player':''})
+		self.assertEqual(status, errors.GameUpdateIncomplete['status'])
+
+		(status, a) = self.request('POST', '/update/v1/', {'application':123, 'player':'', 'events':[]})
+		self.assertEqual(status, errors.GameUpdateIncomplete['status'])
+
+	def testCallWithBadKey(self):
+		(status, a) = self.request('POST', '/update/v1/', {'application':123, 'player':'', 'events':[{}]})
+		self.assertEqual(status, errors.GameUpdateIncomplete['status'])
+
 # Start server
 server = subprocess.Popen(['python3.4','%s/manage.py'%config.BasePath,'API','start'], preexec_fn=os.setsid, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 time.sleep(2)
@@ -261,14 +311,17 @@ suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, con
 suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
 suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
 suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestSDK, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+
 
 # # Tests using server
-# suite.addTests(discoverTests(TestGame, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestGame, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestSDK, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
 
 unittest.TextTestRunner(verbosity=2).run(suite)
 

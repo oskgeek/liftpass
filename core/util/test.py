@@ -10,7 +10,7 @@ import base64
 import sys
 import io
 
-import util.debug as debug
+import core.util.debug as debug
 
 def discoverTests(testcase, *args):
 

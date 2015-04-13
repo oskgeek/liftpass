@@ -13,8 +13,8 @@ sys.path.append(BasePath)
 # Storage Buffer
 #
 
-StorageEngine = 'engine.storage.Filesystem'
-StoragePath = 'tmp/'
+StorageEngine = 'core.storage.filesystem'
+StoragePath = BasePath+'/tmp/'
 
 #
 # Content Database
@@ -41,7 +41,7 @@ analyticsDatabase = None
 # Monitoring
 #
 
-MonitorEngine = 'engine.monitoring.SimpleMonitoring'
+MonitorEngine = 'core.monitoring.SimpleMonitoring'
 MonitorAddress =  '%s/monitoring'%DataPath
 MonitorUsername = None
 MonitorPassword = None

@@ -2,9 +2,11 @@ import uuid
 
 import config
 
-from engine.content import models
-from engine.pricing import pricing
-from util import debug
+from core.content import models
+import core.content.models as models
+import core.pricing.pricing as pricing
+import core.util.debug as debug
+
 
 class Content:
 

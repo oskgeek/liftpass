@@ -1,9 +1,7 @@
 import json
 
 import config
-from core import factory
-from util import debug
-
+import core.util.debug as debug
 
 
 class DataEngine:
@@ -34,12 +32,13 @@ class PricingEngine:
 
 
 	def __init__(self, game_key):
-		content = factory.getContent()
+		import core.content.content as content
+		backend = content.Content()
 
 		self.dynamicPrices = None
 		self.staticPrices = None
 
-		self.abtest = content.getABTest(game_key)
+		self.abtest = backend.getABTest(game_key)
 		
 		# If there is no AB test for game.. we are done
 		if self.abtest == None:
@@ -72,9 +71,10 @@ class PricingEngine:
 		return None
 
 	def __loadPrices(self, prices_key):
-		content = factory.getContent()
+		import core.content.content as content
+		backend = content.Content()
 
-		data = content.getPrice(prices_key).as_dict()
+		data = backend.getPrice(prices_key).as_dict()
 
 		if data['engine'] == 'JSON':
 			return JSONDataEngine(data)
