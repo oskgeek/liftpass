@@ -18,8 +18,8 @@ import core.util.extras as axtras
 app = Flask(__name__)
 
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 @app.route('/games/add/<version>/', methods=['POST'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def gameAdd(version):
 	"""
 	Adds new game to the system. 
@@ -236,13 +236,14 @@ def pricesAdd(version):
 	return rest.successResponse(prices.as_dict())
 
 @app.route('/update/<version>/', methods=['POST'])
+@rest.gameAuthenticate(secretLookup=content.Content().getGameSecret)
 def update(version):
 
 	theStorage = storage.getDefaultStorage()
 	backend = content.Content()
 
 	# Check minimum number of keys required in JSON update
-	if axtras.keysInDict(request.json, ['application', 'player', 'events']) == False:
+	if axtras.keysInDict(request.json, ['player', 'events']) == False:
 		return rest.errorResponse(errors.GameUpdateIncomplete)
 
 	# Events must have at least one item
@@ -253,12 +254,13 @@ def update(version):
 	if 'progress' not in request.json['events'][-1]:
 		return rest.errorResponse(errors.GameUpdateMissingEvents)
 	
+	# Try getting price engine
 	try:
-		prices = backend.getPricingEngine(request.json['application'])
+		prices = backend.getPricingEngine(request.json['gondola-application'])
 	except pricing.GameNotFoundException:
 		return rest.errorResponse(errors.GameKeyDoesNotExist)
 
-
+	# Try getting price for player + progress
 	try:
 		playerPrices = prices.getPrices(request.json['player'], request.json['events'][-1]['progress'])
 	except pricing.NoPricingForGroup:
@@ -280,7 +282,7 @@ def update(version):
 
 @app.errorhandler(500)
 def page_not_found(e):
-	debug.error('%s'%e)
+	debug.stacktrace(e)
 	return rest.errorResponse({'status': 500, 'message': str(e)})
 
 

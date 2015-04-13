@@ -264,7 +264,6 @@ class TestSDK(APITest):
 		backend.setABTest(a.key, {'staticPrices_key': jsonPricesB.key})
 		
 		data = {
-			'application': a.key,
 			'player': '0'*32,
 			'events': [
 				{
@@ -273,29 +272,34 @@ class TestSDK(APITest):
 			]
 		}
 
-		(status, b) = self.request('POST', '/update/v1/', data)
+		(status, b) = self.request('POST', '/update/v1/', data, game=a)
 		self.assertEqual(b['sword'], 1000)
 
 		data['player'] = '1'*32
-		(status, c) = self.request('POST', '/update/v1/', data)
+		(status, c) = self.request('POST', '/update/v1/', data, game=a)
 		self.assertEqual(c['sword'], 2000)
 		
 
 	def testCallWithMissingData(self):
-		(status, a) = self.request('POST', '/update/v1/', {'player':'', 'events':[{}]})
+		backend = content.Content()
+		a = backend.addGame('Test') 
+
+		(status, b) = self.request('POST', '/update/v1/', {'player':'', 'events':[{}]}, game = a)
 		self.assertEqual(status, errors.GameUpdateIncomplete['status'])
 		
-		(status, a) = self.request('POST', '/update/v1/', {'application':123, 'events':[{}]})
+		(status, c) = self.request('POST', '/update/v1/', {'events':[{}]}, game = a)
 		self.assertEqual(status, errors.GameUpdateIncomplete['status'])
 		
-		(status, a) = self.request('POST', '/update/v1/', {'application':123, 'player':''})
+		(status, d) = self.request('POST', '/update/v1/', {'player':''}, game = a)
 		self.assertEqual(status, errors.GameUpdateIncomplete['status'])
 
-		(status, a) = self.request('POST', '/update/v1/', {'application':123, 'player':'', 'events':[]})
+		(status, e) = self.request('POST', '/update/v1/', {'player':'', 'events':[]}, game = a)
 		self.assertEqual(status, errors.GameUpdateIncomplete['status'])
 
 	def testCallWithBadKey(self):
-		(status, a) = self.request('POST', '/update/v1/', {'application':123, 'player':'', 'events':[{}]})
+		backend = content.Content()
+		a = backend.addGame('Test') 
+		(status, a) = self.request('POST', '/update/v1/', {'player':'', 'events':[{}]}, game = a)
 		self.assertEqual(status, errors.GameUpdateIncomplete['status'])
 
 # Start server

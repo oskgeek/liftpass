@@ -171,6 +171,15 @@ class Content:
 		session.add(prices)
 		session.commit()
 		return prices
+
+
+	def getGameSecret(self, game_key):
+		session = models.getSession()
+		game = session.query(models.Game).filter_by(key = game_key).first()
+	
+		if game != None:
+			return game.secret
+		return None
 		
 
 	def __repr__(self):

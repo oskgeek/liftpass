@@ -2,6 +2,10 @@ from flask import jsonify
 from flask import request
 import hmac
 import hashlib
+from functools import wraps
+from functools import update_wrapper
+
+import core.util.debug as debug
 
 
 ERROR_BAD_REQUEST = 400
@@ -25,23 +29,49 @@ def errorResponse(error):
 	return res
 
 def userAuthenticate(secretLookup):
-	def wrap(f): 
+	def decorator(f): 
 		def aux(*args, **kwargs):
-			
 			# JSON must include time and user key
 			if not all(map(lambda k: k in request.json, ['gondola-time', 'gondola-user'])):
-				return errorResponse({'error': ERROR_UNAUTHORIZED, message:'JSON missing gondola-time and/or gondola-user keys'})
+				return errorResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing gondola-time and/or gondola-user keys'})
 
 			# HTTP header must include hash for all requests
 			if 'gondola-hash' not in request.headers:
-				return errorResponse({'error': ERROR_UNAUTHORIZED, message:'HTTP request missing gondola-hash in header'})
+				return errorResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing gondola-hash in header'})
 
 			secret = secretLookup(request.json['gondola-user'])
 			digest = hmac.new(secret, request.get_data(), hashlib.sha256).hexdigest()
 
 			if digest != request.headers['gondola-hash']:
-				return errorResponse({'error': ERROR_UNAUTHORIZED, message:'Failed to authenticate'})
+				return errorResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'})
 			
 			return f(*args, **kwargs)
-		return aux
-	return wrap
+		return update_wrapper(aux, f)
+	return decorator
+
+
+def gameAuthenticate(secretLookup):
+	def decorator(f): 
+		def aux(*args, **kwargs):
+
+			# JSON must include time and user key
+			if not all(map(lambda k: k in request.json, ['gondola-time', 'gondola-application'])):
+				return errorResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing gondola-time and/or gondola-application keys'})
+
+			# HTTP header must include hash for all requests
+			if 'gondola-hash' not in request.headers:
+				return errorResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing gondola-hash in header'})
+
+			secret = secretLookup(request.json['gondola-application'])
+			if secret == None:
+				return errorResponse({'status': ERROR_UNAUTHORIZED, 'message':'Application key not valid'})
+
+			secret = secret.encode('utf-8')	
+			digest = hmac.new(secret, request.get_data(), hashlib.sha256).hexdigest()
+			
+			if digest != request.headers['gondola-hash']:
+				return errorResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'})
+			
+			return f(*args, **kwargs)
+		return update_wrapper(aux, f)
+	return decorator

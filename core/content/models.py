@@ -52,6 +52,7 @@ class Game(Base, CoreBase):
 	__tablename__ = 'game'
 
 	key = Column(String, default=generateUUID, primary_key=True)
+	secret = Column(String, default=generateUUID)
 
 	name = Column(String)
 

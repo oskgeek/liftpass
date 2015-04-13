@@ -37,10 +37,15 @@ class APITest(unittest.TestCase):
 		self.userSecret = userSecret
 		
 
-	def request(self, method, url, data):
+	def request(self, method, url, data, game=None):
 		address = 'http://%s:%d%s'%(self.address, self.port, url)
 
-		data['gondola-user'] = self.userKey.decode('utf-8')
+		if game:
+			data['gondola-application'] = game.key
+			self.userSecret = game.secret.encode('utf-8')
+		else:	
+			data['gondola-user'] = self.userKey.decode('utf-8')
+		
 		data['gondola-time'] = round(time.time())
 		data['gondola-url'] = url
 
@@ -71,13 +76,6 @@ class APITest(unittest.TestCase):
 				data = result.content.decode('utf-8')
 				data = json.loads(data)
 				return (result.status_code, data)
-
 		except Exception as e:
-				debug.error('-'*60)
-				debug.error(str(e))
-				stream = io.StringIO()
-				traceback.print_exc(file=stream)
-				for line in stream.getvalue().split('\n'):
-					debug.error(line)
-				debug.error('-'*60)
+				debug.stacktrace(e)
 				return (500, {'message': 'Internal server error'})
