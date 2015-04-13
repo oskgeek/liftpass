@@ -34,8 +34,9 @@ def gameAdd(version):
 	
 	return rest.successResponse(game.as_dict())
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/games/list/<version>/', methods=['GET'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def gameList(version):
 	"""
 	Gets list of games.
@@ -47,8 +48,9 @@ def gameList(version):
 	
 	return rest.successResponse({'games': result})
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/games/delete/<version>/', methods=['DELETE'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def gameDelete(version):
 	"""
 	Deletes game and supporting data.
@@ -63,8 +65,9 @@ def gameDelete(version):
 		return rest.successResponse({'deleted': success>0})
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/games/get/<version>/', methods=['GET'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def gameGet(version):
 	"""
 	Gets information about game.
@@ -79,8 +82,9 @@ def gameGet(version):
 	
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/games/update/<version>/', methods=['PUT'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def gameUpdate(version):
 	"""
 	Updates game information.
@@ -98,8 +102,9 @@ def gameUpdate(version):
 		return rest.successResponse(game.as_dict())
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/currencies/get/<version>/', methods=['GET'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def currencyGet(version):
 	"""
 	Get currency for the specified game.
@@ -114,8 +119,9 @@ def currencyGet(version):
 		return rest.successResponse(currency.as_dict())
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/currencies/update/<version>/', methods=['PUT'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def currencyUpdate(version):
 	"""
 	Updates a single currency name for the game specified.
@@ -132,15 +138,17 @@ def currencyUpdate(version):
 		return rest.successResponse(currency.as_dict())
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/goods/add/<version>/', methods=['POST'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def goodsAdd(version):
 	backend = content.Content()
 	good = backend.addGood(request.json['key'], request.json['name'])
 	return rest.successResponse(good.as_dict())
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/goods/get/<version>/', methods=['GET'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def goodsGet(version):
 	backend = content.Content()
 	good = backend.getGood(request.json['key'])
@@ -148,23 +156,26 @@ def goodsGet(version):
 		return rest.successResponse(good.as_dict())
 	return rest.errorResponse(errors.GoodKeyDoesNotExist)
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/goods/list/<version>/', methods=['GET'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def goodsList(version):
 	backend = content.Content()
 	goods = backend.getGoods(request.json['key'])
 	results = list(map(lambda g: g.as_dict(), goods))
 	return rest.successResponse({'goods': results})
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/goods/delete/<version>/', methods=['DELETE'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def goodsDelete(version):
 	backend = content.Content()
 	res = backend.deleteGood(request.json['key'])
 	return rest.successResponse({'deleted':res>0})
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/goods/update/<version>/', methods=['PUT'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def goodsUpdate(version):
 	backend = content.Content()
 	good = backend.updateGood(request.json['key'], request.json)
@@ -172,8 +183,9 @@ def goodsUpdate(version):
 		return rest.successResponse(good.as_dict())
 	return rest.errorResponse(errors.GoodKeyDoesNotExist)
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/abtest/get/<version>/', methods=['GET'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def abtestGet(version):
 	backend = content.Content()
 	abtest = backend.getABTest(request.json['key'])
@@ -181,15 +193,17 @@ def abtestGet(version):
 		return rest.successResponse(abtest.as_dict())
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/abtest/update/<version>/', methods=['PUT'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def abtestUpdate(version):
 	backend = content.Content()
 	abtest = backend.setABTest(request.json['key'], request.json)
 	return rest.successResponse(abtest.as_dict())
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/metrics/get/<version>/', methods=['GET'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def metricsGet(version):
 	backend = content.Content()
 	metrics = backend.getMetrics(request.json['key'])
@@ -197,23 +211,26 @@ def metricsGet(version):
 		return rest.successResponse(metrics.as_dict())
 	return rest.errorResponse(errors.GameKeyDoesNotExist)
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/metrics/update/<version>/', methods=['PUT'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def metricsUpdate(version):
 	backend = content.Content()
 	metrics = backend.setMetrics(request.json['key'], request.json)
 	return rest.successResponse(metrics.as_dict())
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/prices/list/<version>/', methods=['GET'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def pricesList(version):
 	backend = content.Content()
 	prices = backend.getPrices(request.json['key'])
 	prices = list(map(lambda p: p.as_dict(), prices))
 	return rest.successResponse({'prices':prices})
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/prices/get/<version>/', methods=['GET'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def pricesGet(version):
 	backend = content.Content()
 	prices = backend.getPrice(request.json['key'])
@@ -221,19 +238,22 @@ def pricesGet(version):
 		return rest.successResponse(prices.as_dict())
 	return rest.errorResponse(errors.PricesKeyDoesNotExist)
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/prices/delete/<version>/', methods=['DELETE'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def pricesDelete(version):
 	backend = content.Content()
 	res = backend.deletePrices(request.json['key'])
 	return rest.successResponse({'deleted': res > 0})
 
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+
 @app.route('/prices/add/<version>/', methods=['POST'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def pricesAdd(version):
 	backend = content.Content()
 	prices = backend.addPrices(request.json['key'], request.json['engine'], request.json['data'], request.json['path'])
 	return rest.successResponse(prices.as_dict())
+
 
 @app.route('/update/<version>/', methods=['POST'])
 @rest.gameAuthenticate(secretLookup=content.Content().getGameSecret)
