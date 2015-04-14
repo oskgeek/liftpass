@@ -48,19 +48,19 @@ class CoreBase:
 		return res
 		
 
-class Game(Base, CoreBase):
-	__tablename__ = 'game'
+class Application(Base, CoreBase):
+	__tablename__ = 'application'
 
 	key = Column(String, default=generateUUID, primary_key=True)
 	secret = Column(String, default=generateUUID)
 
 	name = Column(String)
 
-	currencies = relationship('Currencies', backref='game')
+	currencies = relationship('Currencies', backref='application')
 	goods = relationship('Good')
-	metrics = relationship('Metrics', backref='game')
-	prices = relationship('Prices', backref='game')
-	abtest = relationship('ABTest', backref='game')
+	metrics = relationship('Metrics', backref='application')
+	prices = relationship('Prices', backref='application')
+	abtest = relationship('ABTest', backref='application')
 
 	created = Column(DateTime, default=datetime.datetime.utcnow)
 
@@ -71,7 +71,7 @@ class Currencies(Base, CoreBase):
 
 	id = Column(Integer, primary_key=True)
 
-	game_key = Column(Integer, ForeignKey('game.key', ondelete='CASCADE'))
+	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
 	
 
 	name1 = Column(String, nullable=True)
@@ -90,7 +90,7 @@ class Good(Base, CoreBase):
 
 	key = Column(String, default=generateUUID, primary_key=True)
 
-	game_key = Column(Integer, ForeignKey('game.key', ondelete='CASCADE'))
+	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
 
 	name = Column(String)
 
@@ -103,7 +103,7 @@ class Metrics(Base, CoreBase):
 
 	id = Column(Integer, primary_key=True)
 
-	game_key = Column(Integer, ForeignKey('game.key', ondelete='CASCADE'))
+	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
 
 	str1 = Column(String, nullable=True)
 	str2 = Column(String, nullable=True)
@@ -145,7 +145,7 @@ class ABTest(Base, CoreBase):
 
 	id = Column(Integer, primary_key=True)
 
-	game_key = Column(Integer, ForeignKey('game.key', ondelete='CASCADE'))
+	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
 
 	countryWhiteList = Column(String, default=str)
 	countryBlackList = Column(String, default=str)
@@ -161,7 +161,7 @@ class Prices(Base, CoreBase):
 
 	__tablename__ = 'prices'
 
-	game_key = Column(Integer, ForeignKey('game.key', ondelete='CASCADE'))
+	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
 
 	key = Column(String, default=generateUUID, primary_key=True)
 
@@ -173,7 +173,7 @@ class Prices(Base, CoreBase):
 	created = Column(DateTime, default=datetime.datetime.utcnow)
 
 
-Game.__table__.create(engine, checkfirst=True)
+Application.__table__.create(engine, checkfirst=True)
 Currencies.__table__.create(engine, checkfirst=True)
 Good.__table__.create(engine, checkfirst=True)
 Metrics.__table__.create(engine, checkfirst=True)

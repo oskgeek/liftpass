@@ -10,8 +10,8 @@ FailedToAuthenticate = {
 	'status': rest.ERROR_UNAUTHORIZED
 }
 
-GameKeyDoesNotExist =  {
-	'message': 'Game key does not exist',
+ApplicationKeyDoesNotExist =  {
+	'message': 'Application key does not exist',
 	'status': rest.ERROR_BAD_REQUEST
 }
 
@@ -25,22 +25,22 @@ PricesKeyDoesNotExist = {
 	'status': rest.ERROR_BAD_REQUEST
 }
 
-GameKeyDoesNotExist =  {
-	'message': 'Game key does not exist',
+ApplicationKeyDoesNotExist =  {
+	'message': 'Application key does not exist',
 	'status': rest.ERROR_BAD_REQUEST
 }
 
-GameUpdateIncomplete = {
+ApplicationUpdateIncomplete = {
 	'message': 'JSON game update is incomplete',
 	'status': rest.ERROR_BAD_REQUEST
 }
 
-GameUpdateMissingEvents = {
+ApplicationUpdateMissingEvents = {
 	'message': 'JSON game update must have at least one event',
 	'status': rest.ERROR_BAD_REQUEST
 }
 
-GameHasNoPriceForPlayer = {
-	'message': 'Game has no specified prices for player/group',
+ApplicationHasNoPriceForPlayer = {
+	'message': 'Application has no specified prices for player/group',
 	'status': rest.ERROR_BAD_REQUEST
 }

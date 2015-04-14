@@ -18,117 +18,117 @@ import core.util.extras as extras
 app = Flask(__name__)
 
 
-@app.route('/games/add/<version>/', methods=['POST'])
+@app.route('/applications/add/<version>/', methods=['POST'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
-def gameAdd(version):
+def applicationAdd(version):
 	"""
-	Adds new game to the system. 
+	Adds new application to the system. 
 
 	Arguments:
-	name -- the key for the game
+	name -- the key for the application
 	"""
 
 	backend = content.Content()
 
-	game = backend.addGame(request.json['name'])
+	application = backend.addApplication(request.json['name'])
 	
-	return rest.successResponse(game.as_dict())
+	return rest.successResponse(application.as_dict())
 
 
-@app.route('/games/list/<version>/', methods=['GET'])
+@app.route('/applications/list/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
-def gameList(version):
+def applicationList(version):
 	"""
-	Gets list of games.
+	Gets list of applications.
 	"""
 	backend = content.Content()
-	games = backend.getGames()
+	applications = backend.getApplications()
 	
-	result = list(map(lambda g: g.as_dict(), games))
+	result = list(map(lambda g: g.as_dict(), applications))
 	
-	return rest.successResponse({'games': result})
+	return rest.successResponse({'applications': result})
 
 
-@app.route('/games/delete/<version>/', methods=['DELETE'])
+@app.route('/applications/delete/<version>/', methods=['DELETE'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
-def gameDelete(version):
+def applicationDelete(version):
 	"""
-	Deletes game and supporting data.
+	Deletes application and supporting data.
 
 	Arguments:
-	key -- the key for the game
+	key -- the key for the application
 	"""
 	backend = content.Content()
-	success = backend.deleteGame(request.json['key'])
+	success = backend.deleteApplication(request.json['key'])
 	
 	if success:
 		return rest.successResponse({'deleted': success>0})
-	return rest.errorResponse(errors.GameKeyDoesNotExist)
+	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
 
 
-@app.route('/games/get/<version>/', methods=['GET'])
+@app.route('/applications/get/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
-def gameGet(version):
+def applicationGet(version):
 	"""
-	Gets information about game.
+	Gets information about application.
 
 	Arguments:
-	key -- the key for the game
+	key -- the key for the application
 	"""
 	backend = content.Content()	
-	game = backend.getGame(request.json['key'])
-	if game:
-		return rest.successResponse(game.as_dict())
+	application = backend.getApplication(request.json['key'])
+	if application:
+		return rest.successResponse(application.as_dict())
 	
-	return rest.errorResponse(errors.GameKeyDoesNotExist)
+	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
 
 
-@app.route('/games/update/<version>/', methods=['PUT'])
+@app.route('/applications/update/<version>/', methods=['PUT'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
-def gameUpdate(version):
+def applicationUpdate(version):
 	"""
-	Updates game information.
+	Updates application information.
 
 	Arguments:
-	key -- the game key
-	name -- (optional) the name of the game 
+	key -- the application key
+	name -- (optional) the name of the application 
 
 	"""
 	backend = content.Content()
 
-	game = backend.setGame(request.json['key'], request.json)
+	application = backend.setApplication(request.json['key'], request.json)
 
-	if game:
-		return rest.successResponse(game.as_dict())
-	return rest.errorResponse(errors.GameKeyDoesNotExist)
+	if application:
+		return rest.successResponse(application.as_dict())
+	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
 
 
 @app.route('/currencies/get/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def currencyGet(version):
 	"""
-	Get currency for the specified game.
+	Get currency for the specified application.
 
 	Arguments:
-	key -- the game key
+	key -- the application key
 	"""
 	backend = content.Content()
 
 	currency = backend.getCurrency(request.json['key'])
 	if currency:
 		return rest.successResponse(currency.as_dict())
-	return rest.errorResponse(errors.GameKeyDoesNotExist)
+	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
 
 
 @app.route('/currencies/update/<version>/', methods=['PUT'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def currencyUpdate(version):
 	"""
-	Updates a single currency name for the game specified.
+	Updates a single currency name for the application specified.
 
 	Arguments:
-	key -- the game key
-	name1 to name8 -- name of currencies in the game
+	key -- the application key
+	name1 to name8 -- name of currencies in the application
 	"""
 
 	backend = content.Content()
@@ -136,7 +136,7 @@ def currencyUpdate(version):
 	currency = backend.setCurrency(request.json['key'], request.json)
 	if currency:
 		return rest.successResponse(currency.as_dict())
-	return rest.errorResponse(errors.GameKeyDoesNotExist)
+	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
 
 
 @app.route('/goods/add/<version>/', methods=['POST'])
@@ -191,7 +191,7 @@ def abtestGet(version):
 	abtest = backend.getABTest(request.json['key'])
 	if abtest:
 		return rest.successResponse(abtest.as_dict())
-	return rest.errorResponse(errors.GameKeyDoesNotExist)
+	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
 
 
 @app.route('/abtest/update/<version>/', methods=['PUT'])
@@ -209,7 +209,7 @@ def metricsGet(version):
 	metrics = backend.getMetrics(request.json['key'])
 	if metrics:
 		return rest.successResponse(metrics.as_dict())
-	return rest.errorResponse(errors.GameKeyDoesNotExist)
+	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
 
 
 @app.route('/metrics/update/<version>/', methods=['PUT'])
@@ -256,7 +256,7 @@ def pricesAdd(version):
 
 
 @app.route('/update/<version>/', methods=['POST'])
-@rest.gameAuthenticate(secretLookup=content.Content().getGameSecret)
+@rest.applicationAuthenticate(secretLookup=content.Content().getApplicationSecret)
 def update(version):
 
 	theStorage = storage.getDefaultStorage()
@@ -264,27 +264,27 @@ def update(version):
 
 	# Check minimum number of keys required in JSON update
 	if extras.keysInDict(request.json, ['player', 'events']) == False:
-		return rest.errorResponse(errors.GameUpdateIncomplete)
+		return rest.errorResponse(errors.ApplicationUpdateIncomplete)
 
 	# Events must have at least one item
 	if len(request.json['events']) == 0:
-		return rest.errorResponse(errors.GameUpdateMissingEvents)
+		return rest.errorResponse(errors.ApplicationUpdateMissingEvents)
 	
 	# Event has progress
 	if 'progress' not in request.json['events'][-1]:
-		return rest.errorResponse(errors.GameUpdateMissingEvents)
+		return rest.errorResponse(errors.ApplicationUpdateMissingEvents)
 	
 	# Try getting price engine
 	try:
 		prices = backend.getPricingEngine(request.json['gondola-application'])
-	except pricing.GameNotFoundException:
-		return rest.errorResponse(errors.GameKeyDoesNotExist)
+	except pricing.ApplicationNotFoundException:
+		return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
 
 	# Try getting price for player + progress
 	try:
 		playerPrices = prices.getPrices(request.json['player'], request.json['events'][-1]['progress'])
 	except pricing.NoPricingForGroup:
-		return rest.errorResponse(errors.GameHasNoPriceForPlayer)
+		return rest.errorResponse(errors.ApplicationHasNoPriceForPlayer)
 
 	# Save update
 	key = '%s-%s-%s.json'%(request.json['gondola-application'], extras.datetimeStamp(), request.json['player'])
@@ -292,7 +292,7 @@ def update(version):
 
 
 # {
-# 	gondola-application: game key
+# 	gondola-application: application key
 # 	player: player UUID
 # 	events: [
 # 		{

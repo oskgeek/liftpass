@@ -50,7 +50,7 @@ def userAuthenticate(secretLookup):
 	return decorator
 
 
-def gameAuthenticate(secretLookup):
+def applicationAuthenticate(secretLookup):
 	def decorator(f): 
 		def aux(*args, **kwargs):
 

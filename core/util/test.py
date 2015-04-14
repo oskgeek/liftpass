@@ -37,12 +37,12 @@ class APITest(unittest.TestCase):
 		self.userSecret = userSecret
 		
 
-	def request(self, method, url, data, game=None):
+	def request(self, method, url, data, application=None):
 		address = 'http://%s:%d%s'%(self.address, self.port, url)
 
-		if game:
-			data['gondola-application'] = game.key
-			self.userSecret = game.secret.encode('utf-8')
+		if application:
+			data['gondola-application'] = application.key
+			self.userSecret = application.secret.encode('utf-8')
 		else:	
 			data['gondola-user'] = self.userKey.decode('utf-8')
 		
