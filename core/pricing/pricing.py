@@ -21,28 +21,28 @@ class JSONDataEngine(DataEngine):
 		return self.data
 
 
-class GameNotFoundException(Exception):
+class ApplicationNotFoundException(Exception):
 	pass
 class NoPricingForGroup(Exception):
 	pass
-class GameHasNoPrices(Exception):
+class ApplicationHasNoPrices(Exception):
 	pass
 
 class PricingEngine:
 
 
-	def __init__(self, game_key):
+	def __init__(self, application_key):
 		import core.content.content as content
 		backend = content.Content()
 
 		self.dynamicPrices = None
 		self.staticPrices = None
 
-		self.abtest = backend.getABTest(game_key)
+		self.abtest = backend.getABTest(application_key)
 		
-		# If there is no AB test for game.. we are done
+		# If there is no AB test for application.. we are done
 		if self.abtest == None:
-			raise GameNotFoundException()
+			raise ApplicationNotFoundException()
 		
 		self.abtest = self.abtest.as_dict()
 

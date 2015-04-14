@@ -18,7 +18,7 @@ class TestPricingEngine(unittest.TestCase):
 
 	def testLoadEmptyPrices(self):
 		backend = content.Content()
-		a = backend.addGame('Test')
+		a = backend.addApplication('Test')
 		p = pricing.PricingEngine(a.key)
 
 		self.assertEqual(p.dynamicPrices, None)
@@ -27,7 +27,7 @@ class TestPricingEngine(unittest.TestCase):
 
 	def testLoadPrices(self):
 		backend = content.Content()
-		a = backend.addGame('Test')
+		a = backend.addApplication('Test')
 		
 		jsonPrices = backend.addPrices(a.key, 'JSON', json.dumps({'sword':1000}), None)
 
@@ -41,7 +41,7 @@ class TestPricingEngine(unittest.TestCase):
 
 	def testPricesWithProgress(self):
 		backend = content.Content()
-		a = backend.addGame('Test')
+		a = backend.addApplication('Test')
 		
 		jsonPricesA = backend.addPrices(a.key, 'JSON', json.dumps({'sword':1000}), None)
 		jsonPricesB = backend.addPrices(a.key, 'JSON', json.dumps({'sword':2000}), None)
@@ -58,10 +58,10 @@ class TestPricingEngine(unittest.TestCase):
 		self.assertEqual(pricesB['sword'], 2000)
 		
 
-	def testPricesWithBadGameKey(self):
+	def testPricesWithBadApplicationKey(self):
 		backend = content.Content()
-		with self.assertRaises(pricing.GameNotFoundException):
-			gamePrices = backend.getPricingEngine('12345')
+		with self.assertRaises(pricing.ApplicationNotFoundException):
+			applicationPrices = backend.getPricingEngine('12345')
 		
 		
 
