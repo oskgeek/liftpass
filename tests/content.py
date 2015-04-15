@@ -11,7 +11,7 @@ import time
 
 import config
 import core.content.errors as errors
-import core.content.main as main
+import core.api.main as main
 import core.content.content as content
 
 from core.util.test import *

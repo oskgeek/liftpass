@@ -174,9 +174,19 @@ class Analytics:
 				print('[%d of %d] Processing...'%(i, totalFiles))
 				self.processUpdate(filename)
 
-
 		
 
-	def exportData(self, fromDate, toDate):
-		pass
+	def exportData(self, application, fromDate, toDate):
+		session = models.getSession()
+
+		q = session.query(models.Events).filter_by(models.Events.application==application, models.Events.timestamp>=fromDate, models.Events.timestamp<toDate)
+
+		filename = 'dump-%s-%s-%s.json'%(application, fromDate, toDate)
+		stream = self.storage.saveStream(filename)
+
+		for row in q:
+			stream.write(json.dumps(row.as_dict()))
+
+		print(filename)
+
 

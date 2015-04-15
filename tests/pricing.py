@@ -7,7 +7,7 @@ import random
 
 import config
 import core.content.errors as errors
-import core.content.main as main
+import core.api.main as main
 import core.content.content as content
 import core.pricing.pricing as pricing
 

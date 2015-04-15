@@ -6,13 +6,12 @@ import config
 
 if len(sys.argv) < 3:
 	print(' - manage API start/test')
+	print(' - manage test API/pricing/analytics/all/coverage')
 
 elif sys.argv[1] == 'API':
 	if sys.argv[2] == 'start':
-		import core.content.main as main
+		import core.api.main as main
 		main.start()
-	else:
-		print('Error: command not found')
 elif sys.argv[1] == 'analytics':
 	if sys.argv[2] == 'update':
 		import core.analytics.analytics as analytics
