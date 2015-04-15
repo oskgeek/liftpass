@@ -7,13 +7,21 @@ import config
 
 class Filesystem(Storage):
 
-	def __init__(self):
+	def __init__(self, root):
+		self.root = root
 		pass
 
 	def save(self, filename, data):
-		f = open('%s/%s'%(config.StoragePath, filename), 'w+')
+		f = open('%s/%s'%(self.root, filename), 'w+')
 		f.write(data)
 		f.close()
 
 	def count(self):
-		return len(os.listdir(config.StoragePath))
+		return len(os.listdir(self.root))
+
+	def getFiles(self):
+		return os.listdir(self.root)
+
+	def load(self, filename):
+		f = open('%s/%s'%(self.root, filename), 'r')
+		return f.read()

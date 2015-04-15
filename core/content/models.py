@@ -173,6 +173,88 @@ class Prices(Base, CoreBase):
 
 	created = Column(DateTime, default=datetime.datetime.utcnow)
 
+class Events(Base, CoreBase):
+
+	__tablename__ = 'events'
+
+	id = Column(Integer, primary_key=True)
+
+	# Application the event belongs to
+	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
+
+	# The user ID
+	user = Column(String)
+
+	# User IP address 
+	ip = Column(String)
+
+	# User country derived from IP address
+	country = Column(String)
+
+	# Metrics
+	metricString1 = Column(String, nullable=True)
+	metricString2 = Column(String, nullable=True)
+	metricString3 = Column(String, nullable=True)
+	metricString4 = Column(String, nullable=True)
+	metricString5 = Column(String, nullable=True)
+	metricString6 = Column(String, nullable=True)
+	metricString7 = Column(String, nullable=True)
+	metricString8 = Column(String, nullable=True)
+
+	metricNumber1 = Column(Float, nullable=True)
+	metricNumber2 = Column(Float, nullable=True)
+	metricNumber3 = Column(Float, nullable=True)
+	metricNumber4 = Column(Float, nullable=True)
+	metricNumber5 = Column(Float, nullable=True)
+	metricNumber6 = Column(Float, nullable=True)
+	metricNumber7 = Column(Float, nullable=True)
+	metricNumber8 = Column(Float, nullable=True)
+	metricNumber9 = Column(Float, nullable=True)
+	metricNumber10 = Column(Float, nullable=True)
+	metricNumber11 = Column(Float, nullable=True)
+	metricNumber12 = Column(Float, nullable=True)
+	metricNumber13 = Column(Float, nullable=True)
+	metricNumber14 = Column(Float, nullable=True)
+	metricNumber15 = Column(Float, nullable=True)
+	metricNumber16 = Column(Float, nullable=True)
+	metricNumber17 = Column(Float, nullable=True)
+	metricNumber18 = Column(Float, nullable=True)
+	metricNumber19 = Column(Float, nullable=True)
+	metricNumber20 = Column(Float, nullable=True)
+	metricNumber21 = Column(Float, nullable=True)
+	metricNumber22 = Column(Float, nullable=True)
+	metricNumber23 = Column(Float, nullable=True)
+	metricNumber24 = Column(Float, nullable=True)
+
+	# Name of the event
+	name = Column(String)
+
+	# Event attributes
+	attributeString1 = Column(String, nullable=True)
+	attributeString2 = Column(String, nullable=True)
+	attributeString3 = Column(String, nullable=True)
+	attributeString4 = Column(String, nullable=True)
+	attributeNumber1 = Column(Float, nullable=True)
+	attributeNumber2 = Column(Float, nullable=True)
+	attributeNumber3 = Column(Float, nullable=True)
+	attributeNumber4 = Column(Float, nullable=True)
+	attributeNumber5 = Column(Float, nullable=True)
+	attributeNumber6 = Column(Float, nullable=True)
+	attributeNumber7 = Column(Float, nullable=True)
+	attributeNumber8 = Column(Float, nullable=True)
+	attributeNumber9 = Column(Float, nullable=True)
+	attributeNumber10 = Column(Float, nullable=True)
+	attributeNumber11 = Column(Float, nullable=True)
+	attributeNumber12 = Column(Float, nullable=True)
+
+	# When the event was triggered in UTC time
+	timestamp  = Column(DateTime)
+
+	# When the event was added to database
+	created = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+
 
 Application.__table__.create(engine, checkfirst=True)
 Currencies.__table__.create(engine, checkfirst=True)
@@ -180,5 +262,6 @@ Good.__table__.create(engine, checkfirst=True)
 Metrics.__table__.create(engine, checkfirst=True)
 ABTest.__table__.create(engine, checkfirst=True)
 Prices.__table__.create(engine, checkfirst=True)
+Events.__table__.create(engine, checkfirst=True)
 
 

@@ -10,11 +10,13 @@ DataPath = BasePath+'/data/'
 sys.path.append(BasePath)
 
 #
-# Storage Buffer
+# Analytics Storage
 #
 
-StorageEngine = 'core.storage.filesystem'
-StoragePath = BasePath+'/tmp/'
+AnalyticsStorage = {
+	'engine': 'core.storage.filesystem',
+	'path': BasePath+'/tmp/'
+}
 
 #
 # Content Database

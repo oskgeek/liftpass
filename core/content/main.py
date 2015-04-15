@@ -9,6 +9,7 @@ import config
 import core.content.content as content
 import core.storage as storage
 import core.pricing.pricing as pricing
+import core.analytics.analytics as analytics
 
 import core.content.errors as errors
 import core.util.rest as rest
@@ -259,8 +260,8 @@ def pricesAdd(version):
 @rest.applicationAuthenticate(secretLookup=content.Content().getApplicationSecret)
 def update(version):
 
-	theStorage = storage.getDefaultStorage()
 	backend = content.Content()
+	theAnalytics = analytics.Analytics()
 
 	# Check minimum number of keys required in JSON update
 	if extras.keysInDict(request.json, ['user', 'events']) == False:
@@ -274,6 +275,10 @@ def update(version):
 	if 'progress' not in request.json['events'][-1]:
 		return rest.errorResponse(errors.ApplicationUpdateMissingEvents)
 	
+	# Save update (include IP address of user)
+	request.json['gondola-ip'] = request.remote_addr
+	theAnalytics.saveUpdate(request.json)
+	
 	# Try getting price engine
 	try:
 		prices = backend.getPricingEngine(request.json['gondola-application'])
@@ -285,10 +290,6 @@ def update(version):
 		userPrices = prices.getPrices(request.json['user'], request.json['events'][-1]['progress'])
 	except pricing.NoPricingForGroup:
 		return rest.errorResponse(errors.ApplicationHasNoPriceForUser)
-
-	# Save update
-	key = '%s-%s-%s.json'%(request.json['gondola-application'], extras.datetimeStamp(), request.json['user'])
-	theStorage.save(key, json.dumps(request.json))
 
 	return rest.successResponse(userPrices)
 

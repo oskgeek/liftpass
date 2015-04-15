@@ -13,6 +13,10 @@ elif sys.argv[1] == 'API':
 		main.start()
 	else:
 		print('Error: command not found')
+elif sys.argv[1] == 'analytics':
+	if sys.argv[2] == 'update':
+		import core.analytics.analytics as analytics
+		analytics.Analytics().processUpdates()
 elif sys.argv[1] == 'test':
 	if sys.argv[2] == 'API':
 		import tests.content

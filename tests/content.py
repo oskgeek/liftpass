@@ -15,6 +15,7 @@ import core.content.main as main
 import core.content.content as content
 
 from core.util.test import *
+import core.util.extras as extras
 
 def genRandomStrings(count, length):
 	return map(lambda c: ''.join(map(lambda i: random.choice(string.ascii_uppercase), range(length))), range(count))
@@ -267,7 +268,9 @@ class TestSDK(APITest):
 			'user': '0'*32,
 			'events': [
 				{
+					'name': 'gondola-metric',
 					'progress': ['','','','','','','','']+[0]*24,
+					'time': extras.unixTimestamp()
 				}
 			]
 		}

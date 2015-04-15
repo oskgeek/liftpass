@@ -10,11 +10,6 @@ import core.util.debug as debug
 
 class Content:
 
-
-	def __init__(self):
-		pass
-
-
 	def addApplication(self, name):	
 		session = models.getSession()
 		
