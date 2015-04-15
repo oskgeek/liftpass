@@ -53,11 +53,11 @@ class PricingEngine:
 			self.staticPrices = self.__loadPrices(self.abtest['staticPrices_key'])
 
 
-	def getPrices(self, player, progress):
+	def getPrices(self, user, progress):
 		
-		playerID = int(player, 16)
+		userID = int(user, 16)
 		
-		if playerID % self.abtest['modulus'] <= self.abtest['modulusLimit']:
+		if userID % self.abtest['modulus'] <= self.abtest['modulusLimit']:
 			if self.dynamicPrices:
 				return self.dynamicPrices.getPrices(progress)
 			else:

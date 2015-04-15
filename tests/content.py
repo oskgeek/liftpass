@@ -264,7 +264,7 @@ class TestSDK(APITest):
 		backend.setABTest(a.key, {'staticPrices_key': jsonPricesB.key})
 		
 		data = {
-			'player': '0'*32,
+			'user': '0'*32,
 			'events': [
 				{
 					'progress': ['','','','','','','','']+[0]*24,
@@ -275,7 +275,7 @@ class TestSDK(APITest):
 		(status, b) = self.request('POST', '/update/v1/', data, application=a)
 		self.assertEqual(b['sword'], 1000)
 
-		data['player'] = '1'*32
+		data['user'] = '1'*32
 		(status, c) = self.request('POST', '/update/v1/', data, application=a)
 		self.assertEqual(c['sword'], 2000)
 		
@@ -284,22 +284,22 @@ class TestSDK(APITest):
 		backend = content.Content()
 		a = backend.addApplication('Test') 
 
-		(status, b) = self.request('POST', '/update/v1/', {'player':'', 'events':[{}]}, application = a)
+		(status, b) = self.request('POST', '/update/v1/', {'user':'', 'events':[{}]}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 		
 		(status, c) = self.request('POST', '/update/v1/', {'events':[{}]}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 		
-		(status, d) = self.request('POST', '/update/v1/', {'player':''}, application = a)
+		(status, d) = self.request('POST', '/update/v1/', {'user':''}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 
-		(status, e) = self.request('POST', '/update/v1/', {'player':'', 'events':[]}, application = a)
+		(status, e) = self.request('POST', '/update/v1/', {'user':'', 'events':[]}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 
 	def testCallWithBadKey(self):
 		backend = content.Content()
 		a = backend.addApplication('Test') 
-		(status, a) = self.request('POST', '/update/v1/', {'player':'', 'events':[{}]}, application = a)
+		(status, a) = self.request('POST', '/update/v1/', {'user':'', 'events':[{}]}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 
 # Start server

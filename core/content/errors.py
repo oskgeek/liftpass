@@ -40,7 +40,7 @@ ApplicationUpdateMissingEvents = {
 	'status': rest.ERROR_BAD_REQUEST
 }
 
-ApplicationHasNoPriceForPlayer = {
-	'message': 'Application has no specified prices for player/group',
+ApplicationHasNoPriceForUser = {
+	'message': 'Application has no specified prices for user/group',
 	'status': rest.ERROR_BAD_REQUEST
 }

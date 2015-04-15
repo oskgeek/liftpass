@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker, scoped_session
 import datetime
 import uuid
+import functools
 
 import config
 
@@ -21,7 +22,7 @@ def generateUUID():
 
 def updateObjectWithJSON(object, json, ignore = []):
 	for key, val in json.items():
-		# Skip key because that's the game key
+		
 		if key in ignore:
 			continue
 

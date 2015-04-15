@@ -38,7 +38,7 @@ Analytics
 API
 ===
 
-The primary way to interact with GondolaCore is via the API. Both for editing the content of applications (ex. registingering new applications, modifying goods, uploading new prices) and supplying games with new prices via the GondolaCore SDK. 
+The primary way to interact with GondolaCore is via the API. Both for editing the content of applications (ex. registingering new applications, modifying goods, uploading new prices) and supplying the application with new prices via the GondolaCore SDK. 
 
 All API calls are standarized for interacting with the Backend as well as the SDK. The API follows normal REST best practices where the HTTP request method is as important as the URL itself. All parameters sent are in JSON format as part of the request body.
 
@@ -59,7 +59,7 @@ The minimal SDK JSON call must contain: ::
 		'gondola-application': <32 character long application key>
 		'gondola-time': <UTC Unix timestamp>
 
-		'player': <32 character unique player key>
+		'user': <32 character unique user key>
 		'events': [
 			{
 				name: <32 characters max>
@@ -75,7 +75,7 @@ The minimal SDK JSON call must contain: ::
 REST Calls
 ----------
 
-GondolaCore authenticates all API REST requests using HMAC. HMAC fundamentally creates a unique hash (using SHA-256) of the JSON request and the application/user secret (depending if the API call is coming from a game or backend). The hash generated must be then added to the HTTP request header with the name :code:`gondola-hash`. GondolaCore will then check this hash value with the one it calculates. This process ensures that the request has come from a source that knew the application/user secret key. Any modification of the JSON body during transmission will render the request invalid. 
+GondolaCore authenticates all API REST requests using HMAC. HMAC fundamentally creates a unique hash (using SHA-256) of the JSON request and the application/user secret (depending if the API call is coming from an application or backend). The hash generated must be then added to the HTTP request header with the name :code:`gondola-hash`. GondolaCore will then check this hash value with the one it calculates. This process ensures that the request has come from a source that knew the application/user secret key. Any modification of the JSON body during transmission will render the request invalid. 
 
 In more detail the HMAC authentication works as follows:
 
@@ -90,10 +90,10 @@ In more detail the HMAC authentication works as follows:
 Methods
 -------
 
-Game
-^^^^
+Application
+^^^^^^^^^^^
 
-**POST /games/add/v1/**
+**POST /applications/add/v1/**
 
 * Arguments
 	* name - Name of new application
@@ -105,24 +105,24 @@ Game
 
 
 
-**GET /games/list/v1/**
+**GET /applications/list/v1/**
 
 * Arguments
 * Response 
-	* games - List of applications
+	* applications - List of applications
 		* name - Name of the application
 		* key - Application key
 		* secret - Application secret
 		* created - Timestamp when application was created
 
-**DELETE /games/delete/v1/**
+**DELETE /applications/delete/v1/**
 
 * Arguments 
 	* key - Application key
 * Response 
 	* deleted - Number of applications deleted
 
-**GET /games/get/v1/**
+**GET /applications/get/v1/**
 
 * Arguments 
 	* key - Application key
@@ -132,7 +132,7 @@ Game
 	* secret - Application secret
 	* created - Timestamp when application was created
 
-**PUT /games/update/v1/**
+**PUT /applications/update/v1/**
 
 * Arguments
 	* key - Application key
@@ -326,7 +326,7 @@ Game
 **POST /update/v1/**
 
 * Arguments
-	* player - Player unique ID
+	* user - Player unique ID
 	* events - Ordered list of events (ascing timestamp)
 		* name: Name of the event
 		* progress: Array of the 32 progress metrics (optional)

@@ -263,7 +263,7 @@ def update(version):
 	backend = content.Content()
 
 	# Check minimum number of keys required in JSON update
-	if extras.keysInDict(request.json, ['player', 'events']) == False:
+	if extras.keysInDict(request.json, ['user', 'events']) == False:
 		return rest.errorResponse(errors.ApplicationUpdateIncomplete)
 
 	# Events must have at least one item
@@ -280,31 +280,17 @@ def update(version):
 	except pricing.ApplicationNotFoundException:
 		return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
 
-	# Try getting price for player + progress
+	# Try getting price for user + progress
 	try:
-		playerPrices = prices.getPrices(request.json['player'], request.json['events'][-1]['progress'])
+		userPrices = prices.getPrices(request.json['user'], request.json['events'][-1]['progress'])
 	except pricing.NoPricingForGroup:
-		return rest.errorResponse(errors.ApplicationHasNoPriceForPlayer)
+		return rest.errorResponse(errors.ApplicationHasNoPriceForUser)
 
 	# Save update
-	key = '%s-%s-%s.json'%(request.json['gondola-application'], extras.datetimeStamp(), request.json['player'])
+	key = '%s-%s-%s.json'%(request.json['gondola-application'], extras.datetimeStamp(), request.json['user'])
 	theStorage.save(key, json.dumps(request.json))
 
-
-# {
-# 	gondola-application: application key
-# 	player: player UUID
-# 	events: [
-# 		{
-# 			name: event name
-# 			time: UTC time
-# 			attributes: [8 string, 8 float]
-# 			progress: [8 string, 24 float values]
-# 		}
-# 	]
-# }
-
-	return rest.successResponse(playerPrices)
+	return rest.successResponse(userPrices)
 
 @app.errorhandler(500)
 def page_not_found(e):
