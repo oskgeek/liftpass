@@ -17,8 +17,6 @@ import core.content.content as content
 from core.util.test import *
 import core.util.extras as extras
 
-def genRandomStrings(count, length):
-	return map(lambda c: ''.join(map(lambda i: random.choice(string.ascii_uppercase), range(length))), range(count))
 
 class TestApplication(APITest):
 
@@ -75,7 +73,7 @@ class TestCurrency(APITest):
 	def testUpdateCurrency(self):
 		(status, a) = self.request('POST', '/applications/add/v1/', {'name': 'Test application'})
 		
-		values = genRandomStrings(8, 8)
+		values = extras.genRandomStrings(8, 8)
 
 		for i, v in enumerate(values):
 			(status, b) = self.request('PUT', '/currencies/update/v1/', {'key': a['key'], 'currency%d'%(i+1):v})
@@ -94,7 +92,7 @@ class TestMetrics(APITest):
 		(status, a) = self.request('POST', '/applications/add/v1/', {'name': 'Test application'})
 		
 		# Strings
-		values = genRandomStrings(8, 8)
+		values = extras.genRandomStrings(8, 8)
 		for i, v in enumerate(values):
 			(status, b) = self.request('PUT', '/metrics/update/v1/', {'key': a['key'], 'str%d'%(i+1):v})
 		(status, c) = self.request('GET', '/metrics/get/v1/', {'key': a['key']})
@@ -102,7 +100,7 @@ class TestMetrics(APITest):
 			self.assertEqual(c['str%d'%(i+1)], v)
 		
 		# Numbers
-		values = genRandomStrings(24, 8)
+		values = extras.genRandomStrings(24, 8)
 		for i, v in enumerate(values):
 			(status, b) = self.request('PUT', '/metrics/update/v1/', {'key': a['key'], 'num%d'%(i+1):v})
 		(status, c) = self.request('GET', '/metrics/get/v1/', {'key': a['key']})

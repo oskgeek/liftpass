@@ -22,6 +22,12 @@ elif sys.argv[1] == 'test':
 		import tests.content
 	elif sys.argv[2] == 'pricing':
 		import tests.pricing
+	elif sys.argv[2] == 'analytics':
+		import tests.analytics
 	elif sys.argv[2] == 'all':
 		import tests.content
 		import tests.pricing
+		import tests.analytics
+	elif sys.argv[2] == 'coverage':
+		os.system('coverage-3.4 run manage.py test all')
+		os.system('coverage-3.4 report')

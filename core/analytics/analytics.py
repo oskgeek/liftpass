@@ -28,6 +28,14 @@ class EventTimestampError(Exception):
 	def __str__(self):
 		return 'Event timestamp is invalid'
 
+class EventMissingMetricError(Exception):
+	def __str__(self):
+		return 'Event has wrong number of progress metrics'
+
+class EventMissingAttributeError(Exception):
+	def __str__(self):
+		return 'Event has wrong number of attributes'
+
 def checkString(x): 
 	if x == None or type(x) == str:
 		return x
@@ -81,18 +89,18 @@ class Analytics:
 			raise EventAttributeMissingError('name')
 		if 'progress' not in data:
 			raise EventAttributeMissingError('progress')
+		if len(data['progress']) != 32:
+			raise EventMissingMetricError()
 
 		event = models.Events()
 		event.name = data['name']
 		try:
-			print(data['time'])
 			event.timestamp = datetime.datetime.utcfromtimestamp(data['time'])
 		except:
 			raise EventTimestampError()
 
 		# Try processing each progress metric
 		try:
-
 			event.metricString1 = checkString(data['progress'][0])
 			event.metricString2 = checkString(data['progress'][1])
 			event.metricString3 = checkString(data['progress'][2])
@@ -101,7 +109,6 @@ class Analytics:
 			event.metricString6 = checkString(data['progress'][5])
 			event.metricString7 = checkString(data['progress'][6])
 			event.metricString8 = checkString(data['progress'][7])
-
 			event.metricNumber1 = checkFloat(data['progress'][8])
 			event.metricNumber2 = checkFloat(data['progress'][9])
 			event.metricNumber3 = checkFloat(data['progress'][10])
@@ -131,6 +138,9 @@ class Analytics:
 
 		# If attributes defined, add them to the event
 		if 'attributes' in data:
+			if len(data['attributes']) != 16:
+				raise EventMissingAttributeError()
+
 			try:
 				event.attributeString1 = checkString(data['attributes'][0])
 				event.attributeString2 = checkString(data['attributes'][1])
