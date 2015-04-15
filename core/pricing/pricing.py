@@ -22,11 +22,13 @@ class JSONDataEngine(DataEngine):
 
 
 class ApplicationNotFoundException(Exception):
-	pass
+	def __str__(self):
+		return 'No application found given the application key'
+
 class NoPricingForGroup(Exception):
-	pass
-class ApplicationHasNoPrices(Exception):
-	pass
+	def __str__(self):
+		return 'Application has no defined prices for group'
+
 
 class PricingEngine:
 
