@@ -75,14 +75,14 @@ class Currencies(Base, CoreBase):
 	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
 	
 
-	name1 = Column(String, nullable=True)
-	name2 = Column(String, nullable=True)
-	name3 = Column(String, nullable=True)
-	name4 = Column(String, nullable=True)
-	name5 = Column(String, nullable=True)
-	name6 = Column(String, nullable=True)
-	name7 = Column(String, nullable=True)
-	name8 = Column(String, nullable=True)
+	currency1 = Column(String, nullable=True)
+	currency2 = Column(String, nullable=True)
+	currency3 = Column(String, nullable=True)
+	currency4 = Column(String, nullable=True)
+	currency5 = Column(String, nullable=True)
+	currency6 = Column(String, nullable=True)
+	currency7 = Column(String, nullable=True)
+	currency8 = Column(String, nullable=True)
 
 	created = Column(DateTime, default=datetime.datetime.utcnow)
 

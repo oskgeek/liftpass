@@ -77,11 +77,11 @@ class TestCurrency(APITest):
 		values = genRandomStrings(8, 8)
 
 		for i, v in enumerate(values):
-			(status, b) = self.request('PUT', '/currencies/update/v1/', {'key': a['key'], 'name%d'%(i+1):v})
+			(status, b) = self.request('PUT', '/currencies/update/v1/', {'key': a['key'], 'currency%d'%(i+1):v})
 		(status, c) = self.request('GET', '/currencies/get/v1/', {'key': a['key']})
 		
 		for i, v in enumerate(values):
-			self.assertEqual(c['name%d'%(i+1)], v)
+			self.assertEqual(c['currency%d'%(i+1)], v)
 		
 	def testUpdateCurrencyWithBadKey(self):
 		(status, c) = self.request('GET', '/currencies/get/v1/', {'key': ''})

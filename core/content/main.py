@@ -128,7 +128,7 @@ def currencyUpdate(version):
 
 	Arguments:
 	key -- the application key
-	name1 to name8 -- name of currencies in the application
+	currency1 to currency8 -- name of currencies in the application
 	"""
 
 	backend = content.Content()
