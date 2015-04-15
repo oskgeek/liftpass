@@ -13,6 +13,7 @@ import config
 import core.content.errors as errors
 import core.api.main as main
 import core.content.content as content
+import core.analytics.analytics as analytics
 
 from core.util.test import *
 import core.util.extras as extras
@@ -273,11 +274,11 @@ class TestSDK(APITest):
 			]
 		}
 
-		(status, b) = self.request('POST', '/update/v1/', data, application=a)
+		(status, b) = self.request('POST', '/sdk/update/v1/', data, application=a)
 		self.assertEqual(b['sword'], 1000)
 
 		data['user'] = '1'*32
-		(status, c) = self.request('POST', '/update/v1/', data, application=a)
+		(status, c) = self.request('POST', '/sdk/update/v1/', data, application=a)
 		self.assertEqual(c['sword'], 2000)
 		
 
@@ -285,16 +286,16 @@ class TestSDK(APITest):
 		backend = content.Content()
 		a = backend.addApplication('Test') 
 
-		(status, b) = self.request('POST', '/update/v1/', {'user':'', 'events':[{}]}, application = a)
+		(status, b) = self.request('POST', '/sdk/update/v1/', {'user':'', 'events':[{}]}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 		
-		(status, c) = self.request('POST', '/update/v1/', {'events':[{}]}, application = a)
+		(status, c) = self.request('POST', '/sdk/update/v1/', {'events':[{}]}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 		
-		(status, d) = self.request('POST', '/update/v1/', {'user':''}, application = a)
+		(status, d) = self.request('POST', '/sdk/update/v1/', {'user':''}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 
-		(status, e) = self.request('POST', '/update/v1/', {'user':'', 'events':[]}, application = a)
+		(status, e) = self.request('POST', '/sdk/update/v1/', {'user':'', 'events':[]}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 
 	def testCallWithBadKey(self):
@@ -303,6 +304,40 @@ class TestSDK(APITest):
 		(status, a) = self.request('POST', '/update/v1/', {'user':'', 'events':[{}]}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 
+class TestExport(APITest):
+
+	def testExport(self):
+		# Create game
+		backend = content.Content()
+		theAnalytics = analytics.Analytics()
+
+		a = backend.addApplication('Test') 
+
+		for i in range(10):
+			update = {
+				'gondola-application': a.key,
+				'gondola-ip': '',
+				'user': '0'*32,
+				'events':[
+					{
+						'name': 'gondola-metric',
+						'progress': [None]*32,
+						'time': extras.unixTimestamp()
+					}
+				]*i
+			}
+			theAnalytics.processUpdate(update)
+
+		query = {
+			'application': a.key,
+			'from': extras.unixTimestamp()-86400,
+			'to': extras.unixTimestamp()+86400,
+		}
+
+		(status, a) = self.request('GET', '/export/json/v1/', query, raw=True)
+		print(status, a)
+
+
 # Start server
 server = subprocess.Popen(['python3.4','%s/manage.py'%config.BasePath,'API','start'], preexec_fn=os.setsid, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 time.sleep(2)
@@ -310,23 +345,25 @@ time.sleep(2)
 suite = unittest.TestSuite()
 
 # Tests without testing server
-suite.addTests(discoverTests(TestApplication, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-suite.addTests(discoverTests(TestSDK, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+# suite.addTests(discoverTests(TestApplication, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+# suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+# suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+# suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+# suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+# suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+# suite.addTests(discoverTests(TestSDK, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestExport, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
 
 
-# # Tests using server
-suite.addTests(discoverTests(TestApplication, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-suite.addTests(discoverTests(TestSDK, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# Tests using server
+# suite.addTests(discoverTests(TestApplication, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestSDK, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+# suite.addTests(discoverTests(TestQuery, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
 
 unittest.TextTestRunner(verbosity=2).run(suite)
 

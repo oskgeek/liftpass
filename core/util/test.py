@@ -37,7 +37,7 @@ class APITest(unittest.TestCase):
 		self.userSecret = userSecret
 		
 
-	def request(self, method, url, data, application=None):
+	def request(self, method, url, data, application=None, raw=False):
 		address = 'http://%s:%d%s'%(self.address, self.port, url)
 
 		if application:
@@ -63,7 +63,16 @@ class APITest(unittest.TestCase):
 					result = self.client.delete(address, data=json.dumps(data), headers=header, content_type='application/json')
 				elif method == 'PUT':
 					result = self.client.put(address, data=json.dumps(data), headers=header, content_type='application/json')
-				return (result.status_code, json.loads(result.data.decode("utf-8")))			
+
+				if len(result.data) == 0:
+					return (result.status_code, None)
+
+				if raw == True:
+					data = result.data.decode("utf-8")
+				else: 
+					data = json.loads(result.data.decode("utf-8"))
+					
+				return (result.status_code, data)			
 			else:
 				if method == 'POST':
 					result = requests.post(address, json=data, headers=header)
@@ -73,8 +82,16 @@ class APITest(unittest.TestCase):
 					result = requests.delete(address, json=data, headers=header)
 				elif method == 'PUT':
 					result = requests.put(address, json=data, headers=header)
-				data = result.content.decode('utf-8')
-				data = json.loads(data)
+
+				if len(result.content) == 0:
+					return (result.status_code, None)
+				
+				if raw == True:
+					data = result.content.decode('utf-8')
+				else:
+					data = result.content.decode('utf-8')
+					data = json.loads(data)
+				
 				return (result.status_code, data)
 		except Exception as e:
 				debug.stacktrace(e)

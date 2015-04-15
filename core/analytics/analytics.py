@@ -61,19 +61,17 @@ class Analytics:
 
 
 
-	def processUpdate(self, filename):
+	def processUpdate(self, data):
 		session = models.getSession()
 
-		data = self.storage.load(filename)
-		data = json.loads(data)
-
-		if extras.keysInDict(data, ['gondola-ip', 'gondola-application', 'user', 'event']):
-			debug.error('Failed to process update %s'%filename)
-			return
+		for attribute in ['gondola-ip', 'gondola-application', 'user', 'events']:
+			if attribute not in data:
+				raise EventMissingAttributeError(attribute)
+			
 
 		for update in data['events']:
 			try:
-				event = self.processEvent(update)
+				event = self.processEvent(data['gondola-application'], data['user'], update)
 				session.add(event)
 			except Exception as e:
 				print(e)
@@ -82,17 +80,19 @@ class Analytics:
 
 
 
-	def processEvent(self, data):
+	def processEvent(self, application, user, data):
 		if 'name' not in data:
 			raise EventAttributeMissingError('name')
 		if 'time' not in data:
-			raise EventAttributeMissingError('name')
+			raise EventAttributeMissingError('time')
 		if 'progress' not in data:
 			raise EventAttributeMissingError('progress')
 		if len(data['progress']) != 32:
 			raise EventMissingMetricError()
 
 		event = models.Events()
+		event.application_key = application
+		event.user = user
 		event.name = data['name']
 		try:
 			event.timestamp = datetime.datetime.utcfromtimestamp(data['time'])
@@ -172,21 +172,21 @@ class Analytics:
 		for i, filename in enumerate(self.storage.getFiles()):
 			if 'json' in filename:
 				print('[%d of %d] Processing...'%(i, totalFiles))
-				self.processUpdate(filename)
+				
+				data = self.storage.load(filename)
+				data = json.loads(data)
+				
+				self.processUpdate(data)
 
 		
 
-	def exportData(self, application, fromDate, toDate):
+	def exportStream(self, application, fromDate, toDate):
 		session = models.getSession()
-
-		q = session.query(models.Events).filter_by(models.Events.application==application, models.Events.timestamp>=fromDate, models.Events.timestamp<toDate)
-
-		filename = 'dump-%s-%s-%s.json'%(application, fromDate, toDate)
-		stream = self.storage.saveStream(filename)
+		print(application, fromDate, toDate)
+		q = session.query(models.Events).filter(models.Events.application_key==application, models.Events.created>=fromDate, models.Events.created<toDate)
 
 		for row in q:
-			stream.write(json.dumps(row.as_dict()))
-
-		print(filename)
+			yield extras.toJSON(row.as_dict())+'\n'
+				
 
 

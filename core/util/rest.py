@@ -1,5 +1,6 @@
 from flask import jsonify
 from flask import request
+from flask import Response
 import hmac
 import hashlib
 from functools import wraps
@@ -17,6 +18,9 @@ ERROR_NOT_FOUND = 404
 SUCCESS_OK = 200
 SUCCESS_CREATED = 201
 
+
+def streamResponse(stream):
+	return Response(stream(), mimetype='application/json')
 
 def successResponse(data, status=200):
 	res = jsonify(data)

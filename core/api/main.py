@@ -256,7 +256,7 @@ def pricesAdd(version):
 	return rest.successResponse(prices.as_dict())
 
 
-@app.route('/update/<version>/', methods=['POST'])
+@app.route('/sdk/update/<version>/', methods=['POST'])
 @rest.applicationAuthenticate(secretLookup=content.Content().getApplicationSecret)
 def update(version):
 
@@ -292,6 +292,21 @@ def update(version):
 		return rest.errorResponse(errors.ApplicationHasNoPriceForUser)
 
 	return rest.successResponse(userPrices)
+
+@app.route('/export/json/<version>/', methods=['GET'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+def exportJSON(version):
+
+	theAnalytics = analytics.Analytics()
+
+	fromDate = extras.unixTimestampToDatetime(request.json['from'])
+	toDate = extras.unixTimestampToDatetime(request.json['to'])
+
+	return rest.streamResponse(lambda: theAnalytics.exportStream(request.json['application'], fromDate, toDate))
+
+
+
+
 
 @app.errorhandler(500)
 def page_not_found(e):
