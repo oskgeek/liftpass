@@ -7,6 +7,7 @@ import os
 
 BasePath = os.path.abspath('./')
 DataPath = BasePath+'/data/'
+StaticPath = BasePath+'/static/'
 sys.path.append(BasePath)
 
 #
@@ -39,6 +40,19 @@ MonitorDebug = False
 
 UserKey = b'Kc61Fdmv9q2xiH2MNIhQM70U9N6Z1wqu'
 UserSecret = b'8vM9o1fPN4mVG3VIPzy4ON9iXODYKxtt'
+
+
+# 
+# Dashboard 
+#
+DashboardAddress = '127.0.0.1'
+DashboardPort = 8080
+DashboardDebug = True
+DashboardStatic = '%s/dashboard/'%StaticPath
+DashboardTerminal = {
+	'engine': 'core.dashboard.terminal.local',
+	'path': '%s/terminal/'%DataPath
+}
 
 #
 # API Interface Service

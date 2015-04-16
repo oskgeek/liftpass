@@ -35,6 +35,10 @@ def errorResponse(error):
 def userAuthenticate(secretLookup):
 	def decorator(f): 
 		def aux(*args, **kwargs):
+			# If JSON not specified
+			if request.json == None:
+				return errorResponse({'status': ERROR_BAD_REQUEST, 'message': 'No JSON body specified with request'})
+
 			# JSON must include time and user key
 			if not all(map(lambda k: k in request.json, ['gondola-time', 'gondola-user'])):
 				return errorResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing gondola-time and/or gondola-user keys'})

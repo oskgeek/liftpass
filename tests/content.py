@@ -255,7 +255,7 @@ class TestSDK(APITest):
 	def testCall(self):
 
 		backend = content.Content()
-		a = backend.addApplication('Test')
+		a = backend.addApplication('Test SDK')
 		
 		jsonPricesA = backend.addPrices(a.key, 'JSON', json.dumps({'sword':1000}), None)
 		jsonPricesB = backend.addPrices(a.key, 'JSON', json.dumps({'sword':2000}), None)
@@ -311,7 +311,7 @@ class TestExport(APITest):
 		backend = content.Content()
 		theAnalytics = analytics.Analytics()
 
-		a = backend.addApplication('Test') 
+		a = backend.addApplication('Export Data Game') 
 
 		for i in range(10):
 			update = {

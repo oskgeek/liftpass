@@ -1,6 +1,8 @@
 import hmac
 import hashlib
 import json
+from functools import wraps
+from functools import update_wrapper
 
 from flask import Flask
 from flask import request
@@ -15,6 +17,7 @@ import core.content.errors as errors
 import core.util.rest as rest
 import core.util.debug as debug
 import core.util.extras as extras
+import core.dashboard.terminal as terminal
 
 app = Flask(__name__)
 
@@ -256,9 +259,28 @@ def pricesAdd(version):
 	return rest.successResponse(prices.as_dict())
 
 
+def terminalLog():
+	def decorator(f): 
+		def aux(*args, **kwargs):
+			response = f(*args, **kwargs)
+			
+			if 'gondola-application' in request.json and 'gondola-debug' in request.json:
+				if request.json['gondola-debug'] == True:
+					theTerminal = terminal.getTerminal()
+					theTerminal.put(request.json['gondola-application'], request.json, json.loads(response.data.decode('utf-8')))
+
+			return response
+		return update_wrapper(aux, f)
+	return decorator
+
+
+
+
 @app.route('/sdk/update/<version>/', methods=['POST'])
+@terminalLog()
 @rest.applicationAuthenticate(secretLookup=content.Content().getApplicationSecret)
 def update(version):
+	theTerminal = terminal.getTerminal()
 
 	backend = content.Content()
 	theAnalytics = analytics.Analytics()
@@ -291,7 +313,10 @@ def update(version):
 	except pricing.NoPricingForGroup:
 		return rest.errorResponse(errors.ApplicationHasNoPriceForUser)
 
+
+
 	return rest.successResponse(userPrices)
+
 
 @app.route('/export/json/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
@@ -305,8 +330,6 @@ def exportJSON(version):
 	return rest.streamResponse(lambda: theAnalytics.exportStream(request.json['application'], fromDate, toDate))
 
 
-
-
 @app.errorhandler(500)
 def page_not_found(e):
 	debug.stacktrace(e)
@@ -315,7 +338,7 @@ def page_not_found(e):
 
 def start():
 	global app
-	app.run(debug=config.APIDebug, port=config.APIPort)
+	app.run(debug=config.APIDebug, host=config.APIAddress, port=config.APIPort)
 
 
 def getApp():

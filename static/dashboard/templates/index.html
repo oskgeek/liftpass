@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<title>GondolaCore</title>
+
+		
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+		<link href="/static/style.css" rel="stylesheet">
+
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body> 
+	
+		<input type="hidden" id="dashboard-address" value="{{dashboardAddress}}">
+		<input type="hidden" id="api-address" value="{{apiAddress}}">
+
+		<div class="container">
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<a class="navbar-brand" href="#">
+							GondolaCore
+						</a>
+					</div>
+				</div>
+			</nav>
+
+			<div class="row">
+				
+				<div class="col-sm-4">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Authenticate</h3>
+						</div>
+						<div class="panel-body">
+							<div class="form-group">
+								<label for="user-key">User Key</label>
+								<input type="text" class="form-control" name="user-key" id="user-key">
+							</div>
+							<div class="form-group">
+								<label for="user-secret">User Secret</label>
+								<input type="text" class="form-control" name="user-secret" id="user-secret">
+							</div>
+							<button type="button" class="btn btn-default" onclick="authenticate();">Authenticate</button>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="applications">Application</label>
+						<select class="form-control" name="applications" id="applications">
+						</select>
+					</div>
+				</div>
+
+
+				<div class="col-sm-8">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Debug Console <small><a href="#" onclick="runDashboard();">Reload</a></small></h3>
+						</div>
+						<div class="panel-body" id="debug-console">
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+		<script src="/static/hmac-256.js"></script>
+		<script src="/static/dashboard.js"></script>
+
+	</body>
+</html>
