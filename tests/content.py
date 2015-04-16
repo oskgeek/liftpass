@@ -301,7 +301,7 @@ class TestSDK(APITest):
 	def testCallWithBadKey(self):
 		backend = content.Content()
 		a = backend.addApplication('Test') 
-		(status, a) = self.request('POST', '/update/v1/', {'user':'', 'events':[{}]}, application = a)
+		(status, a) = self.request('POST', '/sdk/update/v1/', {'user':'', 'events':[{}]}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 
 class TestExport(APITest):
@@ -324,7 +324,7 @@ class TestExport(APITest):
 						'progress': [None]*32,
 						'time': extras.unixTimestamp()
 					}
-				]*i
+				]*5
 			}
 			theAnalytics.processUpdate(update)
 
@@ -335,7 +335,8 @@ class TestExport(APITest):
 		}
 
 		(status, a) = self.request('GET', '/export/json/v1/', query, raw=True)
-		print(status, a)
+		
+		self.assertEqual(len(a.split('\n')), 51)
 
 
 # Start server
@@ -345,25 +346,25 @@ time.sleep(2)
 suite = unittest.TestSuite()
 
 # Tests without testing server
-# suite.addTests(discoverTests(TestApplication, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-# suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-# suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-# suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-# suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-# suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
-# suite.addTests(discoverTests(TestSDK, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestApplication, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestSDK, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
 suite.addTests(discoverTests(TestExport, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
 
 
 # Tests using server
-# suite.addTests(discoverTests(TestApplication, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestSDK, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
-# suite.addTests(discoverTests(TestQuery, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestApplication, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestCurrency, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestMetrics, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestGoods, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestPrices, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestABTest, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestSDK, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
+suite.addTests(discoverTests(TestExport, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret))
 
 unittest.TextTestRunner(verbosity=2).run(suite)
 

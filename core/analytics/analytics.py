@@ -94,6 +94,7 @@ class Analytics:
 		event.application_key = application
 		event.user = user
 		event.name = data['name']
+
 		try:
 			event.timestamp = datetime.datetime.utcfromtimestamp(data['time'])
 		except:
@@ -164,7 +165,6 @@ class Analytics:
 		return event
 
 
-
 	def processUpdates(self):
 		
 		totalFiles = self.storage.count()
@@ -182,7 +182,7 @@ class Analytics:
 
 	def exportStream(self, application, fromDate, toDate):
 		session = models.getSession()
-		print(application, fromDate, toDate)
+		
 		q = session.query(models.Events).filter(models.Events.application_key==application, models.Events.created>=fromDate, models.Events.created<toDate)
 
 		for row in q:
