@@ -22,7 +22,6 @@ elif sys.argv[1] == 'dashboard':
 	if sys.argv[2] == 'start':
 		import core.dashboard.main as main
 		main.start()
-
 elif sys.argv[1] == 'test':
 	if sys.argv[2] == 'API':
 		import tests.content

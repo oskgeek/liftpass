@@ -49,8 +49,11 @@ def userAuthenticate(secretLookup):
 
 			secret = secretLookup(request.json['gondola-user'])
 			digest = hmac.new(secret, request.get_data(), hashlib.sha256).hexdigest()
+			
+			debug.error(request.get_data().decode('utf-8'))
 
 			if digest != request.headers['gondola-hash']:
+				debug.error('Hash not valid: %s %s'%(digest, request.headers['gondola-hash']))
 				return errorResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'})
 			
 			return f(*args, **kwargs)

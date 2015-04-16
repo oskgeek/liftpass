@@ -24,15 +24,16 @@ def index():
 
 
 @app.route('/terminal/', methods=['GET', 'POST'])
-# @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def getLog():
 	theTerminal = terminal.getTerminal()
-	
+
 	data = theTerminal.get(request.json['gondola-application'])
 
 	return rest.successResponse({'log': data})
 
 @app.route('/applications/', methods=['GET', 'POST'])
+@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def applications():
 	backend = content.Content()
 

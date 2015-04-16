@@ -1,3 +1,13 @@
+function saveCredentials() {
+	localStorage.setItem('user-key', $('#user-key').val());
+	localStorage.setItem('user-secret', $('#user-secret').val());
+}
+
+function tryLoadingCredentials() {
+	$('#user-key').val(localStorage.getItem('user-key'));
+	$('#user-secret').val(localStorage.getItem('user-secret'));
+}
+
 function makeRequest(data, url) {
 	var key =  $('#user-key').val();
 	var secret = $('#user-secret').val();
@@ -14,7 +24,7 @@ function makeRequest(data, url) {
 	
 	data = JSON.stringify(data);
 	
-	var hash = CryptoJS.HmacSHA256(hash, secret).toString();
+	var hash = CryptoJS.HmacSHA256(data, secret).toString();
 
 	var response = $.ajax({
 		type: 'POST',
@@ -41,6 +51,10 @@ function loadApplications() {
 	}
 
 	var data = makeRequest({}, '/applications/');
+	
+	if(data.json.applications.length>0) {
+		saveCredentials();
+	}
 
 	$.each(data.json.applications, function(i, e) {
 		var option = $('<option>');
@@ -61,11 +75,14 @@ function runDashboard() {
 
 	var data = makeRequest({'gondola-application': application}, '/terminal/');
 
+	$('#debug-console').empty();
+
 	if(data.json.log.length == 0){
+		$('#debug-console').append($('<p class="bg-warning">This application has no logs.</p>'));
 		return;
 	}
 
-	$('#debug-console').empty();
+	
 
 	$.each(data.json.log, function(i, e) {
 		if(e.length == 0)
@@ -99,7 +116,7 @@ function authenticate() {
 
 
 $(document).ready(function() {
-
+	tryLoadingCredentials();
 	$('#applications').change(applicationChange);
 
 })
