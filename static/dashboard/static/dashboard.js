@@ -28,7 +28,7 @@ function makeRequest(data, url) {
 
 	var response = $.ajax({
 		type: 'POST',
-		url: 'http://'+$('#dashboard-address').val()+url,
+		url: url,
 		contentType: 'application/json',
 		data: data,
 		headers: {
