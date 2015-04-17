@@ -265,19 +265,19 @@ Application
 	* key - Application key
 * Response
 	* key - Application key
-	* str1-str8 - Name of string metrics
-	* num1-num24 - Name of numberic metrics
+	* metricString1-metricString8 - Name of string metrics
+	* metricNumber1-metricNumber24 - Name of numberic metrics
 
 **PUT /metrics/update/v1/**
 
 * Arguments 
 	* key - Application key
-	* str1-str8 - Name of string metrics (optional)
-	* num1-num24 - Name of numberic metrics (optional)
+	* metricString1-metricString8 - Name of string metrics (optional)
+	* metricNumber1-metricNumber24 - Name of numberic metrics (optional)
 * Response
 	* key - Application key
-	* str1-str8 - Name of string metrics
-	* num1-num24 - Name of numberic metrics
+	* metricString1-metricString8 - Name of string metrics
+	* metricNumber1-metricNumber24 - Name of numberic metrics
 
 **GET /prices/list/v1/**
 
