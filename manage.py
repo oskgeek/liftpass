@@ -8,8 +8,8 @@ if len(sys.argv) < 3:
 	print(' - manage API start')
 	print(' - manage analytics update')
 	print(' - manage dashboard start')
+	print(' - manage demo build')
 	print(' - manage test API/pricing/analytics/all/coverage')
-
 elif sys.argv[1] == 'API':
 	if sys.argv[2] == 'start':
 		import core.api.main as main
@@ -22,6 +22,17 @@ elif sys.argv[1] == 'dashboard':
 	if sys.argv[2] == 'start':
 		import core.dashboard.main as main
 		main.start()
+elif sys.argv[1] == 'demo':
+	answer = input('Are you sure you want to setup demo? All data will be lost. [y/n]')
+	answer = answer.lower().strip()
+	if  answer == 'y':
+		import core.demo as demo
+		demo.start()
+	elif answer == 'n':
+		print('Demo build aborted.')
+	else:
+		print('Nevermind - incorrect answer. No demo will be built.')
+
 elif sys.argv[1] == 'test':
 	if sys.argv[2] == 'API':
 		import tests.content

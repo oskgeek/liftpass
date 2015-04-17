@@ -95,18 +95,18 @@ class TestMetrics(APITest):
 		# Strings
 		values = extras.genRandomStrings(8, 8)
 		for i, v in enumerate(values):
-			(status, b) = self.request('PUT', '/metrics/update/v1/', {'key': a['key'], 'str%d'%(i+1):v})
+			(status, b) = self.request('PUT', '/metrics/update/v1/', {'key': a['key'], 'metricString%d'%(i+1):v})
 		(status, c) = self.request('GET', '/metrics/get/v1/', {'key': a['key']})
 		for i, v in enumerate(values):
-			self.assertEqual(c['str%d'%(i+1)], v)
+			self.assertEqual(c['metricString%d'%(i+1)], v)
 		
 		# Numbers
 		values = extras.genRandomStrings(24, 8)
 		for i, v in enumerate(values):
-			(status, b) = self.request('PUT', '/metrics/update/v1/', {'key': a['key'], 'num%d'%(i+1):v})
+			(status, b) = self.request('PUT', '/metrics/update/v1/', {'key': a['key'], 'metricNumber%d'%(i+1):v})
 		(status, c) = self.request('GET', '/metrics/get/v1/', {'key': a['key']})
 		for i, v in enumerate(values):
-			self.assertEqual(c['num%d'%(i+1)], v)	
+			self.assertEqual(c['metricNumber%d'%(i+1)], v)	
 
 	def testUpdateMetricsWithBadKey(self):
 		(status, c) = self.request('GET', '/metrics/get/v1/', {'key': ''})

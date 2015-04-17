@@ -2,7 +2,6 @@ import uuid
 
 import config
 
-from core.content import models
 import core.content.models as models
 import core.pricing.pricing as pricing
 import core.util.debug as debug

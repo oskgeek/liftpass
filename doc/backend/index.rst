@@ -8,6 +8,7 @@ GondolaCore is divided into the following parts:
 - Analytics
 - API
 - Monitoring
+- Dashboard
 
 
 Content Management
@@ -71,6 +72,8 @@ The minimal SDK JSON call must contain: ::
 		]
 
 	}
+
+.. HINT:: Optionally for SDK calls the :code:`gondola-debug` flag can be set to :code:`True`. This will log all SDK requests as well as responses to the dashboard.
 
 REST Calls
 ----------

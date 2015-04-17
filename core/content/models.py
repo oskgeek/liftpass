@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Tex
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy import event
 import datetime
 import uuid
 import functools
@@ -10,6 +11,8 @@ import functools
 import config
 
 engine = sqlalchemy.create_engine(config.ContentAddress, echo=config.ContentDebug)
+event.listen(engine, 'connect', lambda conn, record: conn.execute('pragma foreign_keys=ON'))
+
 Base = declarative_base()
 sessions = sessionmaker(bind=engine)
 scopedSessions = scoped_session(sessions)
@@ -57,12 +60,6 @@ class Application(Base, CoreBase):
 
 	name = Column(String)
 
-	currencies = relationship('Currencies', backref='application')
-	goods = relationship('Good')
-	metrics = relationship('Metrics', backref='application')
-	prices = relationship('Prices', backref='application')
-	abtest = relationship('ABTest', backref='application')
-
 	created = Column(DateTime, default=datetime.datetime.utcnow)
 
 
@@ -73,7 +70,7 @@ class Currencies(Base, CoreBase):
 	id = Column(Integer, primary_key=True)
 
 	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
-	
+	application = relationship('Application', backref=backref('currencies'))
 
 	currency1 = Column(String, nullable=True)
 	currency2 = Column(String, nullable=True)
@@ -92,6 +89,7 @@ class Good(Base, CoreBase):
 	key = Column(String, default=generateUUID, primary_key=True)
 
 	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
+	application = relationship('Application', backref=backref('goods'))
 
 	name = Column(String)
 
@@ -105,40 +103,41 @@ class Metrics(Base, CoreBase):
 	id = Column(Integer, primary_key=True)
 
 	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
+	application = relationship('Application', backref=backref('metrics'))
 
-	str1 = Column(String, nullable=True)
-	str2 = Column(String, nullable=True)
-	str3 = Column(String, nullable=True)
-	str4 = Column(String, nullable=True)
-	str5 = Column(String, nullable=True)
-	str6 = Column(String, nullable=True)
-	str7 = Column(String, nullable=True)
-	str8 = Column(String, nullable=True)
+	metricString1 = Column(String, nullable=True)
+	metricString2 = Column(String, nullable=True)
+	metricString3 = Column(String, nullable=True)
+	metricString4 = Column(String, nullable=True)
+	metricString5 = Column(String, nullable=True)
+	metricString6 = Column(String, nullable=True)
+	metricString7 = Column(String, nullable=True)
+	metricString8 = Column(String, nullable=True)
 
-	num1 = Column(String, nullable=True)
-	num2 = Column(String, nullable=True)
-	num3 = Column(String, nullable=True)
-	num4 = Column(String, nullable=True)
-	num5 = Column(String, nullable=True)
-	num6 = Column(String, nullable=True)
-	num7 = Column(String, nullable=True)
-	num8 = Column(String, nullable=True)
-	num9 = Column(String, nullable=True)
-	num10 = Column(String, nullable=True)
-	num11 = Column(String, nullable=True)
-	num12 = Column(String, nullable=True)
-	num13 = Column(String, nullable=True)
-	num14 = Column(String, nullable=True)
-	num15 = Column(String, nullable=True)
-	num16 = Column(String, nullable=True)
-	num17 = Column(String, nullable=True)
-	num18 = Column(String, nullable=True)
-	num19 = Column(String, nullable=True)
-	num20 = Column(String, nullable=True)
-	num21 = Column(String, nullable=True)
-	num22 = Column(String, nullable=True)
-	num23 = Column(String, nullable=True)
-	num24 = Column(String, nullable=True)
+	metricNumber1 = Column(String, nullable=True)
+	metricNumber2 = Column(String, nullable=True)
+	metricNumber3 = Column(String, nullable=True)
+	metricNumber4 = Column(String, nullable=True)
+	metricNumber5 = Column(String, nullable=True)
+	metricNumber6 = Column(String, nullable=True)
+	metricNumber7 = Column(String, nullable=True)
+	metricNumber8 = Column(String, nullable=True)
+	metricNumber9 = Column(String, nullable=True)
+	metricNumber10 = Column(String, nullable=True)
+	metricNumber11 = Column(String, nullable=True)
+	metricNumber12 = Column(String, nullable=True)
+	metricNumber13 = Column(String, nullable=True)
+	metricNumber14 = Column(String, nullable=True)
+	metricNumber15 = Column(String, nullable=True)
+	metricNumber16 = Column(String, nullable=True)
+	metricNumber17 = Column(String, nullable=True)
+	metricNumber18 = Column(String, nullable=True)
+	metricNumber19 = Column(String, nullable=True)
+	metricNumber20 = Column(String, nullable=True)
+	metricNumber21 = Column(String, nullable=True)
+	metricNumber22 = Column(String, nullable=True)
+	metricNumber23 = Column(String, nullable=True)
+	metricNumber24 = Column(String, nullable=True)
 
 class ABTest(Base, CoreBase):
 
@@ -147,6 +146,8 @@ class ABTest(Base, CoreBase):
 	id = Column(Integer, primary_key=True)
 
 	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
+	application = relationship('Application', backref=backref('abtest'))
+
 
 	countryWhiteList = Column(String, default=str)
 	countryBlackList = Column(String, default=str)
@@ -154,8 +155,8 @@ class ABTest(Base, CoreBase):
 	modulus = Column(Integer, default=lambda: 2)
 	modulusLimit = Column(Integer, default=lambda: 0)
 
-	dynamicPrices_key = Column(String, ForeignKey('prices.key', ondelete='CASCADE'), nullable=True)
-	staticPrices_key = Column(String, ForeignKey('prices.key', ondelete='CASCADE'), nullable=True)
+	dynamicPrices_key = Column(String, ForeignKey('prices.key'), nullable=True)
+	staticPrices_key = Column(String, ForeignKey('prices.key'), nullable=True)
 
 
 class Prices(Base, CoreBase):
@@ -163,6 +164,7 @@ class Prices(Base, CoreBase):
 	__tablename__ = 'prices'
 
 	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
+	application = relationship('Application', backref=backref('prices'))
 
 	key = Column(String, default=generateUUID, primary_key=True)
 
@@ -181,6 +183,7 @@ class Events(Base, CoreBase):
 
 	# Application the event belongs to
 	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
+	application = relationship('Application', backref=backref('events'))
 
 	# The user ID
 	user = Column(String)
