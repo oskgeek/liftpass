@@ -36,7 +36,7 @@ def applicationAdd(version):
 
 	application = backend.addApplication(request.json['name'])
 	
-	return rest.successResponse(application.as_dict())
+	return application.as_dict()
 
 
 @app.route('/applications/list/<version>/', methods=['GET'])
@@ -50,7 +50,7 @@ def applicationList(version):
 	
 	result = list(map(lambda g: g.as_dict(), applications))
 	
-	return rest.successResponse({'applications': result})
+	return {'applications': result}
 
 
 @app.route('/applications/delete/<version>/', methods=['DELETE'])
@@ -66,8 +66,8 @@ def applicationDelete(version):
 	success = backend.deleteApplication(request.json['key'])
 	
 	if success:
-		return rest.successResponse({'deleted': success>0})
-	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
+		return {'deleted': success>0}
+	return errors.ApplicationKeyDoesNotExist
 
 
 @app.route('/applications/get/<version>/', methods=['GET'])
@@ -82,9 +82,9 @@ def applicationGet(version):
 	backend = content.Content()	
 	application = backend.getApplication(request.json['key'])
 	if application:
-		return rest.successResponse(application.as_dict())
+		return application.as_dict()
 	
-	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
+	return errors.ApplicationKeyDoesNotExist
 
 
 @app.route('/applications/update/<version>/', methods=['PUT'])
@@ -103,8 +103,8 @@ def applicationUpdate(version):
 	application = backend.setApplication(request.json['key'], request.json)
 
 	if application:
-		return rest.successResponse(application.as_dict())
-	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
+		return application.as_dict()
+	return errors.ApplicationKeyDoesNotExist
 
 
 @app.route('/currencies/get/<version>/', methods=['GET'])
@@ -120,8 +120,8 @@ def currencyGet(version):
 
 	currency = backend.getCurrency(request.json['key'])
 	if currency:
-		return rest.successResponse(currency.as_dict())
-	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
+		return currency.as_dict()
+	return errors.ApplicationKeyDoesNotExist
 
 
 @app.route('/currencies/update/<version>/', methods=['PUT'])
@@ -139,8 +139,8 @@ def currencyUpdate(version):
 
 	currency = backend.setCurrency(request.json['key'], request.json)
 	if currency:
-		return rest.successResponse(currency.as_dict())
-	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
+		return currency.as_dict()
+	return errors.ApplicationKeyDoesNotExist
 
 
 @app.route('/goods/add/<version>/', methods=['POST'])
@@ -148,7 +148,7 @@ def currencyUpdate(version):
 def goodsAdd(version):
 	backend = content.Content()
 	good = backend.addGood(request.json['key'], request.json['name'])
-	return rest.successResponse(good.as_dict())
+	return good.as_dict()
 
 
 @app.route('/goods/get/<version>/', methods=['GET'])
@@ -157,8 +157,8 @@ def goodsGet(version):
 	backend = content.Content()
 	good = backend.getGood(request.json['key'])
 	if good:
-		return rest.successResponse(good.as_dict())
-	return rest.errorResponse(errors.GoodKeyDoesNotExist)
+		return good.as_dict()
+	return errors.GoodKeyDoesNotExist
 
 
 @app.route('/goods/list/<version>/', methods=['GET'])
@@ -167,7 +167,7 @@ def goodsList(version):
 	backend = content.Content()
 	goods = backend.getGoods(request.json['key'])
 	results = list(map(lambda g: g.as_dict(), goods))
-	return rest.successResponse({'goods': results})
+	return {'goods': results}
 
 
 @app.route('/goods/delete/<version>/', methods=['DELETE'])
@@ -175,7 +175,7 @@ def goodsList(version):
 def goodsDelete(version):
 	backend = content.Content()
 	res = backend.deleteGood(request.json['key'])
-	return rest.successResponse({'deleted':res>0})
+	return {'deleted':res>0}
 
 
 @app.route('/goods/update/<version>/', methods=['PUT'])
@@ -184,8 +184,8 @@ def goodsUpdate(version):
 	backend = content.Content()
 	good = backend.updateGood(request.json['key'], request.json)
 	if good:
-		return rest.successResponse(good.as_dict())
-	return rest.errorResponse(errors.GoodKeyDoesNotExist)
+		return good.as_dict()
+	return errors.GoodKeyDoesNotExist
 
 
 @app.route('/abtest/get/<version>/', methods=['GET'])
@@ -194,8 +194,8 @@ def abtestGet(version):
 	backend = content.Content()
 	abtest = backend.getABTest(request.json['key'])
 	if abtest:
-		return rest.successResponse(abtest.as_dict())
-	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
+		return abtest.as_dict()
+	return errors.ApplicationKeyDoesNotExist
 
 
 @app.route('/abtest/update/<version>/', methods=['PUT'])
@@ -203,7 +203,7 @@ def abtestGet(version):
 def abtestUpdate(version):
 	backend = content.Content()
 	abtest = backend.setABTest(request.json['key'], request.json)
-	return rest.successResponse(abtest.as_dict())
+	return abtest.as_dict()
 
 
 @app.route('/metrics/get/<version>/', methods=['GET'])
@@ -212,8 +212,8 @@ def metricsGet(version):
 	backend = content.Content()
 	metrics = backend.getMetrics(request.json['key'])
 	if metrics:
-		return rest.successResponse(metrics.as_dict())
-	return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
+		return metrics.as_dict()
+	return errors.ApplicationKeyDoesNotExist
 
 
 @app.route('/metrics/update/<version>/', methods=['PUT'])
@@ -221,7 +221,7 @@ def metricsGet(version):
 def metricsUpdate(version):
 	backend = content.Content()
 	metrics = backend.setMetrics(request.json['key'], request.json)
-	return rest.successResponse(metrics.as_dict())
+	return metrics.as_dict()
 
 
 @app.route('/prices/list/<version>/', methods=['GET'])
@@ -230,7 +230,7 @@ def pricesList(version):
 	backend = content.Content()
 	prices = backend.getPrices(request.json['key'])
 	prices = list(map(lambda p: p.as_dict(), prices))
-	return rest.successResponse({'prices':prices})
+	return {'prices':prices}
 
 
 @app.route('/prices/get/<version>/', methods=['GET'])
@@ -239,8 +239,8 @@ def pricesGet(version):
 	backend = content.Content()
 	prices = backend.getPrice(request.json['key'])
 	if prices:
-		return rest.successResponse(prices.as_dict())
-	return rest.errorResponse(errors.PricesKeyDoesNotExist)
+		return prices.as_dict()
+	return errors.PricesKeyDoesNotExist
 
 
 @app.route('/prices/delete/<version>/', methods=['DELETE'])
@@ -248,7 +248,7 @@ def pricesGet(version):
 def pricesDelete(version):
 	backend = content.Content()
 	res = backend.deletePrices(request.json['key'])
-	return rest.successResponse({'deleted': res > 0})
+	return {'deleted': res > 0}
 
 
 @app.route('/prices/add/<version>/', methods=['POST'])
@@ -256,7 +256,7 @@ def pricesDelete(version):
 def pricesAdd(version):
 	backend = content.Content()
 	prices = backend.addPrices(request.json['key'], request.json['engine'], request.json['data'], request.json['path'])
-	return rest.successResponse(prices.as_dict())
+	return prices.as_dict()
 
 
 def terminalLog():
@@ -287,15 +287,15 @@ def update(version):
 
 	# Check minimum number of keys required in JSON update
 	if extras.keysInDict(request.json, ['user', 'events']) == False:
-		return rest.errorResponse(errors.ApplicationUpdateIncomplete)
+		return errors.ApplicationUpdateIncomplete
 
 	# Events must have at least one item
 	if len(request.json['events']) == 0:
-		return rest.errorResponse(errors.ApplicationUpdateMissingEvents)
+		return errors.ApplicationUpdateMissingEvents
 	
 	# Event has progress
 	if 'progress' not in request.json['events'][-1]:
-		return rest.errorResponse(errors.ApplicationUpdateMissingEvents)
+		return errors.ApplicationUpdateMissingEvents
 	
 	# Save update (include IP address of user)
 	request.json['gondola-ip'] = request.remote_addr
@@ -305,17 +305,17 @@ def update(version):
 	try:
 		prices = backend.getPricingEngine(request.json['gondola-application'])
 	except pricing.ApplicationNotFoundException:
-		return rest.errorResponse(errors.ApplicationKeyDoesNotExist)
+		return errors.ApplicationKeyDoesNotExist
 
 	# Try getting price for user + progress
 	try:
 		userPrices = prices.getPrices(request.json['user'], request.json['events'][-1]['progress'])
 	except pricing.NoPricingForGroup:
-		return rest.errorResponse(errors.ApplicationHasNoPriceForUser)
+		return errors.ApplicationHasNoPriceForUser
 
 
 
-	return rest.successResponse(userPrices)
+	return userPrices
 
 
 @app.route('/export/json/<version>/', methods=['GET'])

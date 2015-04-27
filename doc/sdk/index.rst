@@ -128,5 +128,118 @@ The data is stored and transmitted to Gondola core in the following JSON format.
 * All events must contain all 32 progress metrics
 * Attributes are not required when updating a progress metric.
 
+Example iOS Usage
+-----------------
+
+Initialization of the code goes as follows: 
+::
+
+	GondolaCore *gondola = [GondolaCore sharedInstance]
+
+	[gondola setApplicationKey:@"APPLICATION KEY" applicationSecret:@"APPLICATION SECRET"];
+
+	// Debug will print data being sent and recieved by SDK. 
+	// Additionally an online dashboard will show activity for applications when run with debug enabled
+	[gondola setDebug:YES];
+
+	// The developer can assign the user ID manually. 
+	// If none is set, a random UUID is generated. (32 character hex string)
+	[gondola setUserID:[GKLocalPlayer localPlayer].playerID];
+
+The SDK will often be implemented in a game that has already been released previously, with existing players. The SDK should allow for the developer to setup current progress metrics on first SDK launch.
+::
+
+	if([gondola isFirstTimeLaunch]) {
+		[gondola updateStringMetric:6 withValue:@"blue"];
+		...
+	}
+
+Data is sent to Gondola and prices are retrived with the following simple command.
+::
+
+	[gondola sync];
+
+Progress metrics can be updated by the developer using 
+::
+
+	[gondola updateStringMetric:6 withValue:@"blue"];
+	[gondola updateNumberMetric:14 withValue:sessions];
+	[gondola incrementNumberMetric:15];
+
+
+Obviously these are hard to understand - we will supply developers with a set of Macros to make this easier so that:
+::
+
+	GONDOLA_UPDATE_CAR_COLOR(@"blue");
+	GONDOLA_UPDATE_TOTAL_SESSIONS(sessions);
+	GONDOLA_UPDATE_TOTAL_PLAYS();
+
+	#define GONDOLA_UPDATE_CAR_COLOR(X) \
+		([[GondolaCore sharedInstance] updateStringMetric:6 withValue:X])
+	#define GONDOLA_UPDATE_TOTAL_SESSIONS(X) \
+		([[GondolaCore sharedInstance] updateNumberMetric:14 	withValue:sessions])
+	#define GONDOLA_UPDATE_TOTAL_PLAYS() \
+		([[GondolaCore sharedInstance] incrementNumberMetric:15])
+
+
+Developer can get the price of any good using the the following routines
+::
+
+	GondolaCoreCurrency *price = [gondola getPrice:@"com.monopoly.boardwalk"];
+	float dollarPrice = price.currency1;
+
+Obviously this is hard to understand - we will supply developer with a macro so that
+::
+	float dollarPrice = GONDOLA_DOLLAR_PRICE(@"com.monopoly.boardwalk");
+
+	#define GONDOLA_DOLLAR_PRICE(@"com.monopoly.boardwalk");
+
+When a player makes a purchase this is how it is logged:
+::
+
+	GondolaCoreCurrency *price = [gondola getPrice:@"com.monopoly.boardwalk"];
+	[gondola recordVirtualGoodPurchase:@"com.monopoly.boardwalk" withPrice:price];
+
+	GondolaCoreCurrency *reward = [gondola getReward:@"com.monopoly.boardwalk"];
+	[gondola recordIAPPurchase:@"com.monopoly.boardwalk" withPrice:0.99 withReward:reward];
+
+Some progress metrics can be tracked by the SDK automatically. Particularly things such as:
+
+* OS
+* OS Version
+* Language
+* Timezone
+* Device
+* Total Sessions
+* Total play time
+* Total virtual purchases
+* Total iap purchases
+* Total dollars spent
+* Total currency 1-8 earned
+* Total currency 1-8 spent
+
+For these types of "metrics" the developer can allow the SDK to automatically update these metrics. The metric number is not hard coded so they must be defined by the developer when the SDK is initialized.
+::
+	
+	// Metric String #2 will be set automatically to the OS name
+	[gondola setStringPipe:GONDOLA_OS toMetric:2];
+	// Metric Number #14 will automatically count the session number
+	[gondola setNumberPipe:GONDOLA_SESSION_COUNT toMetric:14];
+	// Metric Number #15 gets incremented every time a virtual good purchase is made
+	[gondola setNumberPipe:GONDOLA_TOTAL_VIRTUAL_PURCHASES toMetric:15];
+	// Metric Number #16 gets incremented every time an IAP purchase is made
+	[gondola setNumberPipe:GONDOLA_TOTAL_IAP_PURCHASES toMetric:16];
+
+
+
+
+
+
+
+
+
+
+
+
 
 
