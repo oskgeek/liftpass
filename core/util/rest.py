@@ -38,7 +38,7 @@ def errorResponse(error):
 def buildResponse(content, secret):
 	if isinstance(content, dict) == False:
 		return content
-		
+
 	data = {}
 	status = 200
 	
@@ -49,10 +49,11 @@ def buildResponse(content, secret):
 		data = content
 	
 	data['gondola-time'] = round(time.time())
+	data = extras.toJSON(data)
 
-	digest = hmac.new(secret, extras.toJSON(data).encode('utf-8'), hashlib.sha256).hexdigest()
+	digest = hmac.new(secret, data.encode('utf-8'), hashlib.sha256).hexdigest()
 
-	response = jsonify(data)
+	response = Response(data, status, {'content-type':'application/json'})
 	response.headers['gondola-hash'] = digest
 	response.status_code = status
 
