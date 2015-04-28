@@ -59,6 +59,7 @@ The minimal SDK JSON call must contain: ::
 	{
 		'gondola-application': <32 character long application key>
 		'gondola-time': <UTC Unix timestamp>
+		'gondola-url': <url being requested>
 
 		'user': <32 character unique user key>
 		'events': [
@@ -88,7 +89,7 @@ In more detail the HMAC authentication works as follows:
 #. Hash is created using the application/user secret and the JSON data according to `RFC2104 <http://tools.ietf.org/html/rfc2104.html>`_.
 #. Hash must be included in the HTTP header with the key named :code:`gondola-hash`.
 
-.. IMPORTANT:: For authentication purposes the :code:`gondola-time` must be no more than 3 seconds different from that of the GondolaCore server. 
+.. IMPORTANT:: For authentication purposes the :code:`gondola-time` (in UTC time) must be no more than 3 seconds different from that of the GondolaCore server. 
 
 Methods
 -------
@@ -326,13 +327,13 @@ Application
 	* data - Data for prices if stored
 	* created - Timestamp of when price was created
 
-**POST /update/v1/**
+**POST /sdk/update/v1/**
 
 * Arguments
 	* user - Player unique ID
 	* events - Ordered list of events (ascing timestamp)
 		* name: Name of the event
-		* progress: Array of the 32 progress metrics (optional)
+		* progress: Array of the 32 progress metrics 
 		* time: Timestamp of when the event was triggered 
 		* attributes: Array of the 16 event attributes (optiona)
 * Response
