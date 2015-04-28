@@ -51,10 +51,10 @@ def buildResponse(content, secret):
 	data['gondola-time'] = round(time.time())
 	data = extras.toJSON(data)
 
-	digest = hmac.new(secret, data.encode('utf-8'), hashlib.sha256).hexdigest()
-
 	response = Response(data, status, {'content-type':'application/json'})
-	response.headers['gondola-hash'] = digest
+	if secret:
+		digest = hmac.new(secret, data.encode('utf-8'), hashlib.sha256).hexdigest()
+		response.headers['gondola-hash'] = digest
 	response.status_code = status
 
 	return response
