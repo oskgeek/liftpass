@@ -35,7 +35,7 @@ def errorResponse(error):
 	res.status_code = error['status']
 	return res
 
-def buildResponse(content, secret):
+def buildResponse(content, secret, application=None):
 	if isinstance(content, dict) == False:
 		return content
 
@@ -48,6 +48,9 @@ def buildResponse(content, secret):
 	else:
 		data = content
 	
+	if application:
+		data['gondola-application'] = application	
+
 	data['gondola-time'] = round(time.time())
 	data = extras.toJSON(data)
 
@@ -55,6 +58,7 @@ def buildResponse(content, secret):
 	if secret:
 		digest = hmac.new(secret, data.encode('utf-8'), hashlib.sha256).hexdigest()
 		response.headers['gondola-hash'] = digest
+
 	response.status_code = status
 
 	return response
@@ -108,6 +112,6 @@ def applicationAuthenticate(secretLookup):
 			if digest != request.headers['gondola-hash']:
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'}, secret)
 			
-			return buildResponse(f(*args, **kwargs), secret)
+			return buildResponse(f(*args, **kwargs), secret, request.json['gondola-application'])
 		return update_wrapper(aux, f)
 	return decorator

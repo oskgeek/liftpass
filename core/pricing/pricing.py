@@ -18,7 +18,13 @@ class JSONDataEngine(DataEngine):
 			self.data = {}
 
 	def getPrices(self, progress):
-		return self.data
+		res = {}
+		for g in self.data:
+			if isinstance(self.data[g], list):
+				res[g] = self.data[g]
+			else:
+				res[g] = [self.data[g]]+[None]*7
+		return res
 
 
 class ApplicationNotFoundException(Exception):

@@ -313,9 +313,7 @@ def update(version):
 	except pricing.NoPricingForGroup:
 		return errors.ApplicationHasNoPriceForUser
 
-
-
-	return userPrices
+	return {'goods':userPrices}
 
 
 @app.route('/export/json/<version>/', methods=['GET'])
