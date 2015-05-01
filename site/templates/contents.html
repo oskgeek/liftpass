@@ -1,0 +1,14 @@
+<ul class="contents">
+{% for section in contents %}	
+	<li>
+		<a href="{{section.1}}">{{section.0}}</a>
+		{% if section.0 == 'API' and page == 'content/doc/api/index.html' %}
+		<ul>
+			{% for group in api %}
+				<li><a href="#{{group.bookmark}}">{{group.name}}</a></li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+	</li>
+{% endfor %}
+</ul>

@@ -1,0 +1,66 @@
+{% extends "base-documentation.html" %}
+
+
+{% block documentation %}
+
+<h2>Get Started</h2>
+
+<p>You should be able to build Liftpass on most Linux-based systems.</p>
+
+<h3>Get the build dependencies</h3>
+
+<p>Liftpass is developed in Python 3.x. There are a number of modules required for running the server, however all are available through <code>pip</code> and <code>easy_install</code>.</p>
+
+<ul>
+	<li>Flask</li>
+	<li>SQLAlchemy</li>
+	<li>Requests</li>
+</ul>
+
+<p>The <code>setup.py</code> script can install these dependencies on most modern systems that have Python 3.x and SetupTools installed.</p>
+
+<h3>Get the source code</h3>
+
+<p>Download or clone the Liftpass repository:
+
+{% highlight 'bash' %}
+# Clone the repository
+git clone https://github.com/whiteshoemedia/gondola-core.git
+# Download repository as a zip file
+wget https://github.com/whiteshoemedia/gondola-core/archive/master.zip
+unzip master.zip
+{% endhighlight %}
+
+<h3>Install dependencies</h3>
+
+<p>For most Linux-based systems the <code>setup.py</code> script will install all Python dependencies.
+
+{% highlight 'bash' %}
+cd liftpass
+python setup.py
+{% endhighlight %}
+
+<h3>Configuring Liftpass</h3>
+
+<p>Liftpass is configured via the <code>config.py</code> file. This file should have been configured for you while running the <code>setup.py</code> script, but if it didn't you can always re-run: </p>
+
+{% highlight 'bash' %}
+python setup.py config
+{% endhighlight %}
+
+<div class="alert alert-warning">
+	By default Liftpass is configured to use SQLite for all database needs. This is a great solution to evaluate Liftpass in a development environment, but it is not intended for production settings. Liftpass will work with most SQL based databases that SQLAlchemy supports.
+</div>
+
+
+<h3>Starting the server</h3>
+
+<p>You are now ready to manually start running ths server.</p>
+
+{% highlight 'bash' %}
+python manage.py API start
+{% endhighlight %}
+
+
+
+{% endblock %}

@@ -58,3 +58,4 @@ target/
 
 # Documentation
 doc/_build/
+site/build/

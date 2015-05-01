@@ -1,0 +1,411 @@
+---
+
+
+- name: Application
+  bookmark: application
+  functions: 
+    - url: /applications/add/v1/
+      method: post
+      arguments:
+        - name: name 
+          description: Name of new application
+      response: >
+        {
+            "name": "Clash of Clans",
+            "secret": "bqcoiwrrc9zeew3b4s1zmqiiweghhjhv",
+            "key":"ulmxabbtdp5aahqa81o2b3fiwwvwi7i7",
+            "created": 1430431395
+        }
+
+    - url: /applications/list/v1/
+      method: get
+      response: >
+        {
+            "applications": [
+                {
+                    "name": "Clash of Clans",
+                    "secret": "bqcoiwrrc9zeew3b4s1zmqiiweghhjhv",
+                    "key":"ulmxabbtdp5aahqa81o2b3fiwwvwi7i7",
+                    "created": 1430431395
+                },
+                ....
+            ]
+        }
+    - url: /applications/delete/v1/
+      method: delete
+      arguments:
+        - name: key 
+          description: Application key
+      response: >
+        {
+            "deleted": 1
+        }
+    - url: /applications/get/v1/
+      method: get
+      arguments:
+        - name: key
+          description: Application key
+      response: > 
+        {
+           "name": "Clash of Clans",
+           "secret": "bqcoiwrrc9zeew3b4s1zmqiiweghhjhv",
+           "key":"ulmxabbtdp5aahqa81o2b3fiwwvwi7i7",
+           "created": 1430431395
+        }
+    - url: /applications/update/v1/
+      method: put
+      arguments: 
+        - name: key
+          description: Application key
+        - name: name
+          description: Application name
+      response: >
+        {
+            "name": "Clash of Clans",
+            "secret": "bqcoiwrrc9zeew3b4s1zmqiiweghhjhv",
+            "key":"ulmxabbtdp5aahqa81o2b3fiwwvwi7i7",
+            "created": 1430431395
+        }
+- name: Currency
+  bookmark: currency
+  functions:
+    - url: /currencies/get/v1/
+      method: get
+      arguments:
+        - name: key
+          description: Application key
+      response: >
+        {
+            "currency1": "Gems",
+            "currency2": None,
+            "currency3": None,
+            "currency4": None,
+            "currency5": None,
+            "currency6": None,
+            "currency7": None,
+            "currency8": None,
+        }
+    - url: /currencies/update/v1/
+      method: put
+      arguments: 
+        - name: key
+          description: Application key
+        - name: currency1
+          description: Name of the 1st currency (optional)
+        - name: currency2
+          description: Name of the 2nd currency (optional)
+        - name: currency3
+          description: Name of the 3rd currency (optional)
+        - name: currency4
+          description: Name of the 4th currency (optional)
+        - name: currency5
+          description: Name of the 5th currency (optional)
+        - name: currency6
+          description: Name of the 6th currency (optional)
+        - name: currency7
+          description: Name of the 7th currency (optional)
+        - name: currency8
+          description: Name of the 8th currency (optional)   
+      response: > 
+        {
+            "currency1": "Gems",
+            "currency2": None,
+            "currency3": None,
+            "currency4": None,
+            "currency5": None,
+            "currency6": None,
+            "currency7": None,
+            "currency8": None,
+        }
+
+- name: Goods
+  bookmark: goods
+  functions:
+    - url: /goods/add/v1/
+      method: post
+      arguments: 
+        - name: key
+          description: Application key
+        - name: name
+          description: Name of the good, as it appears in the code
+      response: >
+        {
+            "key": "z4K4EK3nHpRXeD1XCgE6YN4pF3UrnZ8P",
+            "name": "Pile of Gems",
+            "created": 1430433458
+        }
+
+    - url: /goods/get/v1/
+      method: get
+      arguments:
+        - name: key
+          description: Good key
+      response: >        
+        {
+            "key": "z4K4EK3nHpRXeD1XCgE6YN4pF3UrnZ8P",
+            "name": "Pile of Gems",
+            "created": 1430433458
+        }
+
+    - url: /goods/list/v1/
+      method: get
+      arguments: 
+        - name: key
+          description: Application key
+      response: >
+        {
+            "goods": [
+                {
+                    "key": "z4K4EK3nHpRXeD1XCgE6YN4pF3UrnZ8P",
+                    "name": "Pile of Gems",
+                    "created": 1430433458
+                },
+                ...
+            ]
+        }
+    - url: /goods/delete/v1/
+      method: delete
+      arguments: 
+        - name: key
+          description: Good key
+      response: > 
+        {
+            "deleted": 1
+        }
+    - url: /goods/update/v1/
+      method: put
+      arguments:
+        - name: key
+          description: Good key
+        - name: name
+          description: Good name as it appears in the code
+      response: >
+        {
+            "key": "z4K4EK3nHpRXeD1XCgE6YN4pF3UrnZ8P",
+            "name": "Pile of Gems",
+            "created": 1430433458
+        }
+
+- name: A/B Testing
+  bookmark: ab-testing
+  functions: 
+    - url: /abtest/get/v1/
+      method: get
+      arguments:
+        - name: key
+          description: Application key
+      response: > 
+        {
+            "key": "z4K4EK3nHpRXeD1XCgE6YN4pF3UrnZ8P"
+            "countryBlackList": None,
+            "countryWhiteList": "NZ, CA",
+            "modulus": 5,
+            "modulusLimit": 3,
+            "dynamicPrices_key": 
+            "staticPrices_key": 
+        }
+
+    - url: /abtest/update/v1/
+      method: put
+      arguments: 
+        - name: key
+          description: Application key
+        - name: countryWhiteList
+          description: List of countries that can participate in dynamic pricing (optional)
+        - name: countryBlackList
+          description: List of countries not participating in dynamic pricing (optional)
+        - name: modulus
+          description: Modulus to apply to user IDs (optional)
+        - name: modulusLimit
+          description: Modulus limit of users that qualify for dynamic pricing (optional)
+        - name: dynamicPrices_key
+          description: Prices key being used for dynamic pricing (optional)
+        - name: staticPrices_key
+          description: Prices key being used for static pricing (optional)
+      response: > 
+        {
+            "key": "z4K4EK3nHpRXeD1XCgE6YN4pF3UrnZ8P"
+            "countryBlackList": None,
+            "countryWhiteList": "NZ, CA",
+            "modulus": 5,
+            "modulusLimit": 3,
+            "dynamicPrices_key": 
+            "staticPrices_key": 
+        }
+- name: Metrics
+  bookmark: metrics
+  functions:
+    - url: /metrics/get/v1/
+      method: get
+      arguments: 
+        - name: key
+          description: Application key
+      response: >
+        {
+            "metricString1": "Device",
+            "metricString2": "OS",
+            "metricString3": "OS version",
+            "metricString4": "Language",
+            "metricString5": "Timezone",
+            "metricString6": "Manufacturer",
+            "metricString7": null,
+            "metricString8": null,
+            "metricNumber1": "Session count",
+            "metricNumber2": "Total time",
+            "metricNumber3": "Session time",
+            "metricNumber4": "Rounds played",
+            "metricNumber5": "Total gems spent",
+            "metricNumber6": "Total gems earned",
+            "metricNumber7": "Wins",
+            "metricNumber8": "Losses",
+            "metricNumber9": "Virtual goods purchased",
+            "metricNumber10": "IAP purchased",
+            "metricNumber11": "Dollars spent",
+            "metricNumber12": null,
+            "metricNumber13": null,
+            "metricNumber14": null,
+            "metricNumber15": null,
+            "metricNumber16": null,
+            "metricNumber17": null,
+            "metricNumber18": null,
+            "metricNumber19": null,
+            "metricNumber20": null,
+            "metricNumber21": null,
+            "metricNumber22": null,
+            "metricNumber23": null,
+            "metricNumber24": null
+        }
+    - url: /metrics/update/v1/
+      method: put
+      arguments:
+        - name: key
+          description: Application key
+        - name: metricString1 - metricString8
+          description: Name for string metrics 
+        - name: metricNumber1 - metricNumber24
+          description: Name of number metrics
+      response: >
+        {
+            "metricString1": "Device",
+            "metricString2": "OS",
+            "metricString3": "OS version",
+            "metricString4": "Language",
+            "metricString5": "Timezone",
+            "metricString6": "Manufacturer",
+            "metricString7": null,
+            "metricString8": null,
+            "metricNumber1": "Session count",
+            "metricNumber2": "Total time",
+            "metricNumber3": "Session time",
+            "metricNumber4": "Rounds played",
+            "metricNumber5": "Total gems spent",
+            "metricNumber6": "Total gems earned",
+            "metricNumber7": "Wins",
+            "metricNumber8": "Losses",
+            "metricNumber9": "Virtual goods purchased",
+            "metricNumber10": "IAP purchased",
+            "metricNumber11": "Dollars spent",
+            "metricNumber12": null,
+            "metricNumber13": null,
+            "metricNumber14": null,
+            "metricNumber15": null,
+            "metricNumber16": null,
+            "metricNumber17": null,
+            "metricNumber18": null,
+            "metricNumber19": null,
+            "metricNumber20": null,
+            "metricNumber21": null,
+            "metricNumber22": null,
+            "metricNumber23": null,
+            "metricNumber24": null
+        }
+- name: Prices
+  bookmark: prices
+  functions: 
+    - url: /prices/list/v1/
+      method: get
+      arguments:
+        - name: key
+          description: Application key
+      response: > 
+        {
+            "prices": [
+                {
+                    "key": "t7jftocxfo2zxmatnzl75yf5koanw1z0", 
+                    "engine": "JSON",
+                    "path": null,
+                    "data": "{\"Pile of Gems\":[1000,0,0,0,0,0,0,0],...}"
+                    "created": 1430505776
+                },
+                {
+                    "key": "w5qxqev3nb4ufh5imvdw1p3pjigyeygv", 
+                    "engine": "JSON",
+                    "path": null,
+                    "data": "{\"Pile of Gems\":[2000,0,0,0,0,0,0,0],...}"
+                    "created": 1430305832
+                }
+            ]
+        }
+
+    - url: /prices/get/v1/
+      method: get
+      arguments:
+        - name: key
+          description: Prices key
+      response: >
+        {
+            "key": "w5qxqev3nb4ufh5imvdw1p3pjigyeygv", 
+            "engine": "JSON",
+            "path": null,
+            "data": "{\"Pile of Gems\":[2000,0,0,0,0,0,0,0],...}"
+            "created": 1430305832
+        }
+
+    - url: /prices/delete/v1/
+      method: delete
+      arguments:
+        - name: key
+          description: Prices key
+      response: >
+        {
+            "deleted": 1
+        }
+
+    - url: /prices/add/v1/
+      method: post
+      arguments:
+        - name: key
+          description: Application key
+        - name: engine
+          description: Name of pricing engine 
+        - name: path
+          description: Path where prices is stored
+        - name: data
+          description: Data for prices if stored
+      response: > 
+        {
+            "key": "w5qxqev3nb4ufh5imvdw1p3pjigyeygv", 
+            "engine": "JSON",
+            "path": null,
+            "data": "{\"Pile of Gems\":[2000,0,0,0,0,0,0,0],...}"
+            "created": 1430305832
+        }
+
+- name: SDK
+  bookmark: sdk
+  functions: 
+    - url: /sdk/update/v1/
+      method: post
+      arguments: 
+        - name: user
+          description: Player ID
+        - name: events
+          description: List of events. Described in more detail in SDK/Internals.
+      response: > 
+        {
+            "goods": {
+                "Pile of Gems": [1000, 0, 0, 0, 0, 0, 0, 0],
+                ...
+            }
+        }
+
