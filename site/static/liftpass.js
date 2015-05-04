@@ -1,26 +1,24 @@
-// function stretchAndCenter() {
+$(document).ready(function() {
+	var form = $('.signup form');
 
-// 	$('.stetch-and-center').each(function(index, element) {
+	form.submit(function(event) {
+		$('input[name="email"]').removeClass('error');
+		$('button[type="submit"]').prop('disabled', true);
+		$.ajax({
+			type: form.attr('method'),
+			url: form.attr('action'),
+			data: form.serialize(),
+			success: function (data) {
+				if(data == '0') {
+					$('input[name="email"]').addClass('error');
+				}else{
+					form.css('display','none');
+					$('.signup').append($('<p>Thank you for signing up for the beta! Look out for an e-mail soon.</p>'))
+				}
+				$('button[type="submit"]').prop('disabled', false);
+			}
+		});
+		event.preventDefault();
+	});
 
-// 		var parentHeight = $(element).parent().height();
-		
-// 		var childHeight = $(element).children().outerHeight();
-
-
-// 		if($(window).width()>=768) {
-// 			$(element).height(parentHeight);
-// 		}else{
-// 			$(element).height(childHeight);
-// 		}
-// 		console.log(parentHeight, childHeight);
-// 		$(element).children().each(function(i, e){
-// 			$(e).css('top', parentHeight-childHeight)
-// 				.css('width', $(element).width())
-// 				.css('position', 'absolute');
-// 		});
-// 	});
-
-// }
-
-// $(window).resize(stretchAndCenter);
-// $(document).ready(stretchAndCenter);
+});	

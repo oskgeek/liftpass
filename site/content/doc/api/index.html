@@ -76,7 +76,7 @@
 <h3>Functions</h3>
 
 {% for group in api %}
-	<h4><a href="#{{group.bookmark}}">{{group.name}}</a></h4>
+	<h4 id="{{group.bookmark}}">{{group.name}}</h4>
 	{% for function in group.functions %}
 		<div class="api-function">
 			<h5>

@@ -25,16 +25,24 @@
 		<div class="navbar navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-mobile">
+						<span class="glyphicon glyphicon-menu-hamburger"></span>
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
 					<a class="navbar-brand" href="/">Liftpass</a>
 				</div>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="/doc/">Documentation</a></li>
-					<li><a href="#">Github</a></li>
-				</ul>
+				<div class="collapse navbar-collapse" id="nav-mobile">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="/doc/">Documentation</a></li>
+						<li><a href="#">Github</a></li>
+					</ul>
+				</div>
 			</div>
 		</div>
 
-		<div class="container">
+		<div class="container wrap">
 
 		
 			{% block content %}
@@ -45,14 +53,13 @@
 			<div class="snow"></div>
 			<div class="container">
 				<div class="row">
-					<div class="col-xs-12">
-						<p>
-							<a href="#">Documentation</a>
-							<a href="#">GitHub</a>
-							<a href="#">Blog</a>
-							<a href="#">Gondola</a>
-						</p>
-					</div>
+					
+					<div class="col-xs-12 col-sm-2 col-sm-offset-2"><p><a href="/doc/">Documentation</a></p></div>
+					<div class="col-xs-12 col-sm-2"><p><a href="https://github.com/whiteshoemedia/gondola-core/">GitHub</a></p></div>
+					<div class="col-xs-12 col-sm-2"><p><a href="http://blog.gondola.io/">Blog</a></p></div>
+					<div class="col-xs-12 col-sm-2"><p><a href="htto://gondola.io/">Gondola</a></p></div>
+				
+				
 				</div>
 			</div>
 		</div>

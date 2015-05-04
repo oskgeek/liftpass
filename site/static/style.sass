@@ -31,7 +31,18 @@ $yellow-4: #ffe896;
 $yellow-5: #fff4c8;
 
 html,body{
-height:100%;
+	height: 100%;
+	margin-bottom: 0;
+}
+.wrap {
+	min-height: 100%;
+	margin-bottom: -200px;
+	padding-bottom: 20px;
+}
+.wrap:after {
+	content: "";
+	display: block;
+	height: 200px;
 }
 h1 {
 	font-family: $headingFont;
@@ -58,24 +69,6 @@ a:hover {
 	color: $blue-3;
 }
 
-// .btn {
-// 	border-radius: 6px;
-// }
-// .btn-default {
-// 	font-family: $boldFont;
-// 	border: none;
-// 	background: $blue-4;
-// 	color: $blue-7;
-// 	box-shadow: 0 4px $blue-3;
-// }
-// .btn-default:hover {
-// 	@extend .btn-default;
-// }
-// .btn:hover {
-// 	margin-bottom: 2px;
-// 	box-shadow: 0 2px $blue-3;
-// }
-
 //------------------------------------------------------------------------------
 // Navbar
 //------------------------------------------------------------------------------
@@ -101,6 +94,10 @@ a:hover {
 	background: none !important;
 	color: $blue-2;
 }
+.navbar button span{
+	font-size: 18px;
+	color: $blue-3;
+}
 
 
 //------------------------------------------------------------------------------
@@ -124,7 +121,7 @@ a:hover {
 	color: $blue-3;
 	font-size: 16px;
 }
-.email {
+.signup {
 	margin: 0 -15px;
 	border: 1px solid $blue-5;
 	border-top: 0;
@@ -132,28 +129,37 @@ a:hover {
 	border-bottom-right-radius: 4px;
 	background: $blue-7;
 }
-.email p {
+.signup p {
+	padding: 12px 0 4px 0;
+	text-align: center;
+}
+.signup form {
 	text-align: center;
 	padding: 6px;
-	color: $blue-1;
-	margin: 0;
-	font-size: 16px;
 }
-.email p input {
+.signup form input {
 	border: 1px solid $blue-4;
 	border-radius: 4px;
 	padding: 5px;
 	font-size: 14px;
 	padding-right: 12px;
 }
-.email p strong {
+.signup form input.error {
+	border: 1px solid $red-1;
+	background: $red-5;
+	-webkit-transition: border .25s, background .25s;
+	transition: border .25s, background .25s;
+}
+.signup form strong {
 	font-family: $boldFont;
 	padding-right: 12px;
 }
-.email p button {
+.signup form button {
 	border: 1px solid $blue-4;
 	border-radius: 4px;
 	color: $blue-1;
+	padding: 5px 24px;
+	margin-bottom: 2px;
 }
 
 
@@ -238,18 +244,18 @@ a:hover {
 //------------------------------------------------------------------------------
 // Sign up 
 //------------------------------------------------------------------------------
-.signup {
-	padding: 42px 0;
+.install {
+	padding: 52px 0;
 }
-.signup h3 {
+.install h3 {
 	color: $black-1;
 	text-align: center;
 }
-.signup p {
+.install p {
 	padding-top: 32px;
 	text-align: center;
 }
-.signup .btn {
+.install .btn {
 	margin: 0 32px;
 }
 
@@ -307,8 +313,7 @@ a:hover {
 // Footer
 //------------------------------------------------------------------------------
 .footer {
-	margin-top: 20px;
-	min-height: 200px;
+	min-height: 100px;
 	height: 200px;
 	width: 100%;
 	background: url(dirt.png);
@@ -368,6 +373,11 @@ a:hover {
 		font-size: 14px;
 		color: $black-2;
 	}
+}
+
+.fit-width {
+	width: 100%;
+	height: auto;
 }
 
 .label-get { background: $green-2; }
