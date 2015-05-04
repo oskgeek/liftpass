@@ -89,13 +89,17 @@ a:hover {
 	font-family: $headingFont;
 	color: $red-1;
 }
+.navbar-brand:hover {
+	color: $red-2 !important;
+}
 .navbar-nav a{
 	font-family: $boldFont;
 	color: $blue-3;
 	font-size: 18px;
 }
-.navbar-nav li:hover {
-	background: none;
+.navbar-nav li a:hover {
+	background: none !important;
+	color: $blue-2;
 }
 
 
@@ -188,6 +192,7 @@ a:hover {
 .dev-features {
 	border-top: 1px solid $blue-5;
 	border-bottom: 1px solid $blue-5;
+	position: relative;
 }
 
 .dev-features-list {
@@ -206,13 +211,23 @@ a:hover {
 	@include feature-icon("sdk.png", 48px, 0);
 }
 
+@media screen and (max-width: 768px) {
+	.dev-features-image {
+		display: none;
+	}
+}
+
 .dev-features-image {
 	height: 100%;
 	background-color: $blue-6;
-
+	position: absolute;
+	bottom: 0;
+	right: 0;
 }
 .icon-machine {
 	@include feature-icon("machine.png", 256px, 24px);
+	height: 70%;
+	margin-top: 12%;
 	// display: block;
 	// background:$blue-3;
 	// height: 100%;
@@ -256,7 +271,17 @@ a:hover {
 .video .info {
 	padding: 64px;
 }
+@media screen and (max-width: 768px) {
+	.video .video-frame {
+		display: none;
+	}
+}
 .video .video-frame {
+	margin-right: -15px;
+	margin-left: -15px;
+}
+.video .video-frame iframe {
+	position: absolute;
 }
 
 //------------------------------------------------------------------------------
