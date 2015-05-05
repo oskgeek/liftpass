@@ -264,10 +264,10 @@ def terminalLog():
 		def aux(*args, **kwargs):
 			response = f(*args, **kwargs)
 			
-			if 'gondola-application' in request.json and 'gondola-debug' in request.json:
-				if request.json['gondola-debug'] == True:
+			if 'liftpass-application' in request.json and 'liftpass-debug' in request.json:
+				if request.json['liftpass-debug'] == True:
 					theTerminal = terminal.getTerminal()
-					theTerminal.put(request.json['gondola-application'], request.json, json.loads(response.data.decode('utf-8')))
+					theTerminal.put(request.json['liftpass-application'], request.json, json.loads(response.data.decode('utf-8')))
 
 			return response
 		return update_wrapper(aux, f)
@@ -298,12 +298,12 @@ def update(version):
 		return errors.ApplicationUpdateMissingEvents
 	
 	# Save update (include IP address of user)
-	request.json['gondola-ip'] = request.remote_addr
+	request.json['liftpass-ip'] = request.remote_addr
 	theAnalytics.saveUpdate(request.json)
 	
 	# Try getting price engine
 	try:
-		prices = backend.getPricingEngine(request.json['gondola-application'])
+		prices = backend.getPricingEngine(request.json['liftpass-application'])
 	except pricing.ApplicationNotFoundException:
 		return errors.ApplicationKeyDoesNotExist
 

@@ -28,7 +28,7 @@ def index():
 def getLog():
 	theTerminal = terminal.getTerminal()
 
-	data = theTerminal.get(request.json['gondola-application'])
+	data = theTerminal.get(request.json['liftpass-application'])
 
 	return rest.successResponse({'log': data})
 

@@ -75,20 +75,27 @@ a:hover {
 .navbar {
 	background-color: white;
 	border-bottom: 1px solid $blue-5;
-	padding: 12px 0;
+	padding: 5px 0;
 }
 .navbar-brand {
-	font-size: 32px;
-	font-family: $headingFont;
-	color: $red-1;
+	height: 64px !important;
+	overflow: auto;
+	padding: 0 !important;
 }
 .navbar-brand:hover {
 	color: $red-2 !important;
+}
+.navbar-brand img {
+	height: 64px;
+	width: auto;
 }
 .navbar-nav a{
 	font-family: $boldFont;
 	color: $blue-3;
 	font-size: 18px;
+}
+.navbar-nav {
+	margin-top: 6px;
 }
 .navbar-nav li a:hover {
 	background: none !important;
@@ -214,9 +221,16 @@ a:hover {
 	font-family: $boldFont;
 }
 
-.icon-api {
-	@include feature-icon("sdk.png", 48px, 0);
+.icon-sdk {
+	@include feature-icon("sdk.png", 52px, 0);
 }
+.icon-api {
+	@include feature-icon("api.png", 42px, 0);
+}
+.icon-scale {
+	@include feature-icon("scale.png", 42px, 0);
+}
+
 
 @media screen and (max-width: 768px) {
 	.dev-features-image {
@@ -289,6 +303,37 @@ a:hover {
 }
 .video .video-frame iframe {
 	position: absolute;
+}
+
+//------------------------------------------------------------------------------
+// Use cases
+//------------------------------------------------------------------------------
+.use-cases {
+	border-top: 1px solid $black-4;
+	border-bottom: 1px solid $black-4;
+	background-color: $black-5;
+	overflow: auto;
+}
+.use-cases .case {
+}
+.use-cases .case h3 {
+	text-transform: uppercase;
+	color: $black-2;
+	font-size: 16px;
+}
+.use-cases .case p {
+	background: white;
+	padding: 10px;
+	margin: 0;
+}
+.use-cases .case pre {
+	margin: 0;
+	padding: 10px;
+	border: 0;
+	border-radius: 0;
+	margin-bottom: 10px;
+	color: $black-2;
+	background-color: white;
 }
 
 //------------------------------------------------------------------------------

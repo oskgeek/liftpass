@@ -41,17 +41,17 @@ class APITest(unittest.TestCase):
 		address = 'http://%s:%d%s'%(self.address, self.port, url)
 
 		if application:
-			data['gondola-application'] = application.key
+			data['liftpass-application'] = application.key
 			self.userSecret = application.secret.encode('utf-8')
 		else:	
-			data['gondola-user'] = self.userKey.decode('utf-8')
+			data['liftpass-user'] = self.userKey.decode('utf-8')
 		
-		data['gondola-time'] = round(time.time())
-		data['gondola-url'] = url
+		data['liftpass-time'] = round(time.time())
+		data['liftpass-url'] = url
 
 		dump = json.dumps(data).encode('utf-8')
 		digest = hmac.new(self.userSecret, dump, hashlib.sha256).hexdigest()
-		header = {'gondola-hash': digest}
+		header = {'liftpass-hash': digest}
 		
 		try:
 			if self.client: 

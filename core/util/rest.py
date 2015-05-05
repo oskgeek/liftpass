@@ -49,15 +49,15 @@ def buildResponse(content, secret, application=None):
 		data = content
 	
 	if application:
-		data['gondola-application'] = application	
+		data['liftpass-application'] = application	
 
-	data['gondola-time'] = round(time.time())
+	data['liftpass-time'] = round(time.time())
 	data = extras.toJSON(data)
 
 	response = Response(data, status, {'content-type':'application/json'})
 	if secret:
 		digest = hmac.new(secret, data.encode('utf-8'), hashlib.sha256).hexdigest()
-		response.headers['gondola-hash'] = digest
+		response.headers['liftpass-hash'] = digest
 
 	response.status_code = status
 
@@ -72,17 +72,17 @@ def userAuthenticate(secretLookup):
 				return buildResponse({'status': ERROR_BAD_REQUEST, 'message': 'No JSON body specified with request'}, secret)
 
 			# JSON must include time and user key
-			if not all(map(lambda k: k in request.json, ['gondola-time', 'gondola-user'])):
-				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing gondola-time and/or gondola-user keys'}, secret)
+			if not all(map(lambda k: k in request.json, ['liftpass-time', 'liftpass-user'])):
+				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing liftpass-time and/or liftpass-user keys'}, secret)
 
 			# HTTP header must include hash for all requests
-			if 'gondola-hash' not in request.headers:
-				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing gondola-hash in header'}, secret)
+			if 'liftpass-hash' not in request.headers:
+				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing liftpass-hash in header'}, secret)
 
-			secret = secretLookup(request.json['gondola-user'])
+			secret = secretLookup(request.json['liftpass-user'])
 			digest = hmac.new(secret, request.get_data(), hashlib.sha256).hexdigest()
 			
-			if digest != request.headers['gondola-hash']:
+			if digest != request.headers['liftpass-hash']:
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'}, secret)
 			
 			return buildResponse(f(*args, **kwargs), secret)
@@ -95,23 +95,23 @@ def applicationAuthenticate(secretLookup):
 		def aux(*args, **kwargs):
 
 			# JSON must include time and user key
-			if not all(map(lambda k: k in request.json, ['gondola-time', 'gondola-application'])):
-				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing gondola-time and/or gondola-application keys'}, secret)
+			if not all(map(lambda k: k in request.json, ['liftpass-time', 'liftpass-application'])):
+				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing liftpass-time and/or liftpass-application keys'}, secret)
 
 			# HTTP header must include hash for all requests
-			if 'gondola-hash' not in request.headers:
-				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing gondola-hash in header'}, secret)
+			if 'liftpass-hash' not in request.headers:
+				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing liftpass-hash in header'}, secret)
 
-			secret = secretLookup(request.json['gondola-application'])
+			secret = secretLookup(request.json['liftpass-application'])
 			if secret == None:
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Application key not valid'}, secret)
 
 			secret = secret.encode('utf-8')	
 			digest = hmac.new(secret, request.get_data(), hashlib.sha256).hexdigest()
 			
-			if digest != request.headers['gondola-hash']:
+			if digest != request.headers['liftpass-hash']:
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'}, secret)
 			
-			return buildResponse(f(*args, **kwargs), secret, request.json['gondola-application'])
+			return buildResponse(f(*args, **kwargs), secret, request.json['liftpass-application'])
 		return update_wrapper(aux, f)
 	return decorator

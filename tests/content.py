@@ -267,7 +267,7 @@ class TestSDK(APITest):
 			'user': '0'*32,
 			'events': [
 				{
-					'name': 'gondola-metric',
+					'name': 'liftpass-metric',
 					'progress': ['','','','','','','','']+[0]*24,
 					'time': extras.unixTimestamp()
 				}
@@ -275,11 +275,11 @@ class TestSDK(APITest):
 		}
 
 		(status, b) = self.request('POST', '/sdk/update/v1/', data, application=a)
-		self.assertEqual(b['sword'], 1000)
+		self.assertEqual(b['goods']['sword'][0], 1000)
 
 		data['user'] = '1'*32
 		(status, c) = self.request('POST', '/sdk/update/v1/', data, application=a)
-		self.assertEqual(c['sword'], 2000)
+		self.assertEqual(c['goods']['sword'][0], 2000)
 		
 
 	def testCallWithMissingData(self):
@@ -315,12 +315,12 @@ class TestExport(APITest):
 
 		for i in range(10):
 			update = {
-				'gondola-application': a.key,
-				'gondola-ip': '',
+				'liftpass-application': a.key,
+				'liftpass-ip': '',
 				'user': '0'*32,
 				'events':[
 					{
-						'name': 'gondola-metric',
+						'name': 'liftpass-metric',
 						'progress': [None]*32,
 						'time': extras.unixTimestamp()
 					}

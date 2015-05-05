@@ -14,7 +14,7 @@ class TestUpdate(unittest.TestCase):
 
 	def testNormalUpdate(self):
 		update = {
-			'name': 'gondola-metric',
+			'name': 'liftpass-metric',
 			'progress': [],
 			'time': extras.unixTimestamp(),
 		}
@@ -36,7 +36,7 @@ class TestUpdate(unittest.TestCase):
 
 	def testNullMetrics(self):
 		update = {
-			'name': 'gondola-metric',
+			'name': 'liftpass-metric',
 			'progress': [None]*32,
 			'time': extras.unixTimestamp(),
 		}
@@ -48,7 +48,7 @@ class TestUpdate(unittest.TestCase):
 
 	def testMissingEventMetrics(self):
 		update = {
-			'name': 'gondola-metric',
+			'name': 'liftpass-metric',
 			'progress': [None]*23,
 			'time': extras.unixTimestamp(),
 		}
@@ -56,7 +56,7 @@ class TestUpdate(unittest.TestCase):
 			event = analytics.Analytics().processEvent(None, None, update)
 
 		update = {
-			'name': 'gondola-metric',
+			'name': 'liftpass-metric',
 			'time': extras.unixTimestamp(),
 		}
 		with self.assertRaises(analytics.EventAttributeMissingError):
@@ -64,7 +64,7 @@ class TestUpdate(unittest.TestCase):
 
 	def testMissingEventTime(self):
 		update = {
-			'name': 'gondola-metric',
+			'name': 'liftpass-metric',
 			'progress': [None]*23,
 		}
 		with self.assertRaises(analytics.EventAttributeMissingError):
@@ -80,7 +80,7 @@ class TestUpdate(unittest.TestCase):
 
 	def testMissingAttribute(self):
 		update = {
-			'name': 'gondola-metric',
+			'name': 'liftpass-metric',
 			'progress': [None]*32,
 			'attributes': [None]*12,
 			'time': extras.unixTimestamp(),

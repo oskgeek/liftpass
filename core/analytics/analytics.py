@@ -56,7 +56,7 @@ class Analytics:
 
 
 	def saveUpdate(self, update):
-		key = '%s-%s-%s.json'%(update['gondola-application'], extras.datetimeStamp(), update['user'])
+		key = '%s-%s-%s.json'%(update['liftpass-application'], extras.datetimeStamp(), update['user'])
 		self.storage.save(key, json.dumps(update))
 
 
@@ -64,14 +64,14 @@ class Analytics:
 	def processUpdate(self, data):
 		session = models.getSession()
 
-		for attribute in ['gondola-ip', 'gondola-application', 'user', 'events']:
+		for attribute in ['liftpass-ip', 'liftpass-application', 'user', 'events']:
 			if attribute not in data:
 				raise EventMissingAttributeError(attribute)
 			
 
 		for update in data['events']:
 			try:
-				event = self.processEvent(data['gondola-application'], data['user'], update)
+				event = self.processEvent(data['liftpass-application'], data['user'], update)
 				session.add(event)
 			except Exception as e:
 				print(e)

@@ -29,8 +29,8 @@ def updateObjectWithJSON(object, json, ignore = []):
 		if key in ignore:
 			continue
 
-		# Skip if it begins with gondola-
-		if key.find('gondola-') == 0:
+		# Skip if it begins with liftpass-
+		if key.find('liftpass-') == 0:
 			continue
 
 		# Set attribute if object has it

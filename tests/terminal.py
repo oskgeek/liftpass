@@ -29,10 +29,10 @@ class TestTerminal(APITest):
 		
 		data = {
 			'user': '0'*32,
-			'gondola-debug': True,
+			'liftpass-debug': True,
 			'events': [
 				{
-					'name': 'gondola-metric',
+					'name': 'liftpass-metric',
 					'progress': ['','','','','','','','']+[0]*32,
 					'time': extras.unixTimestamp()
 				}
