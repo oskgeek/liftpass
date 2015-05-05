@@ -1,6 +1,4 @@
 import jinja2
-import markdown
-import textile
 import os 
 from bs4 import BeautifulSoup
 import csv

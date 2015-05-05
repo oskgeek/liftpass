@@ -38,8 +38,8 @@ MonitorDebug = False
 # User Authentication
 #
 
-UserKey = b'Kc61Fdmv9q2xiH2MNIhQM70U9N6Z1wqu'
-UserSecret = b'8vM9o1fPN4mVG3VIPzy4ON9iXODYKxtt'
+UserKey = b'$UserKey'
+UserSecret = b'$UserSecret'
 
 
 # 
