@@ -69,7 +69,7 @@
 - name: Currency
   bookmark: currency
   functions:
-    - url: /currencies/get/v1/
+    - url: /currencies/list/v1/
       method: get
       arguments:
         - name: key
