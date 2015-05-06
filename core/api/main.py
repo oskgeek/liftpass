@@ -6,6 +6,8 @@ from functools import update_wrapper
 
 from flask import Flask
 from flask import request
+from flask import make_response
+from flask.ext.cors import CORS
 
 import config
 import core.content.content as content
@@ -19,7 +21,9 @@ import core.util.debug as debug
 import core.util.extras as extras
 import core.dashboard.terminal as terminal
 
+
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/applications/add/<version>/', methods=['POST'])
@@ -34,7 +38,7 @@ def applicationAdd(version):
 
 	backend = content.Content()
 
-	application = backend.addApplication(request.json['name'])
+	application = backend.addApplication(request.values['name'])
 	
 	return application.as_dict()
 
@@ -63,7 +67,7 @@ def applicationDelete(version):
 	key -- the key for the application
 	"""
 	backend = content.Content()
-	success = backend.deleteApplication(request.json['key'])
+	success = backend.deleteApplication(request.values['key'])
 	
 	if success:
 		return {'deleted': success>0}
@@ -80,7 +84,7 @@ def applicationGet(version):
 	key -- the key for the application
 	"""
 	backend = content.Content()	
-	application = backend.getApplication(request.json['key'])
+	application = backend.getApplication(request.values['key'])
 	if application:
 		return application.as_dict()
 	
@@ -100,7 +104,7 @@ def applicationUpdate(version):
 	"""
 	backend = content.Content()
 
-	application = backend.setApplication(request.json['key'], request.json)
+	application = backend.setApplication(request.values['key'], request.values)
 
 	if application:
 		return application.as_dict()
@@ -118,7 +122,7 @@ def currencyGet(version):
 	"""
 	backend = content.Content()
 
-	currency = backend.getCurrency(request.json['key'])
+	currency = backend.getCurrency(request.values['key'])
 	if currency:
 		return currency.as_dict()
 	return errors.ApplicationKeyDoesNotExist
@@ -137,7 +141,7 @@ def currencyUpdate(version):
 
 	backend = content.Content()
 
-	currency = backend.setCurrency(request.json['key'], request.json)
+	currency = backend.setCurrency(request.values['key'], request.values)
 	if currency:
 		return currency.as_dict()
 	return errors.ApplicationKeyDoesNotExist
@@ -147,7 +151,7 @@ def currencyUpdate(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def goodsAdd(version):
 	backend = content.Content()
-	good = backend.addGood(request.json['key'], request.json['name'])
+	good = backend.addGood(request.values['key'], request.values['name'])
 	return good.as_dict()
 
 
@@ -155,7 +159,7 @@ def goodsAdd(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def goodsGet(version):
 	backend = content.Content()
-	good = backend.getGood(request.json['key'])
+	good = backend.getGood(request.values['key'])
 	if good:
 		return good.as_dict()
 	return errors.GoodKeyDoesNotExist
@@ -165,7 +169,7 @@ def goodsGet(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def goodsList(version):
 	backend = content.Content()
-	goods = backend.getGoods(request.json['key'])
+	goods = backend.getGoods(request.values['key'])
 	results = list(map(lambda g: g.as_dict(), goods))
 	return {'goods': results}
 
@@ -174,7 +178,7 @@ def goodsList(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def goodsDelete(version):
 	backend = content.Content()
-	res = backend.deleteGood(request.json['key'])
+	res = backend.deleteGood(request.values['key'])
 	return {'deleted':res>0}
 
 
@@ -182,7 +186,7 @@ def goodsDelete(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def goodsUpdate(version):
 	backend = content.Content()
-	good = backend.updateGood(request.json['key'], request.json)
+	good = backend.updateGood(request.values['key'], request.values)
 	if good:
 		return good.as_dict()
 	return errors.GoodKeyDoesNotExist
@@ -192,7 +196,7 @@ def goodsUpdate(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def abtestGet(version):
 	backend = content.Content()
-	abtest = backend.getABTest(request.json['key'])
+	abtest = backend.getABTest(request.values['key'])
 	if abtest:
 		return abtest.as_dict()
 	return errors.ApplicationKeyDoesNotExist
@@ -202,7 +206,7 @@ def abtestGet(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def abtestUpdate(version):
 	backend = content.Content()
-	abtest = backend.setABTest(request.json['key'], request.json)
+	abtest = backend.setABTest(request.values['key'], request.values)
 	return abtest.as_dict()
 
 
@@ -210,7 +214,7 @@ def abtestUpdate(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def metricsGet(version):
 	backend = content.Content()
-	metrics = backend.getMetrics(request.json['key'])
+	metrics = backend.getMetrics(request.values['key'])
 	if metrics:
 		return metrics.as_dict()
 	return errors.ApplicationKeyDoesNotExist
@@ -220,7 +224,7 @@ def metricsGet(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def metricsUpdate(version):
 	backend = content.Content()
-	metrics = backend.setMetrics(request.json['key'], request.json)
+	metrics = backend.setMetrics(request.values['key'], request.values)
 	return metrics.as_dict()
 
 
@@ -228,7 +232,7 @@ def metricsUpdate(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def pricesList(version):
 	backend = content.Content()
-	prices = backend.getPrices(request.json['key'])
+	prices = backend.getPrices(request.values['key'])
 	prices = list(map(lambda p: p.as_dict(), prices))
 	return {'prices':prices}
 
@@ -237,7 +241,7 @@ def pricesList(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def pricesGet(version):
 	backend = content.Content()
-	prices = backend.getPrice(request.json['key'])
+	prices = backend.getPrice(request.values['key'])
 	if prices:
 		return prices.as_dict()
 	return errors.PricesKeyDoesNotExist
@@ -247,7 +251,7 @@ def pricesGet(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def pricesDelete(version):
 	backend = content.Content()
-	res = backend.deletePrices(request.json['key'])
+	res = backend.deletePrices(request.values['key'])
 	return {'deleted': res > 0}
 
 
@@ -255,7 +259,7 @@ def pricesDelete(version):
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def pricesAdd(version):
 	backend = content.Content()
-	prices = backend.addPrices(request.json['key'], request.json['engine'], request.json['data'], request.json['path'])
+	prices = backend.addPrices(request.values['key'], request.values['engine'], request.values['data'], request.values['path'])
 	return prices.as_dict()
 
 
@@ -264,10 +268,10 @@ def terminalLog():
 		def aux(*args, **kwargs):
 			response = f(*args, **kwargs)
 			
-			if 'liftpass-application' in request.json and 'liftpass-debug' in request.json:
-				if request.json['liftpass-debug'] == True:
+			if 'liftpass-application' in request.values and 'liftpass-debug' in request.values:
+				if request.values['liftpass-debug'] == True:
 					theTerminal = terminal.getTerminal()
-					theTerminal.put(request.json['liftpass-application'], request.json, json.loads(response.data.decode('utf-8')))
+					theTerminal.put(request.values['liftpass-application'], request.values, json.loads(response.data.decode('utf-8')))
 
 			return response
 		return update_wrapper(aux, f)
@@ -286,30 +290,30 @@ def update(version):
 	theAnalytics = analytics.Analytics()
 
 	# Check minimum number of keys required in JSON update
-	if extras.keysInDict(request.json, ['user', 'events']) == False:
+	if extras.keysInDict(request.values, ['user', 'events']) == False:
 		return errors.ApplicationUpdateIncomplete
 
 	# Events must have at least one item
-	if len(request.json['events']) == 0:
+	if len(request.values['events']) == 0:
 		return errors.ApplicationUpdateMissingEvents
 	
 	# Event has progress
-	if 'progress' not in request.json['events'][-1]:
+	if 'progress' not in request.values['events'][-1]:
 		return errors.ApplicationUpdateMissingEvents
 	
 	# Save update (include IP address of user)
-	request.json['liftpass-ip'] = request.remote_addr
-	theAnalytics.saveUpdate(request.json)
+	request.values['liftpass-ip'] = request.remote_addr
+	theAnalytics.saveUpdate(request.values)
 	
 	# Try getting price engine
 	try:
-		prices = backend.getPricingEngine(request.json['liftpass-application'])
+		prices = backend.getPricingEngine(request.values['liftpass-application'])
 	except pricing.ApplicationNotFoundException:
 		return errors.ApplicationKeyDoesNotExist
 
 	# Try getting price for user + progress
 	try:
-		userPrices = prices.getPrices(request.json['user'], request.json['events'][-1]['progress'])
+		userPrices = prices.getPrices(request.values['user'], request.values['events'][-1]['progress'])
 	except pricing.NoPricingForGroup:
 		return errors.ApplicationHasNoPriceForUser
 
@@ -322,10 +326,10 @@ def exportJSON(version):
 
 	theAnalytics = analytics.Analytics()
 
-	fromDate = extras.unixTimestampToDatetime(request.json['from'])
-	toDate = extras.unixTimestampToDatetime(request.json['to'])
+	fromDate = extras.unixTimestampToDatetime(request.values['from'])
+	toDate = extras.unixTimestampToDatetime(request.values['to'])
 
-	return rest.streamResponse(lambda: theAnalytics.exportStream(request.json['application'], fromDate, toDate))
+	return rest.streamResponse(lambda: theAnalytics.exportStream(request.values['application'], fromDate, toDate))
 
 
 @app.errorhandler(500)

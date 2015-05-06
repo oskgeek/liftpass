@@ -1,0 +1,235 @@
+{% extends "dashboard.html" %}
+
+
+{% block content %}
+{% raw %}
+
+<div class="row view" id="authenticateView">
+	<div class="col-xs-6 col-xs-offset-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Authenticate</h3>
+			</div>
+			<div class="panel-body">
+				<form ng-submit="authenticate()">
+					<div class="form-group">
+						<label for="userKey">User Key</label>
+						<input type="text" ng-model="userKey" class="form-control" name="userKey" id="userKey">
+					</div>
+					<div class="form-group">
+						<label for="userSecret">User Secret</label>
+						<input type="text" ng-model="userSecret" class="form-control" name="userSecret" id="userSecret">
+					</div>
+					<div class="form-group">
+						<label for="serverAddress">Server Address</label>
+						<input type="url" ng-model="serverAddress" class="form-control" name="serverAddress" id="serverAddress">
+					</div>
+					<button type="submit" class="btn btn-default">Authenticate</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row view" id="applicationsView">
+	<div class="list-group">
+		<a href="#" class="list-group-item" ng-repeat="application in applications" ng-click="loadApplication(application.key)">
+			{{application.name}}
+		</a>
+	</div>
+</div>
+
+<div class="row view" id="dashboardView">
+	<div class="col-xs-12">
+		<div class="page-header">
+			<h2>{{application.name}}</h2>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-3">
+		<div class="list-group">
+			<a href="#" ng-class="{'active': viewVisible('currency')}" ng-click="loadCurrency()" class="list-group-item">Currency</a>
+			<a href="#" ng-class="{'active': viewVisible('metrics')}" ng-click="loadMetrics()" class="list-group-item">Metrics</a>
+			<a href="#" ng-class="{'active': viewVisible('goods')}" ng-click="loadGoods()" class="list-group-item">Goods</a>
+			<a href="#" ng-class="{'active': viewVisible('prices')}" ng-click="loadPrices()" class="list-group-item">Prices</a>
+			<a href="#" ng-class="{'active': viewVisible('abtest')}" ng-click="loadABTest()" class="list-group-item">A/B Test</a>
+			<a href="#" ng-class="{'active': viewVisible('analytics')}" ng-click="loadAnalytics()" class="list-group-item">Analytics</a>
+			<a href="#" ng-class="{'active': viewVisible('debug')}" ng-click="loadDebug()" class="list-group-item">Debug</a>
+			<a href="#" ng-class="{'active': viewVisible('sdk')}" ng-click="loadSDK()" class="list-group-item">SDK</a>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-9">
+
+		<div class="subview" id="goodsView">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Add Good</h3>
+				</div>
+				<div class="panel-body">
+					<form ng-submit="addGood()">
+						<input type="hidden" name="key" value="{{application.key}}">
+						<div class="form-inline">
+							<div class="form-group">
+								<label for="goodName">Good name</label>
+								<input type="text" class="form-control" ng-model="goodName" name="goodName">
+							</div>
+							<button type="submit" class="btn btn-primary">Add</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Good name</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="good in goods">
+						<td>{{good.name}}</td>
+						<td><button class="btn btn-danger" ng-click="deleteGood(good.key)">Remove</button></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="subview" id="currencyView">
+			<table class="table">
+				<thead>
+					<th>Index</th>
+					<th>Currency name</th>
+					<th></th>
+				</thead>
+				<tbody>
+					<tr ng-repeat="currency in currencies">
+						<td>{{$index+1}}</td>
+						<td><input type="text" class="form-control" placeholder="Currency not defined" ng-model="currency"></td>
+						<td><button type="button" class="btn btn-primary" ng-click="saveCurrency($index+1)">Save</button></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="subview" id="metricsView">
+			<table class="table">
+				<thead>
+					<th>Index</th>
+					<th>Type</th>
+					<th>Metric name</th>
+				</thead>
+				<tbody>
+					<tr ng-repeat="metric in metrics | orderBy:'index'">
+						
+							<td>{{$index+1}}</td>
+							<td>
+								<span class="label label-default" ng-if="$index<12">String</span>
+								<span class="label label-default" ng-if="$index>=12">Number</span>
+							</td>
+							<td>
+								<form ng-submit="saveMetric(metric)" class="form-inline">
+									<input type="text" class="form-control" placeholder="Metric not defined" ng-model="metric.value">
+									<button type="submit" class="btn btn-primary">Save</button>
+								</form>
+							</td>
+						</form>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+		<div class="subview" id="pricesView">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<form ng-submit="addPrice()">
+						<div class="form-group">
+							<label for="priceEngine">Engine</label>
+							<select class="form-control" ng-model="priceEngine" name="priceEngine">
+								<option>JSON</option> 
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="pricePath">Path</label>
+							<input type="text" class="form-control" ng-model="pricePath" name="pricePath">
+						</div>
+						<div class="form-group">
+							<label for="priceData">Data</label>
+							<textarea class="form-control" ng-model="priceData" name="priceData"></textarea>
+						</div>
+						<button type="submit" class="btn btn-primary">Add</button>
+					</form>
+				</div>
+			</div>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Date</th>
+						<th>Engine</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="price in prices">
+						<td>{{price.created}}</td>
+						<td>{{price.engine}}</td>
+						<td><button type="button" class="btn btn-default">View</button></td>
+						<td><button type="button" class="btn btn-danger" ng-click="deletePrice(price)">Delete</button></td>
+					</tr>
+			</table>
+		</div>
+
+		<div class="subview" id="abtestView">
+			<form ng-submit="saveABTest()">
+				<div class="form-group">
+					<label for="abtestBlackList">Country black list</label>
+					<input type="text" class="form-control" ng-model="abtest.countryBlackList" name="abtestBlackList">
+				</div>
+				<div class="form-group">
+					<label for="abtestWhiteList">Country white list</label>
+					<input type="text" class="form-control" ng-model="abtest.countryWhiteList" name="abtestWhiteList">
+				</div>
+				<div class="form-group">
+					<label for="abtestModulus">Modulus</label>
+					<input type="text" class="form-control" ng-model="abtest.modulus" name="abtestModulus">
+				</div>
+				<div class="form-group">
+					<label for="abtestModulusLimit">Modulus limit</label>
+					<input type="text" class="form-control" ng-model="abtest.modulusLimit" name="abtestModulusLimit">
+				</div>
+				<div class="form-group">
+					<label for="abtestStaticPrices">Static prices</label>
+					<input type="text" class="form-control" ng-model="abtest.staticPrices_key" name="abtestStaticPrices">
+				</div>
+				<div class="form-group">
+					<label for="abtestDynamicPrices">Dynamic prices</label>
+					<input type="text" class="form-control" ng-model="abtest.dynamicPrices_key" name="abtestDynamicPrices">
+				</div>
+				<button type="submit" class="btn btn-primary">Save</button>
+			</form>
+		</div>
+
+		<div class="subview" id="analyticsView">
+			<div class="alert alert-warning">
+				<strong>Under construction:</strong> The analytics tab enables you to export analytics data from your browser. This feature has not yet been implemented to the dashboard.
+			</div>
+		</div>
+		
+		<div class="subview" id="debugView">
+		</div>
+
+		<div class="subview" id="sdkView">
+			<div class="alert alert-warning">
+				<strong>Under construction:</strong> The SDK view will generate macros that should be used with the Liftpass SDK - they make it easier to refer to game specific metrics and currencies. This feature has not yet been implemented to the dashboard.
+			</div>
+		</div>
+
+	</div>
+</div>
+
+{% endraw %}
+{% endblock %}
+
+

@@ -5,7 +5,7 @@ import csv
 import shutil
 import sass
 import yaml
-
+import coffeescript
 import jinja2_highlight
 
 
@@ -72,6 +72,11 @@ for directory, nextDir, files in os.walk(staticDir):
 			data = sass.compile(string=open('%s/%s'%(directory, file), 'r').read())
 			name = file
 			name = name.replace('.sass', '.css')
+			open('%s/%s'%(currentDir, name), 'w+').write(data)
+		elif file.endswith('.coffee'):
+			data = coffeescript.compile(open('%s/%s'%(directory, file), 'r').read())
+			name = file.replace('.coffee', '.js')
+
 			open('%s/%s'%(currentDir, name), 'w+').write(data)
 		else:
 			shutil.copy('%s/%s'%(directory, file), '%s/%s'%(currentDir, file))

@@ -7,6 +7,7 @@ from functools import wraps
 from functools import update_wrapper
 import time
 import json
+import base64
 
 import core.util.debug as debug
 import core.util.extras as extras
@@ -67,20 +68,28 @@ def buildResponse(content, secret, application=None):
 def userAuthenticate(secretLookup):
 	def decorator(f): 
 		def aux(*args, **kwargs):
+			
+			message = request.get_data()
+			if 'json' in request.args:
+				message = base64.b64decode(request.args['json'])
+				request.values = json.loads(message.decode('utf-8'))
+			else: 
+				request.values = request.json
+
 			# If JSON not specified
-			if request.json == None:
+			if request.values == None:
 				return buildResponse({'status': ERROR_BAD_REQUEST, 'message': 'No JSON body specified with request'}, secret)
 
 			# JSON must include time and user key
-			if not all(map(lambda k: k in request.json, ['liftpass-time', 'liftpass-user'])):
+			if not all(map(lambda k: k in request.values, ['liftpass-time', 'liftpass-user'])):
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing liftpass-time and/or liftpass-user keys'}, secret)
 
 			# HTTP header must include hash for all requests
 			if 'liftpass-hash' not in request.headers:
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing liftpass-hash in header'}, secret)
 
-			secret = secretLookup(request.json['liftpass-user'])
-			digest = hmac.new(secret, request.get_data(), hashlib.sha256).hexdigest()
+			secret = secretLookup(request.values['liftpass-user'])
+			digest = hmac.new(secret, message, hashlib.sha256).hexdigest()
 			
 			if digest != request.headers['liftpass-hash']:
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'}, secret)
@@ -93,6 +102,10 @@ def userAuthenticate(secretLookup):
 def applicationAuthenticate(secretLookup):
 	def decorator(f): 
 		def aux(*args, **kwargs):
+
+			# All user input goes to the values field of the request
+			if len(request.json):
+				request.values = request.json
 
 			# JSON must include time and user key
 			if not all(map(lambda k: k in request.json, ['liftpass-time', 'liftpass-application'])):
