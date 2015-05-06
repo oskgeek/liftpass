@@ -195,8 +195,8 @@ DashboardController = ($scope) ->
 			'countryBlackList': $scope.abtest['countryBlackList'],
 			'modulus': $scope.abtest['modulus'],
 			'modulusLimit': $scope.abtest['modulusLimit'],
-			'dynamicPrices_key': $scope.abtest['dynamicPrices_key']
-			'staticPrices_key': $scope.abtest['staticPrices_key']
+			'groupAPrices_key': $scope.abtest['groupAPrices_key']
+			'groupBPrices_key': $scope.abtest['groupBPrices_key']
 		}, $scope.loadABTestSuccess
 
 	# -------------------------------------------------------------------------- 
