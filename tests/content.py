@@ -78,13 +78,13 @@ class TestCurrency(APITest):
 
 		for i, v in enumerate(values):
 			(status, b) = self.request('PUT', '/currencies/update/v1/', {'key': a['key'], 'currency%d'%(i+1):v})
-		(status, c) = self.request('GET', '/currencies/get/v1/', {'key': a['key']})
+		(status, c) = self.request('GET', '/currencies/list/v1/', {'key': a['key']})
 		
 		for i, v in enumerate(values):
 			self.assertEqual(c['currency%d'%(i+1)], v)
 		
 	def testUpdateCurrencyWithBadKey(self):
-		(status, c) = self.request('GET', '/currencies/get/v1/', {'key': ''})
+		(status, c) = self.request('GET', '/currencies/list/v1/', {'key': ''})
 		self.assertEqual(status, errors.ApplicationKeyDoesNotExist['status'])
 
 class TestMetrics(APITest):

@@ -29,13 +29,6 @@ CORS(app)
 @app.route('/applications/add/<version>/', methods=['POST'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def applicationAdd(version):
-	"""
-	Adds new application to the system. 
-
-	Arguments:
-	name -- the key for the application
-	"""
-
 	backend = content.Content()
 
 	application = backend.addApplication(request.values['name'])
@@ -46,9 +39,6 @@ def applicationAdd(version):
 @app.route('/applications/list/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def applicationList(version):
-	"""
-	Gets list of applications.
-	"""
 	backend = content.Content()
 	applications = backend.getApplications()
 	
@@ -60,12 +50,6 @@ def applicationList(version):
 @app.route('/applications/delete/<version>/', methods=['DELETE'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def applicationDelete(version):
-	"""
-	Deletes application and supporting data.
-
-	Arguments:
-	key -- the key for the application
-	"""
 	backend = content.Content()
 	success = backend.deleteApplication(request.values['key'])
 	
@@ -77,12 +61,6 @@ def applicationDelete(version):
 @app.route('/applications/get/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def applicationGet(version):
-	"""
-	Gets information about application.
-
-	Arguments:
-	key -- the key for the application
-	"""
 	backend = content.Content()	
 	application = backend.getApplication(request.values['key'])
 	if application:
@@ -94,14 +72,6 @@ def applicationGet(version):
 @app.route('/applications/update/<version>/', methods=['PUT'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def applicationUpdate(version):
-	"""
-	Updates application information.
-
-	Arguments:
-	key -- the application key
-	name -- (optional) the name of the application 
-
-	"""
 	backend = content.Content()
 
 	application = backend.setApplication(request.values['key'], request.values)
@@ -111,15 +81,9 @@ def applicationUpdate(version):
 	return errors.ApplicationKeyDoesNotExist
 
 
-@app.route('/currencies/get/<version>/', methods=['GET'])
+@app.route('/currencies/list/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
-def currencyGet(version):
-	"""
-	Get currency for the specified application.
-
-	Arguments:
-	key -- the application key
-	"""
+def currencyList(version):
 	backend = content.Content()
 
 	currency = backend.getCurrency(request.values['key'])
@@ -131,14 +95,6 @@ def currencyGet(version):
 @app.route('/currencies/update/<version>/', methods=['PUT'])
 @rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
 def currencyUpdate(version):
-	"""
-	Updates a single currency name for the application specified.
-
-	Arguments:
-	key -- the application key
-	currency1 to currency8 -- name of currencies in the application
-	"""
-
 	backend = content.Content()
 
 	currency = backend.setCurrency(request.values['key'], request.values)
