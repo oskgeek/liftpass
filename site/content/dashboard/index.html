@@ -32,12 +32,14 @@
 </div>
 
 <div class="row view" id="applicationsView">
-	<div class="page-header">
-		<h2>Applications</h2>
-	</div>
-	<div class="list-group">
-		<div class="list-group-item" ng-repeat="application in applications" ng-click="loadApplication(application.key)">
-			{{application.name}}
+	<div class="col-xs-12">
+		<div class="page-header">
+			<h2>Applications</h2>
+		</div>
+		<div class="list-group">
+			<div class="list-group-item" ng-repeat="application in applications" ng-click="loadApplication(application.key)">
+				{{application.name}}
+			</div>
 		</div>
 	</div>
 </div>

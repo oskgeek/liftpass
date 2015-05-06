@@ -49,6 +49,9 @@ DashboardController = ($scope) ->
 				'liftpass-hash': hash
 			},
 			success: callback
+			error: (response, status, error) ->
+				console.log response, status, error
+				$scope.errorMessage(error)
 		})
 			
 
@@ -106,7 +109,7 @@ DashboardController = ($scope) ->
 	# Currency
 	# --------------------------------------------------------------------------
 	$scope.loadCurrency = () =>
-		$scope.request 'GET', {'liftpass-url':'/currencies/get/v1/', 'key': $scope.application['key']}, $scope.loadCurrencySuccess
+		$scope.request 'GET', {'liftpass-url':'/currencies/list/v1/', 'key': $scope.application['key']}, $scope.loadCurrencySuccess
 	
 	$scope.loadCurrencySuccess = (json) =>
 		$scope.toggleDashboardView('#currencyView')
@@ -119,7 +122,11 @@ DashboardController = ($scope) ->
 
 	$scope.saveCurrency = (index) =>
 		k = "currency#{index}"
-		$scope.request 'PUT', {'liftpass-url':'/currencies/update/v1/', 'key': $scope.application['key'], k: $scope.currencies[k]}, $scope.loadCurrency
+		$scope.request 'PUT', {'liftpass-url':'/currencies/update/v1/', 'key': $scope.application['key'], k: $scope.currencies[k]}, $scope.saveCurrencySuccess
+	
+	$scope.saveCurrencySuccess = (json) =>
+		$scope.successMessage("Currency name change saved")
+		$scope.loadCurrency()
 
 	# -------------------------------------------------------------------------- 
 	# Metrics
@@ -227,7 +234,33 @@ DashboardController = ($scope) ->
 	)
 
 
-
+	$scope.successMessage = (message) ->
+		noty({
+			layout: 'bottomRight'
+			text: message
+			type: 'success'
+			timeout: 2000
+			animation: {
+				open: {height: 'toggle'}
+				close: {height: 'toggle'}
+				easing: 'swing'
+				speed: 500
+			}
+		})
+	$scope.errorMessage = (message) ->
+		noty({
+			layout: 'center'
+			text: message
+			type: 'error'
+			timeout: false
+			modal: true
+			animation: {
+				open: {height: 'toggle'}
+				close: {height: 'toggle'}
+				easing: 'swing'
+				speed: 500
+			}
+		})
 
 	$scope.toggleDashboardView = (view) ->
 		$('.subview').hide()

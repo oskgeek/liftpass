@@ -26,8 +26,13 @@ app = Flask(__name__)
 CORS(app)
 
 
+def singleUserAuthenticate(key): 
+	if key == config.UserKey:
+		return config.UserSecret
+	return None
+
 @app.route('/applications/add/<version>/', methods=['POST'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def applicationAdd(version):
 	backend = content.Content()
 
@@ -37,7 +42,7 @@ def applicationAdd(version):
 
 
 @app.route('/applications/list/<version>/', methods=['GET'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def applicationList(version):
 	backend = content.Content()
 	applications = backend.getApplications()
@@ -48,7 +53,7 @@ def applicationList(version):
 
 
 @app.route('/applications/delete/<version>/', methods=['DELETE'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def applicationDelete(version):
 	backend = content.Content()
 	success = backend.deleteApplication(request.values['key'])
@@ -59,7 +64,7 @@ def applicationDelete(version):
 
 
 @app.route('/applications/get/<version>/', methods=['GET'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def applicationGet(version):
 	backend = content.Content()	
 	application = backend.getApplication(request.values['key'])
@@ -70,7 +75,7 @@ def applicationGet(version):
 
 
 @app.route('/applications/update/<version>/', methods=['PUT'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def applicationUpdate(version):
 	backend = content.Content()
 
@@ -82,7 +87,7 @@ def applicationUpdate(version):
 
 
 @app.route('/currencies/list/<version>/', methods=['GET'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def currencyList(version):
 	backend = content.Content()
 
@@ -93,7 +98,7 @@ def currencyList(version):
 
 
 @app.route('/currencies/update/<version>/', methods=['PUT'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def currencyUpdate(version):
 	backend = content.Content()
 
@@ -104,7 +109,7 @@ def currencyUpdate(version):
 
 
 @app.route('/goods/add/<version>/', methods=['POST'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def goodsAdd(version):
 	backend = content.Content()
 	good = backend.addGood(request.values['key'], request.values['name'])
@@ -112,7 +117,7 @@ def goodsAdd(version):
 
 
 @app.route('/goods/get/<version>/', methods=['GET'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def goodsGet(version):
 	backend = content.Content()
 	good = backend.getGood(request.values['key'])
@@ -122,7 +127,7 @@ def goodsGet(version):
 
 
 @app.route('/goods/list/<version>/', methods=['GET'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def goodsList(version):
 	backend = content.Content()
 	goods = backend.getGoods(request.values['key'])
@@ -131,7 +136,7 @@ def goodsList(version):
 
 
 @app.route('/goods/delete/<version>/', methods=['DELETE'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def goodsDelete(version):
 	backend = content.Content()
 	res = backend.deleteGood(request.values['key'])
@@ -139,7 +144,7 @@ def goodsDelete(version):
 
 
 @app.route('/goods/update/<version>/', methods=['PUT'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def goodsUpdate(version):
 	backend = content.Content()
 	good = backend.updateGood(request.values['key'], request.values)
@@ -149,7 +154,7 @@ def goodsUpdate(version):
 
 
 @app.route('/abtest/get/<version>/', methods=['GET'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def abtestGet(version):
 	backend = content.Content()
 	abtest = backend.getABTest(request.values['key'])
@@ -159,7 +164,7 @@ def abtestGet(version):
 
 
 @app.route('/abtest/update/<version>/', methods=['PUT'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def abtestUpdate(version):
 	backend = content.Content()
 	abtest = backend.setABTest(request.values['key'], request.values)
@@ -167,7 +172,7 @@ def abtestUpdate(version):
 
 
 @app.route('/metrics/get/<version>/', methods=['GET'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def metricsGet(version):
 	backend = content.Content()
 	metrics = backend.getMetrics(request.values['key'])
@@ -177,7 +182,7 @@ def metricsGet(version):
 
 
 @app.route('/metrics/update/<version>/', methods=['PUT'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def metricsUpdate(version):
 	backend = content.Content()
 	metrics = backend.setMetrics(request.values['key'], request.values)
@@ -185,7 +190,7 @@ def metricsUpdate(version):
 
 
 @app.route('/prices/list/<version>/', methods=['GET'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def pricesList(version):
 	backend = content.Content()
 	prices = backend.getPrices(request.values['key'])
@@ -194,7 +199,7 @@ def pricesList(version):
 
 
 @app.route('/prices/get/<version>/', methods=['GET'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def pricesGet(version):
 	backend = content.Content()
 	prices = backend.getPrice(request.values['key'])
@@ -204,7 +209,7 @@ def pricesGet(version):
 
 
 @app.route('/prices/delete/<version>/', methods=['DELETE'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def pricesDelete(version):
 	backend = content.Content()
 	res = backend.deletePrices(request.values['key'])
@@ -212,7 +217,7 @@ def pricesDelete(version):
 
 
 @app.route('/prices/add/<version>/', methods=['POST'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def pricesAdd(version):
 	backend = content.Content()
 	prices = backend.addPrices(request.values['key'], request.values['engine'], request.values['data'], request.values['path'])
@@ -277,7 +282,7 @@ def update(version):
 
 
 @app.route('/export/json/<version>/', methods=['GET'])
-@rest.userAuthenticate(secretLookup=lambda s: config.UserSecret)
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def exportJSON(version):
 
 	theAnalytics = analytics.Analytics()

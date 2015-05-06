@@ -60,6 +60,9 @@ for directory, nextDir, files in os.walk(contentDir):
 		open('%s/%s'%(currentDir, content), 'w+').write(data)
 
 for directory, nextDir, files in os.walk(staticDir):
+	# Skip hidden directories
+	if '/.' in directory:
+		continue
 
 	currentDir = '%s/%s'%(outputDir, directory)
 	
@@ -67,6 +70,9 @@ for directory, nextDir, files in os.walk(staticDir):
 		os.mkdir(currentDir)
 
 	for file in files:
+		if file[0] == '.':
+			continue
+
 		print('Static:', file)
 		if file.endswith('.sass'):
 			data = sass.compile(string=open('%s/%s'%(directory, file), 'r').read())
@@ -79,4 +85,5 @@ for directory, nextDir, files in os.walk(staticDir):
 
 			open('%s/%s'%(currentDir, name), 'w+').write(data)
 		else:
+
 			shutil.copy('%s/%s'%(directory, file), '%s/%s'%(currentDir, file))
