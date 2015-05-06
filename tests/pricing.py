@@ -21,8 +21,8 @@ class TestPricingEngine(unittest.TestCase):
 		a = backend.addApplication('Test')
 		p = pricing.PricingEngine(a.key)
 
-		self.assertEqual(p.dynamicPrices, None)
-		self.assertEqual(p.staticPrices, None)
+		self.assertEqual(p.groupAPrices, None)
+		self.assertEqual(p.groupBPrices, None)
 
 
 	def testLoadPrices(self):
@@ -31,12 +31,12 @@ class TestPricingEngine(unittest.TestCase):
 		
 		jsonPrices = backend.addPrices(a.key, 'JSON', json.dumps({'sword':1000}), None)
 
-		backend.setABTest(a.key, {'dynamicPrices_key': jsonPrices.key})
+		backend.setABTest(a.key, {'groupAPrices_key': jsonPrices.key})
 
 		p = pricing.PricingEngine(a.key)
 
-		self.assertNotEqual(p.dynamicPrices, None)
-		self.assertEqual(p.staticPrices, None)
+		self.assertNotEqual(p.groupAPrices, None)
+		self.assertEqual(p.groupBPrices, None)
 
 
 	def testPricesWithProgress(self):
@@ -46,8 +46,8 @@ class TestPricingEngine(unittest.TestCase):
 		jsonPricesA = backend.addPrices(a.key, 'JSON', json.dumps({'sword':1000}), None)
 		jsonPricesB = backend.addPrices(a.key, 'JSON', json.dumps({'sword':2000}), None)
 
-		backend.setABTest(a.key, {'dynamicPrices_key': jsonPricesA.key})
-		backend.setABTest(a.key, {'staticPrices_key': jsonPricesB.key})
+		backend.setABTest(a.key, {'groupAPrices_key': jsonPricesA.key})
+		backend.setABTest(a.key, {'groupBPrices_key': jsonPricesB.key})
 
 		pricing = backend.getPricingEngine(a.key)
 		

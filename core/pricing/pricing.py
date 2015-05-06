@@ -43,8 +43,8 @@ class PricingEngine:
 		import core.content.content as content
 		backend = content.Content()
 
-		self.dynamicPrices = None
-		self.staticPrices = None
+		self.groupAPrices = None
+		self.groupBPrices = None
 
 		self.abtest = backend.getABTest(application_key)
 		
@@ -54,11 +54,11 @@ class PricingEngine:
 		
 		self.abtest = self.abtest.as_dict()
 
-		if self.abtest['dynamicPrices_key'] != None:
-			self.dynamicPrices = self.__loadPrices(self.abtest['dynamicPrices_key'])
+		if self.abtest['groupAPrices_key'] != None:
+			self.groupAPrices = self.__loadPrices(self.abtest['groupAPrices_key'])
 		
-		if self.abtest['staticPrices_key'] != None:
-			self.staticPrices = self.__loadPrices(self.abtest['staticPrices_key'])
+		if self.abtest['groupBPrices_key'] != None:
+			self.groupBPrices = self.__loadPrices(self.abtest['groupBPrices_key'])
 
 
 	def getPrices(self, user, progress):
@@ -66,13 +66,13 @@ class PricingEngine:
 		userID = int(user, 16)
 		
 		if userID % self.abtest['modulus'] <= self.abtest['modulusLimit']:
-			if self.dynamicPrices:
-				return self.dynamicPrices.getPrices(progress)
+			if self.groupAPrices:
+				return self.groupAPrices.getPrices(progress)
 			else:
 				raise NoPricingForGroup()
 		else:
-			if self.staticPrices:
-				return self.staticPrices.getPrices(progress)
+			if self.groupBPrices:
+				return self.groupBPrices.getPrices(progress)
 			else:
 				raise NoPricingForGroup()
 

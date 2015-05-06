@@ -196,8 +196,8 @@ class TestABTest(APITest):
 		(status, b) = self.request('GET', '/abtest/get/v1/', {'key': a['key']})
 
 		self.assertEqual(b['application_key'], a['key'])
-		self.assertEqual(b['dynamicPrices_key'], None)
-		self.assertEqual(b['staticPrices_key'], None)
+		self.assertEqual(b['groupAPrices_key'], None)
+		self.assertEqual(b['groupBPrices_key'], None)
 		self.assertEqual(b['countryWhiteList'], '')
 		self.assertEqual(b['countryBlackList'], '')
 		self.assertEqual(b['modulus'], 2)
@@ -209,8 +209,8 @@ class TestABTest(APITest):
 		(status, c) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'countryWhiteList':'BR', 'countryBlackList':'PT', 'modulus': 6, 'modulusLimit': 3})
 
 		self.assertEqual(c['application_key'], a['key'])
-		self.assertEqual(c['dynamicPrices_key'], None)
-		self.assertEqual(c['staticPrices_key'], None)
+		self.assertEqual(c['groupAPrices_key'], None)
+		self.assertEqual(c['groupBPrices_key'], None)
 		self.assertEqual(c['countryWhiteList'], 'BR')
 		self.assertEqual(c['countryBlackList'], 'PT')
 		self.assertEqual(c['modulus'], 6)
@@ -219,34 +219,34 @@ class TestABTest(APITest):
 	def testUpdateABTestPrices(self):
 		(status, a) = self.request('POST', '/applications/add/v1/', {'name': 'Test application'})
 		(status, b) = self.request('POST', '/prices/add/v1/', {'key': a['key'], 'engine':'JSON', 'data':'{}', 'path':None})
-		(status, c) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'dynamicPrices_key':b['key']})
-		self.assertEqual(c['dynamicPrices_key'], b['key'])
+		(status, c) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'groupAPrices_key':b['key']})
+		self.assertEqual(c['groupAPrices_key'], b['key'])
 	
 	def testUpdateABTestBadPrices(self):
 		(status, a) = self.request('POST', '/applications/add/v1/', {'name': 'Test application'})
-		(status, b) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'dynamicPrices_key':'12134'})
+		(status, b) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'groupAPrices_key':'12134'})
 		(status, c) = self.request('GET', '/abtest/get/v1/', {'key': a['key']})
-		(status, d) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'staticPrices_key':'12134'})
+		(status, d) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'groupBPrices_key':'12134'})
 		(status, e) = self.request('GET', '/abtest/get/v1/', {'key': a['key']})
-		self.assertEqual(c['dynamicPrices_key'], None)
-		self.assertEqual(e['staticPrices_key'], None)
+		self.assertEqual(c['groupAPrices_key'], None)
+		self.assertEqual(e['groupBPrices_key'], None)
 
 	def testDeletePrices(self):
 		(status, a) = self.request('POST', '/applications/add/v1/', {'name': 'Test application'})
 		(status, b) = self.request('POST', '/prices/add/v1/', {'key': a['key'], 'engine':'JSON', 'data':'{}', 'path':None})
-		(status, c) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'dynamicPrices_key':b['key']})
+		(status, c) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'groupAPrices_key':b['key']})
 		(status, d) = self.request('GET', '/abtest/get/v1/', {'key': a['key']})
 		(status, e) = self.request('DELETE', '/prices/delete/v1/', {'key': b['key']})
 		(status, f) = self.request('GET', '/abtest/get/v1/', {'key': a['key']})
 
 		# Fail to delete price when being used in an AB Test
 		self.assertEqual(e['deleted'], 0)
-		self.assertEqual(f['dynamicPrices_key'], b['key'])
-		self.assertEqual(c['dynamicPrices_key'], b['key'])
+		self.assertEqual(f['groupAPrices_key'], b['key'])
+		self.assertEqual(c['groupAPrices_key'], b['key'])
 
 		# Delete of price works when price not being used in an AB Test
-		(status, g) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'dynamicPrices_key':None})
-		self.assertEqual(g['dynamicPrices_key'], None)
+		(status, g) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'groupAPrices_key':None})
+		self.assertEqual(g['groupAPrices_key'], None)
 		(status, h) = self.request('DELETE', '/prices/delete/v1/', {'key': b['key']})
 		self.assertEqual(h['deleted'], True)
 
@@ -260,8 +260,8 @@ class TestSDK(APITest):
 		jsonPricesA = backend.addPrices(a.key, 'JSON', json.dumps({'sword':1000}), None)
 		jsonPricesB = backend.addPrices(a.key, 'JSON', json.dumps({'sword':2000}), None)
 		
-		backend.setABTest(a.key, {'dynamicPrices_key': jsonPricesA.key})
-		backend.setABTest(a.key, {'staticPrices_key': jsonPricesB.key})
+		backend.setABTest(a.key, {'groupAPrices_key': jsonPricesA.key})
+		backend.setABTest(a.key, {'groupBPrices_key': jsonPricesB.key})
 		
 		data = {
 			'user': '0'*32,

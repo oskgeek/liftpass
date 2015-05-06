@@ -106,7 +106,7 @@ class Content:
 
 		if abtest:
 			# Check price foreign keys manually
-			for prices in ['dynamicPrices_key', 'staticPrices_key']:
+			for prices in ['groupAPrices_key', 'groupBPrices_key']:
 				if prices in json and json[prices] != None:
 					count = session.query(models.Prices).join(models.Application).filter(models.Application.key == abtest.application_key).filter(models.Prices.key==json[prices]).count()
 					if count == 1:
@@ -147,11 +147,11 @@ class Content:
 		session = models.getSession()
 
 		# Check if prices is currently used
-		count =  session.query(models.ABTest).join(models.Application).filter(models.Application.key == models.ABTest.application_key).filter(models.ABTest.dynamicPrices_key == prices_key).count()
+		count =  session.query(models.ABTest).join(models.Application).filter(models.Application.key == models.ABTest.application_key).filter(models.ABTest.groupAPrices_key == prices_key).count()
 		if count != 0:
 			return 0
 		
-		count =  session.query(models.ABTest).join(models.Application).filter(models.Application.key == models.ABTest.application_key).filter(models.ABTest.staticPrices_key == prices_key).count()
+		count =  session.query(models.ABTest).join(models.Application).filter(models.Application.key == models.ABTest.application_key).filter(models.ABTest.groupBPrices_key == prices_key).count()
 		if count != 0:
 			return 0
 

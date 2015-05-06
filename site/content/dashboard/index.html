@@ -5,7 +5,7 @@
 {% raw %}
 
 <div class="row view" id="authenticateView">
-	<div class="col-xs-6 col-xs-offset-3">
+	<div class="col-xs-12 col-sm-6 col-sm-offset-3">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">Authenticate</h3>
@@ -32,10 +32,13 @@
 </div>
 
 <div class="row view" id="applicationsView">
+	<div class="page-header">
+		<h2>Applications</h2>
+	</div>
 	<div class="list-group">
-		<a href="#" class="list-group-item" ng-repeat="application in applications" ng-click="loadApplication(application.key)">
+		<div class="list-group-item" ng-repeat="application in applications" ng-click="loadApplication(application.key)">
 			{{application.name}}
-		</a>
+		</div>
 	</div>
 </div>
 

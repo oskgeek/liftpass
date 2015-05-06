@@ -24,8 +24,8 @@ class TestTerminal(APITest):
 		jsonPricesA = backend.addPrices(a.key, 'JSON', json.dumps({'sword':1000}), None)
 		jsonPricesB = backend.addPrices(a.key, 'JSON', json.dumps({'sword':2000}), None)
 		
-		backend.setABTest(a.key, {'dynamicPrices_key': jsonPricesA.key})
-		backend.setABTest(a.key, {'staticPrices_key': jsonPricesB.key})
+		backend.setABTest(a.key, {'groupAPrices_key': jsonPricesA.key})
+		backend.setABTest(a.key, {'groupBPrices_key': jsonPricesB.key})
 		
 		data = {
 			'user': '0'*32,

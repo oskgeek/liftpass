@@ -155,8 +155,8 @@ class ABTest(Base, CoreBase):
 	modulus = Column(Integer, default=lambda: 2)
 	modulusLimit = Column(Integer, default=lambda: 0)
 
-	dynamicPrices_key = Column(String, ForeignKey('prices.key'), nullable=True)
-	staticPrices_key = Column(String, ForeignKey('prices.key'), nullable=True)
+	groupAPrices_key = Column(String, ForeignKey('prices.key'), nullable=True)
+	groupBPrices_key = Column(String, ForeignKey('prices.key'), nullable=True)
 
 
 class Prices(Base, CoreBase):

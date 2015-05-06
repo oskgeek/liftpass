@@ -4,7 +4,7 @@
 
 
 DashboardController = ($scope) ->
-	
+
 	$('#authenticateView').show()
 
 	$scope.userKey = localStorage.getItem('userKey')
@@ -221,7 +221,10 @@ DashboardController = ($scope) ->
 		return
 
 
-
+	$scope.$on("$routeChangeSuccess",(event) ->
+		console.log event
+		event.preventDefault();
+	)
 
 
 
@@ -234,13 +237,6 @@ DashboardController = ($scope) ->
 		return $("##{name}View").is(':visible') == true
 
 
-
-
-angular.module('dashboard', []).controller('DashboardController', DashboardController)
-
-
-
-
-
-
+app = angular.module('dashboard', [])
+app.controller('DashboardController', DashboardController)
 
