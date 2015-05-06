@@ -201,8 +201,8 @@
             "countryWhiteList": "NZ, CA",
             "modulus": 5,
             "modulusLimit": 3,
-            "dynamicPrices_key": 
-            "staticPrices_key": 
+            "groupAPrices_key": 
+            "groupBPrices_key": 
         }
 
     - url: /abtest/update/v1/
@@ -211,17 +211,17 @@
         - name: key
           description: Application key
         - name: countryWhiteList
-          description: List of countries that can participate in dynamic pricing (optional)
+          description: List of countries that can participate in group A pricing (optional)
         - name: countryBlackList
-          description: List of countries not participating in dynamic pricing (optional)
+          description: List of countries not participating in group A pricing (optional)
         - name: modulus
           description: Modulus to apply to user IDs (optional)
         - name: modulusLimit
-          description: Modulus limit of users that qualify for dynamic pricing (optional)
-        - name: dynamicPrices_key
-          description: Prices key being used for dynamic pricing (optional)
-        - name: staticPrices_key
-          description: Prices key being used for static pricing (optional)
+          description: Modulus limit of users that qualify for group A pricing (optional)
+        - name: groupAPrices_key
+          description: Prices key being used for group A pricing (optional)
+        - name: groupBPrices_key
+          description: Prices key being used for group B pricing (optional)
       response: > 
         {
             "key": "z4K4EK3nHpRXeD1XCgE6YN4pF3UrnZ8P"
@@ -229,8 +229,8 @@
             "countryWhiteList": "NZ, CA",
             "modulus": 5,
             "modulusLimit": 3,
-            "dynamicPrices_key": 
-            "staticPrices_key": 
+            "groupAPrices_key": 
+            "groupBPrices_key": 
         }
 - name: Metrics
   bookmark: metrics

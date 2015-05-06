@@ -78,8 +78,8 @@ def start():
 
 	# Set A/B test
 	theContent.setABTest(game.key, {
-		'dynamicPrices_key': pricesB.key,
-		'staticPrices_key': pricesA.key,
+		'groupAPrices_key': pricesB.key,
+		'groupBPrices_key': pricesA.key,
 		'modulus': 5,
 		'modulusLimit': 3,
 	})

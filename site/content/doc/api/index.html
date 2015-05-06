@@ -6,7 +6,7 @@
 <h2>API</h2>
 
 
-<p>The primary way to interact with GondolaCore is via the API. Both for editing the content of applications (ex. registingering new applications, modifying goods, uploading new prices) and supplying the application with new prices via the GondolaCore SDK. </p>
+<p>The primary way to interact with Liftpass is via the API. Both for editing the content of applications (ex. registingering new applications, modifying goods, uploading new prices) and supplying the application with new prices via the Liftpass SDK. </p>
 
 <p>All API calls are standarized for interacting with the Backend as well as the SDK. The API follows normal REST best practices where the HTTP request method is as important as the URL itself. All parameters sent are in JSON format as part of the request body.</p>
 
@@ -17,9 +17,9 @@
 
 {% highlight 'json' %}
 	{
-		"gondola-user": "<32 character long user key>",
-		"gondola-url": "<url being requested>",
-		"gondola-time": "<UTC Unix timestamp>"
+		"liftpass-user": "<32 character long user key>",
+		"liftpass-url": "<url being requested>",
+		"liftpass-time": "<UTC Unix timestamp>"
 	}
 {% endhighlight %}
 
@@ -27,9 +27,9 @@
 
 {% highlight 'json' %}
 	{
-		"gondola-application": "<32 character long application key>",
-		"gondola-time": "<UTC Unix timestamp>",
-		"gondola-url": "<url being requested>",
+		"liftpass-application": "<32 character long application key>",
+		"liftpass-time": "<UTC Unix timestamp>",
+		"liftpass-url": "<url being requested>",
 
 		"user": "<32 character unique user key>",
 		"events": [
@@ -45,7 +45,7 @@
 
 
 <div class="alert alert-info">
-	<strong>Hint</strong> Optionally for SDK calls the <code>gondola-debug</code> flag can be set to <code>True</code>. This will log all SDK requests as well as responses to the dashboard.
+	<strong>Hint</strong> Optionally for SDK calls the <code>liftpass-debug</code> flag can be set to <code>True</code>. This will log all SDK requests as well as responses to the dashboard.
 </div>
 
 
@@ -53,23 +53,23 @@
 <h3>REST Calls</h3>
 
 
-<p>GondolaCore authenticates all API REST requests using HMAC. HMAC fundamentally creates a unique hash (using SHA-256) of the JSON request and the application/user secret (depending if the API call is coming from an application or backend). The hash generated must be then added to the HTTP request header with the name <code>gondola-hash</code>. GondolaCore will then check this hash value with the one it calculates. This process ensures that the request has come from a source that knew the application/user secret key. Any modification of the JSON body during transmission will render the request invalid. </p>
+<p>Liftpass authenticates all API REST requests using HMAC. HMAC fundamentally creates a unique hash (using SHA-256) of the JSON request and the application/user secret (depending if the API call is coming from an application or backend). The hash generated must be then added to the HTTP request header with the name <code>liftpass-hash</code>. Liftpass will then check this hash value with the one it calculates. This process ensures that the request has come from a source that knew the application/user secret key. Any modification of the JSON body during transmission will render the request invalid. </p>
 
 <p>In more detail the HMAC authentication works as follows:</p>
 
 <ul>
 	<li>Add authentication fields to JSON
 		<ul>
-			<li>For Backend calls JSON must contain <code>gondola-user</code>, <code>gondola-url</code>, and <code>gondola-time</code>.</li>
-			<li>For SDK calls JSON calls must contain <code>gondola-application</code> and <code>gondola-time</code>.</li>
+			<li>For Backend calls JSON must contain <code>liftpass-user</code>, <code>liftpass-url</code>, and <code>liftpass-time</code>.</li>
+			<li>For SDK calls JSON calls must contain <code>liftpass-application</code> and <code>liftpass-time</code>.</li>
 		</ul>
 	</li>
 	<li>Hash is created using the application/user secret and the JSON data according to <a href="http://tools.ietf.org/html/rfc2104.html">RFC2104</a>.
-	<li>Hash must be included in the HTTP header with the key named <code>gondola-hash</code>.</li>
+	<li>Hash must be included in the HTTP header with the key named <code>liftpass-hash</code>.</li>
 </ul>
 
 <div class="alert alert-warning">
-	<strong>Important</strong> For authentication purposes the :code:`gondola-time` (in UTC time) must be no more than 3 seconds different from that of the GondolaCore server. 
+	<strong>Important</strong> For authentication purposes the :code:`liftpass-time` (in UTC time) must be no more than 3 seconds different from that of the Liftpass server. 
 </div>
 
 
