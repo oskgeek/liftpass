@@ -27,9 +27,9 @@ CORS(app)
 
 
 def singleUserAuthenticate(key): 
-	if key == config.UserKey:
+	if key.encode('utf-8') == config.UserKey:
 		return config.UserSecret
-	return None
+	return b''
 
 @app.route('/applications/add/<version>/', methods=['POST'])
 @rest.userAuthenticate(secretLookup=singleUserAuthenticate)

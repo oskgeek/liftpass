@@ -41,6 +41,21 @@
 				{{application.name}}
 			</div>
 		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Add Application</h3>
+			</div>
+			<div class="panel-body">
+				<form ng-submit="addApplication()">
+					<div class="form-group">
+						<label for="applicationName">Application name</label>
+						<input type="text" class="form-control" ng-model="applicationName" name="applicationName">
+					</div>
+					<button type="submit" class="btn btn-primary">Add</button>
+				</form>
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -61,6 +76,7 @@
 			<a href="#" ng-class="{'active': viewVisible('debug')}" ng-click="loadDebug()" class="list-group-item">Debug</a>
 			<a href="#" ng-class="{'active': viewVisible('sdk')}" ng-click="loadSDK()" class="list-group-item">SDK</a>
 		</div>
+		<button class="btn btn-danger btn-block" ng-click="deleteApplication()">Delete Application</button>
 	</div>
 	<div class="col-xs-12 col-sm-9">
 
@@ -180,7 +196,7 @@
 					<tr ng-repeat="price in prices">
 						<td>{{price.created}}</td>
 						<td>{{price.engine}}</td>
-						<td><button type="button" class="btn btn-default">View</button></td>
+						<td><button type="button" class="btn btn-default" ng-click="viewPrice(price)">View</button></td>
 						<td><button type="button" class="btn btn-danger" ng-click="deletePrice(price)">Delete</button></td>
 					</tr>
 			</table>
@@ -233,6 +249,38 @@
 
 	</div>
 </div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">{{deleteModal.title}}</h4>
+			</div>
+			<div class="modal-body">
+				{{deleteModal.message}}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-danger" ng-click="confirmDelete()">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="textModal" tabindex="-1" role="dialog" aria-labelledby="textModal" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				{{textModal.message}}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 {% endraw %}
 {% endblock %}

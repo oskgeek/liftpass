@@ -11,6 +11,12 @@ DashboardController = ($scope) ->
 	$scope.userSecret = localStorage.getItem('userSecret')
 	$scope.serverAddress = localStorage.getItem('serverAddress')
 
+	$scope.deleteModal = {
+		title: 'Untitled delete title'
+		message: 'No message'
+		callback: ()->return
+	}
+
 	$scope.saveCredentials = () ->
 		localStorage.setItem('userKey', $scope.userKey)
 		localStorage.setItem('userSecret', $scope.userSecret)
@@ -74,9 +80,25 @@ DashboardController = ($scope) ->
 	$scope.loadApplicationSuccess = (json) =>
 		$('#applicationsView').hide()
 		$('#dashboardView').show()
-
 		$scope.application = json
 		$scope.$apply()
+
+	$scope.addApplication = () =>
+		$scope.request 'POST', {'liftpass-url':'/applications/add/v1/', 'name':$scope.applicationName}, $scope.addApplicationSuccess
+
+	$scope.addApplicationSuccess = (json) =>
+		$scope.successMessage("Good <strong>#{json.name}</strong> added")
+		$scope.authenticate()
+
+	$scope.deleteApplication = () =>
+		$scope.openDeleteModal('You are about to delete this application!', 'This can not be undone. All related data will be lost.', () =>
+			$scope.request 'DELETE', {'liftpass-url':'/applications/delete/v1/', 'key':$scope.application.key}, $scope.deleteApplicationSuccess
+			return 
+		)
+
+	$scope.deleteApplicationSuccess = () =>
+		$scope.successMessage("Application successfully deleted")
+		$scope.authenticate()
 
 
 	# -------------------------------------------------------------------------- 
@@ -95,14 +117,19 @@ DashboardController = ($scope) ->
 		$scope.request 'POST', {'liftpass-url':'/goods/add/v1/', 'key':$scope.application['key'], 'name':$scope.goodName}, $scope.addGoodSuccess
 
 	$scope.addGoodSuccess = (json) =>
+		$scope.successMessage("Good <strong>#{json.name}</strong> added")
 		$scope.goodName = ''
 		$scope.goods.push(json)
 		$scope.$apply()
 
 	$scope.deleteGood = (key) =>
-		$scope.request 'DELETE', {'liftpass-url':'/goods/delete/v1/', 'key':key}, $scope.deleteGoodSuccess
+		$scope.openDeleteModal('You are about to delete a good!', 'This can not be undone.', () =>
+			$scope.request 'DELETE', {'liftpass-url':'/goods/delete/v1/', 'key':key}, $scope.deleteGoodSuccess
+			return 
+		)
 	
 	$scope.deleteGoodSuccess = (json) =>
+		$scope.successMessage("Good successfully deleted")
 		$scope.loadGoods($scope.application['key'])
 
 	# -------------------------------------------------------------------------- 
@@ -150,10 +177,10 @@ DashboardController = ($scope) ->
 		$scope.$apply()
 
 	$scope.saveMetric= (metric) =>
-		console.log metric
 		$scope.request 'PUT', {'liftpass-url':'/metrics/update/v1/', 'key': $scope.application['key'], "#{metric['name']}": metric['value']}, $scope.saveMetricSuccess
 
 	$scope.saveMetricSuccess = (json) =>
+		$scope.successMessage("Progress metric saved")
 		return
 		
 
@@ -172,15 +199,28 @@ DashboardController = ($scope) ->
 		$scope.request 'POST', {'liftpass-url':'/prices/add/v1/', 'key': $scope.application['key'], 'engine':$scope.priceEngine, 'path':$scope.priceEngine, 'data':$scope.priceData}, $scope.addPriceSuccess
 
 	$scope.addPriceSuccess = () =>
+		$scope.successMessage("Price successfully added")
 		$scope.priceEngine = ''
 		$scope.pricePath = ''
 		$scope.priceData = ''
 		$scope.loadPrices()
 
 	$scope.deletePrice = (price) =>
-		$scope.request 'DELETE', {'liftpass-url':'/prices/delete/v1/', 'key': price['key']}, $scope.deletePriceSuccess
+		$scope.openDeleteModal('You are about to delete a set of prices!', 'This can not be undone.', () =>
+			$scope.request 'DELETE', {'liftpass-url':'/prices/delete/v1/', 'key': price['key']}, $scope.deletePriceSuccess
+			return 
+		)
+	
 	$scope.deletePriceSuccess = (json) =>
+		$scope.successMessage("Price successfully deleted")
 		$scope.loadPrices()
+
+	$scope.viewPrice = (price) =>
+		$scope.textModal = {
+			message: if price.data then price.data else price.path
+		}
+		$('#textModal').modal('show')
+		return
 
 	# -------------------------------------------------------------------------- 
 	# Prices
@@ -204,7 +244,11 @@ DashboardController = ($scope) ->
 			'modulusLimit': $scope.abtest['modulusLimit'],
 			'groupAPrices_key': $scope.abtest['groupAPrices_key']
 			'groupBPrices_key': $scope.abtest['groupBPrices_key']
-		}, $scope.loadABTestSuccess
+		}, $scope.saveABTestSuccess
+
+	$scope.saveABTestSuccess = (json) ->
+		$scope.successMessage("A/B test settings saved")
+		$scope.loadABTestSuccess($scope.abtest)
 
 	# -------------------------------------------------------------------------- 
 	# Analytics
@@ -262,7 +306,19 @@ DashboardController = ($scope) ->
 			}
 		})
 
-	$scope.toggleDashboardView = (view) ->
+	$scope.openDeleteModal = (title, message, callback) =>
+		$scope.deleteModal['title'] = title
+		$scope.deleteModal['message'] = message
+		$scope.deleteModal['callback'] = callback
+		$('#deleteModal').modal('show')
+
+	$scope.confirmDelete = () =>
+		console.log($scope.deleteModal)
+		$scope.deleteModal['callback']()
+		$('#deleteModal').modal('hide')
+
+	$scope.toggleDashboardView = (view) =>
+
 		$('.subview').hide()
 		$(view).show()
 
