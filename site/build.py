@@ -1,5 +1,6 @@
 import jinja2
 import os 
+import sys
 from bs4 import BeautifulSoup
 import csv
 import shutil
@@ -18,11 +19,14 @@ staticDir = 'static/'
 
 class Build:
 
-	def __init__(self):
+	def __init__(self, cache=True):
 		self.globalData = {}
 		self.env = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'), extensions=[jinja2_highlight.HighlightExtension])
 		self.env.globals = self.globalData
-		self.cache = dbm.open('.cache', 'c')
+		if cache:
+			self.cache = dbm.open('.cache', 'c')
+		else:
+			self.cache = dbm.open('.cache', 'n')
 
 	def __del__(self):
 		self.cache.close()
@@ -134,7 +138,10 @@ class Build:
 		return res
 
 
-		
-
 if __name__ == '__main__':
-	Build().buildAll()
+	
+	if len(sys.argv) == 1:
+		Build().buildAll()
+	else:
+		cache = not('--force' in sys.argv)
+		Build(cache=cache).buildAll()
