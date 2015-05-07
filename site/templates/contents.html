@@ -8,6 +8,13 @@
 				<li><a href="#{{group.bookmark}}">{{group.name}}</a></li>
 			{% endfor %}
 		</ul>
+		{% elif section.0 == 'Content Management' %}
+		<ul>
+			<li><a href="/doc/content/currencies/">Currencies</a></li>
+			<li><a href="/doc/content/metrics/">Metrics</a></li>
+			<li><a href="/doc/content/goods/">Goods</a></li>
+			<li><a href="/doc/content/prices/">Prices</a></li>
+		</ul>
 		{% endif %}
 	</li>
 {% endfor %}

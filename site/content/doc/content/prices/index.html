@@ -1,0 +1,73 @@
+{% extends "base-documentation.html" %}
+
+
+{% block documentation %}
+
+
+<h2>Prices</h2>
+
+<p>Liftpass uses JSON and CSV file formats to store prices for application goods and IAP rewards. The structure of the price files can be broken into two kinds:</p>
+
+<ol>
+	<li>simple files which namely specify a single price/reward for each good the application offers</li>
+	<li>complex files that use one or more progress metrics in order to derive the appropriate set of prices/rewards for a player</li>
+</ol>
+
+<p>Each format of pricing sets is called a pricing engine in Liftpass. Liftpass currently supports 4 pricing engines: JSON, CSV, MetricCSV and DTJSON.</p>
+
+<p>When getting started with Liftpass it is recomended to have at least one set of simple price sets available.</p>
+
+<h3>JSON</h3>
+
+<p>For developers this is perhaps the easiest way to enter prices and rewards for goods offered in the application. The JSON file must be a dictionary with keys representing the name of the goods and the value must either be an integer or an array of 8 integers (or null) representing the 8 currencies Liftpass supports. </p>
+
+{% highlight 'json' %}{
+	"sword": 100,
+	"knife": 50,
+}{% endhighlight %}
+
+{% highlight 'json' %}{
+	"sword": [100, 50, 0, null, null, null, null, null],
+	"knife": [50, 0, 200, null, null, null, null, null]
+}{% endhighlight %}
+
+
+<h3>CSV</h3>
+
+<p>Most product managers and game designers are very familiar with using Excel to manage and tweak prices and rewards of their game. Liftpass offers an easy way to get prices into the game by simply exporting the Excel sheet into CSV. The CSV file has no heading columns. The first column is the name of the virtual good or IAP. Each row must either have 9 columns (name of good and 8 virtual currency values) or two columns (name of good and single virtual currency value).
+
+<pre><code>sword, 100
+knife, 50
+</code></pre>
+
+<pre><code>sword, 100, 50, 0, null, null, null, null, null
+knife, 50, 0, 200, null, null, null, null, null
+</code></pre>
+
+<h3>MetricCSV</h3>
+
+<p>MetricCSV is an easy way to deliver different prices to different players based on a single progress metric. Generally speaking each column reprents a set of prices based on the value of a single progress metric. The first column is the name of the goods, the second column is the set of prices if the player does not fit into any of the later progress metrics, and the remaining columns are for each progress metric value you want to target unique prices to. The very top left value should be the name of the progress metric (ex. metricString1, metricString2, ...).</p>
+
+<p>The first row of the csv can take the following shape:</p>
+
+<pre><code>metricString4, Default, US, BR, DE</code></pre>
+
+<p>This means that 4 set of prices will be defined. Assuming that metricString4 represents the country the player is in, this CSV will contain 4 sets of prices: United States, Brazil, Germany and a default set of prices for all other players.</p>
+
+<p>After the first row, the row begins with the name of a virtual good or IAP followed by a single virtual currency price/reward for each of the pricing sets. Here is a complete example of MetricCSV file looks like:</p>
+
+<pre><code>metricString4, Default, US, BR, DE
+sword, 100, 200, 50, 75
+knife, 50, 50, 100, 150
+</code></pre>
+
+<div class="alert alert-warning">MetricCSV does not support more than a single currency pricing/rewards per good, per progress metric. Namely the price/reward entered represents the first currency the game has.</div>
+
+
+<h3>DTJSON</h3>
+
+
+
+
+
+{% endblock %}

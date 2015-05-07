@@ -1,0 +1,26 @@
+{% extends "base-documentation.html" %}
+
+
+{% block documentation %}
+
+<h2>Content Management</h2>
+
+<p>The core of Liftpass is the content management of the applications currencies, progress metrics, goods, and prices. When creating an application in Liftpass each of these sections must be populed to reflect how the application operates.</p>
+
+<p><strong><a href="/doc/content/currencies/">Currencies</a></strong><br>Currencies are the ways the player can buy and spend inside the game with virtual currency.</p>
+
+<p><strong><a href="/doc/content/metrics/">Metrics</a></strong><br>Liftpass records up to 32 different progress metrics. These are user defined and should reflect the game features and developer's interests.</p>
+
+<p><strong><a href="/doc/content/goods/">Goods</a></strong><br>Goods represent the virtual items the player can purchase within the application. Additionally goods are also IAP that can be purchased for real money.</p>
+
+<p><strong><a href="/doc/content/prices/">Prices</a></strong><br>Prices is where Currencies, Metrics and Goods come together so that every player can have a unique set of prices.</p>
+
+<h3>Managing the content</h3>
+
+<p>There are primary two ways to manage the content of the application:</p>
+
+<ol>
+	<li>A dashboard is included with the Liftpass server and can be accessed via any modern browser. The address is: http://server-name.com/dashboard/.</li>
+	<li>Alternatively, there is a full feature API that allows for managing every single aspect of Liftpass. More information can be found in the <a href="/doc/api/">API</a> page.</li>
+
+{% endblock %}

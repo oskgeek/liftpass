@@ -103,20 +103,33 @@
 		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
 		consequat.</p>
 		
-<pre><code>{
+{% highlight 'json' %}{
   "com.game-dev.iap1": 500,
   "com.game-dev.iap2": 1200,
   "com.game-dev.iap3": 5000,
-}</code></pre>
+}{% endhighlight %}
 	</div>
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
 		<h3>Localized pricing</h3>
+		<p>Using Liftpass's Country Pricing Engine it is easy to set unique virtual good prices and IAP rewards. Each column of your excel sheet is a unique country and rows are the names of your virtual goods and IAP.
+
+<pre><code>Goods, Default, US, BR, DE
+com.game-dev.iap1, 500, 550, 400, 500,
+com.game-dev.iap2, 1200, 1300, 1400, 1300
+com.game-dev.iap3, 5000, 6000, 5500, 4500
+</code></pre>
 	</div>
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
 		<h3>When and what is purchased</h3>
+		<p>The Liftpass SDK keeps track of the exact location the player was in the game when making an IAP or virtual good purchase. 
+{% highlight 'objective-c' %}[[Liftpass sharedInstance] recordVirtualGoodPurchase:@"com.monopoly.newyork"];{% endhighlight %}
 	</div>
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
 		<h3>Finding the right price</h3>
+		<p>It takes a million A/B tests to find the right prices for the right player. Liftpass serves all prices in an A/B test configuration so that you never loose the chance to see which prices your players prefer. Liftpass also enables third party providers to do the hard work for you via the API.</p>
+<pre><code>
+
+</code></pre>
 	</div>
 </div>
 
@@ -135,7 +148,14 @@
 	</div>
 </div>
 
-Struggling to find the right prices for your players? [Try Gondola]
+<div class="row promo">
+	<div class="col-xs-10">
+		<p>Struggling to find <strong>the right prices</strong> for your players?</p>
+	</div>
+	<div class="col-xs-2 text-center">
+		<a href="http://gondola.io" class="btn btn-primary">Try Gondola</a>
+	</div>
+</div>
 
 
 {% endblock %}

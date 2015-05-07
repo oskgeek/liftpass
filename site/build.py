@@ -46,9 +46,9 @@ class Build:
 			print('Loading:', name)
 
 			if data.endswith('.csv'):
-				self.globalData[name] = list(csv.reader(open('%s%s'%(dataDir, data), 'r')))
+				self.globalData[name] = list(csv.reader(open(os.path.join(dataDir, data), 'r')))
 			elif data.endswith('.yml'):
-				self.globalData[name] = yaml.safe_load(open('%s%s'%(dataDir, data), 'r'))
+				self.globalData[name] = yaml.safe_load(open(os.path.join(dataDir, data), 'r'))
 	# --------------------------------------------------------------------------
 	# 2) Render content 
 	# --------------------------------------------------------------------------
@@ -56,31 +56,31 @@ class Build:
 		for directory, nextDir, files in os.walk(contentDir):
 			
 			currentDir = directory
-			currentDir = currentDir.replace(contentDir, outputDir)
+			currentDir = currentDir.replace(contentDir, outputDir, 1)
 			
 			if os.path.exists(currentDir) == False:
+				print(currentDir)
 				os.mkdir(currentDir)
-
 
 			for content in files:
 				if content.endswith('.html') == False:
 					continue
 
-				print('Processing: %s/%s'%(directory, content))
+				print('Processing:', os.path.join(directory, content))
 
 				# Open page
-				data = open('%s/%s'%(directory, content), 'r').read()
+				data = open(os.path.join(directory, content), 'r').read()
 
 				
 				# Render page 
 				template = self.env.from_string(data)
-				data = template.render(page="%s/%s"%(directory, content))
+				data = template.render(page=os.path.join(directory, content))
 
 				# Make it pretty
 				data = BeautifulSoup(data).prettify()
 
 				# Save
-				open('%s/%s'%(currentDir, content), 'w+').write(data)
+				open(os.path.join(currentDir, content), 'w+').write(data)
 
 	# --------------------------------------------------------------------------
 	# 3) Compile static data
@@ -92,7 +92,7 @@ class Build:
 			if '/.' in directory:
 				continue
 
-			currentDir = '%s/%s'%(outputDir, directory)
+			currentDir = os.path.join(outputDir, directory)
 			
 			if os.path.exists(currentDir) == False:
 				os.mkdir(currentDir)
@@ -102,24 +102,25 @@ class Build:
 				if file[0] == '.':
 					continue
 
-				source = '%s/%s'%(directory, file)
+				source = os.path.join(directory, file)
 				
 				if file.endswith('.sass'):
 					name = file
 					name = name.replace('.sass', '.css')
+					destination = os.path.join(currentDir, name)
 					if self.shouldCompile(source, destination):
 						print('Compiling:', source)
 						data = sass.compile(string=open(source, 'r').read())
 						open(destination, 'w+').write(data)
 				elif file.endswith('.coffee'):
 					name = file.replace('.coffee', '.js')
-					destination = '%s/%s'%(currentDir, name)
+					destination = os.path.join(currentDir, name)
 					if self.shouldCompile(source, destination):
 						print('Compiling:', source)
 						data = coffeescript.compile(open(source, 'r').read())
 						open(destination, 'w+').write(data)
 				else:
-					destination = '%s/%s'%(currentDir, file)
+					destination = os.path.join(currentDir, file)
 					if self.shouldCompile(source, destination):
 						print('Copying:', source)
 						shutil.copy(source, destination)
