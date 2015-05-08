@@ -1,63 +1,53 @@
 import sys
 import os
 
-#
-# Update import path
-#
-
-BasePath = os.path.abspath('./')
-DataPath = BasePath+'/data/'
-StaticPath = BasePath+'/static/'
-sys.path.append(BasePath)
-
-#
-# Analytics Storage
-#
-
-AnalyticsStorage = {
-	'engine': 'core.storage.filesystem',
-	'path': BasePath+'/tmp/'
-}
-
-#
-# Content Database
-#
-
-ContentAddress = 'sqlite:///%s/content.db'%DataPath
-ContentDebug = False
-
-#
-# Monitoring
-#
-
-MonitorEngine = 'core.monitoring.SimpleMonitoring'
-MonitorAddress =  '%s/monitoring'%DataPath
-MonitorDebug = False
-
-#
-# User Authentication
-#
-
+# ------------------------------------------------------------------------------
+# User Authentication - Liftpass is a single user application (for now)
+# ------------------------------------------------------------------------------
 UserKey = b'$UserKey'
 UserSecret = b'$UserSecret'
 
+# ------------------------------------------------------------------------------
+# Paths 
+# ------------------------------------------------------------------------------
+BasePath = os.path.abspath('./')
+sys.path.append(BasePath)
 
-# 
-# Dashboard 
-#
-DashboardAddress = '127.0.0.1'
-DashboardPort = 8080
-DashboardDebug = True
-DashboardStatic = '%s/dashboard/'%StaticPath
-DashboardTerminal = {
-	'engine': 'core.dashboard.terminal.local',
-	'path': '%s/terminal/'%DataPath
+# Where application data is stored
+DataPath = os.path.join(BasePath,'data/')
+
+# ------------------------------------------------------------------------------
+# Analytics Storage - Where SDK updates are stored before being processed
+# ------------------------------------------------------------------------------
+AnalyticsStorage = {
+	'engine': 'core.storage.filesystem',
+	'path': os.path.join(DataPath, 'analytics/')
 }
 
-#
-# API Interface Service
-#
+# ------------------------------------------------------------------------------
+# Content Database - Where application content and settings are stored
+# ------------------------------------------------------------------------------
+ContentAddress = 'sqlite:///%s/content.db'%DataPath
+ContentDebug = False
 
-APIAddress = '127.0.0.1'
-APIPort = 9090
-APIDebug = True
+# ------------------------------------------------------------------------------
+# Monitoring  - records server activity and performance (not yet supported)
+# ------------------------------------------------------------------------------
+MonitorEngine = None
+
+# ------------------------------------------------------------------------------
+# Debug Terminal - caches user updates for debuging
+# ------------------------------------------------------------------------------
+DashboardTerminal = {
+	'engine': 'core.dashboard.terminal.local',
+	'path': os.path.join(DataPath, 'terminal/')
+}
+
+# ------------------------------------------------------------------------------
+# API Interface Service
+# ------------------------------------------------------------------------------
+APIServer = {
+	'address': '127.0.0.1',
+	'port': 9090,
+	'debug': True
+}
