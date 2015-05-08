@@ -19,7 +19,7 @@ import core.content.errors as errors
 import core.util.rest as rest
 import core.util.debug as debug
 import core.util.extras as extras
-import core.dashboard.terminal as terminal
+import core.terminal as terminal
 
 
 app = Flask(__name__)
@@ -220,8 +220,11 @@ def pricesDelete(version):
 @rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def pricesAdd(version):
 	backend = content.Content()
-	prices = backend.addPrices(request.values['key'], request.values['engine'], request.values['data'], request.values['path'])
-	return prices.as_dict()
+	try:
+		prices = backend.addPrices(request.values['key'], request.values['engine'], request.values.get('data',''), request.values.get('path', ''))
+		return prices.as_dict()
+	except pricing.DataEngineException as e:
+		return {'error': '%s'%e}
 
 
 def terminalLog():

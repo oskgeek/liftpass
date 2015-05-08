@@ -408,4 +408,22 @@
                 ...
             }
         }
+- name: SDK Debugging
+  bookmark: debug
+  functions: 
+    - url: /debug/get/v1/
+      method: get
+      arguments: 
+        - name: key
+          description: Application key
+      response: >
+        {
+          "log": [
+            {
+              "request": {},
+              "response": {}
+            },
+            ...
+          ]
+        }
 

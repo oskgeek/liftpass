@@ -64,6 +64,13 @@ def buildResponse(content, secret, application=None):
 
 	return response
 
+def cleanupValues():
+	for k in request.values:
+		try:
+			request.values[k] = request.values[k].strip()
+		except:
+			pass
+
 
 def userAuthenticate(secretLookup):
 	def decorator(f): 
@@ -75,6 +82,7 @@ def userAuthenticate(secretLookup):
 				request.values = json.loads(message.decode('utf-8'))
 			else: 
 				request.values = request.json
+			cleanupValues()
 
 			# If JSON not specified
 			if request.values == None:

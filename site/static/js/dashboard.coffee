@@ -54,7 +54,12 @@ DashboardController = ($scope) ->
 			headers: {
 				'liftpass-hash': hash
 			},
-			success: callback
+			success: (json) ->
+				console.log json
+				if 'error' of json
+					$scope.errorMessage(json['error'])
+				else
+					callback(json)
 			error: (response, status, error) ->
 				console.log response, status, error
 				$scope.errorMessage(error)
@@ -196,7 +201,7 @@ DashboardController = ($scope) ->
 		$scope.$apply()
 
 	$scope.addPrice = () =>
-		$scope.request 'POST', {'liftpass-url':'/prices/add/v1/', 'key': $scope.application['key'], 'engine':$scope.priceEngine, 'path':$scope.priceEngine, 'data':$scope.priceData}, $scope.addPriceSuccess
+		$scope.request 'POST', {'liftpass-url':'/prices/add/v1/', 'key': $scope.application['key'], 'engine':$scope.priceEngine, 'path':$scope.pricePath, 'data':$scope.priceData}, $scope.addPriceSuccess
 
 	$scope.addPriceSuccess = () =>
 		$scope.successMessage("Price successfully added")

@@ -6,8 +6,9 @@ import config
 import core.util.debug as debug
 
 class DataEngineException(Exception):
-	def __int__(self, message):
+	def __init__(self, message):
 		self.message = message
+
 	def __str__(self):
 		return self.message
 
@@ -45,7 +46,10 @@ class JSONDataEngine(DataEngine):
 	def validate(prices):
 
 		if prices['data'] != None:
-			data = json.loads(prices['data'])
+			try:
+				data = json.loads(prices['data'])
+			except:
+				raise DataEngineException('JSON data failed to be parsed')
 		else:
 			raise DataEngineException('Path based prices not (yet) supported')
 
@@ -201,6 +205,27 @@ class PricingEngine:
 		if self.abtest['groupBPrices_key'] != None:
 			self.groupBPrices = self.__loadPrices(self.abtest['groupBPrices_key'])
 
+	@staticmethod
+	def getPricingEngine(name):
+		if name.upper() == 'JSON':
+			return JSONDataEngine
+		elif name.upper() == 'CSV':
+			return CSVDataEngine
+		elif name.upper() == 'MetricCSV':
+			return MetricCSVDataEngine
+
+	
+	@staticmethod
+	def validate(price):
+		if type(price) != dict:
+			price = price.as_dict()
+
+		engine = PricingEngine.getPricingEngine(price['engine'])
+		if engine == None:
+			raise DataEngineException('Unknown pricing engine')
+
+		engine.validate(price)
+
 
 	def getPrices(self, user, progress):
 		
@@ -225,11 +250,9 @@ class PricingEngine:
 
 		data = backend.getPrice(prices_key).as_dict()
 
-		if data['engine'] == 'JSON':
-			return JSONDataEngine(data)
-		elif data['engine'] == 'CSV':
-			return CSVDataEngine(data)
-		elif data['engine'] == 'MetricCSV':
-			return MetricCSVDataEngine(data)
+		engine = PricingEngine.getPricingEngine(data['engine'])
+		if engine == None: 
+			raise DataEngineException('Unknown pricing engine')
 
-		return None
+		return engine(data)
+		

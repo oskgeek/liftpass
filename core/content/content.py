@@ -162,6 +162,7 @@ class Content:
 	def addPrices(self, application_key, engine, data, path):
 		session = models.getSession()
 		prices = models.Prices(application_key = application_key, engine=engine, data=data, path=path)
+		pricing.PricingEngine.validate(prices)
 		session.add(prices)
 		session.commit()
 		return prices
