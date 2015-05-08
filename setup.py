@@ -36,6 +36,12 @@ class ConfigureCommand(Command):
 		if os.path.exists('data') == False:
 			print('Creating data/ directory')
 			os.mkdir('data')
+		if os.path.exists('data/analytics') == False:
+			print('Creating data/analytics directory')
+			os.mkdir('data/analytics')
+		if os.path.exists('data/terminal') == False:
+			print('Creating data/terminal directory')
+			os.mkdir('data/terminal')
 		if os.path.exists('tmp') == False:
 			print('Creating tmp/ directory')
 			os.mkdir('tmp')

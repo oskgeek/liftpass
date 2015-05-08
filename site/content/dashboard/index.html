@@ -168,6 +168,8 @@
 							<label for="priceEngine">Engine</label>
 							<select class="form-control" ng-model="priceEngine" name="priceEngine">
 								<option>JSON</option> 
+								<option>CSV</option> 
+								<option>Metric CSV</option> 
 							</select>
 						</div>
 						<div class="form-group">
@@ -239,6 +241,10 @@
 		</div>
 		
 		<div class="subview" id="debugView">
+			<pre ng-if="debugData.log.length" ng-repeat="log in debugData.log"><code>{{log}}</code></pre>
+			<div class="alert alert-info">
+				No application activity has been recored yet. Make sure you enable the debug flag in the Liftpass SDK.
+			</div>
 		</div>
 
 		<div class="subview" id="sdkView">

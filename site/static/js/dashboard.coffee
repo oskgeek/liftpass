@@ -261,8 +261,11 @@ DashboardController = ($scope) ->
 	# Debug
 	# --------------------------------------------------------------------------	
 	$scope.loadDebug = () =>
+		$scope.request 'GET', {'liftpass-url':'/debug/get/v1/', 'key': $scope.application['key']}, $scope.loadDebugSuccess
+	
+	$scope.loadDebugSuccess = (json) =>
 		$scope.toggleDashboardView('#debugView')
-		return
+		$scope.debugData = json
 
 	# -------------------------------------------------------------------------- 
 	# SDK

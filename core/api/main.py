@@ -280,6 +280,12 @@ def update(version):
 
 	return {'goods':userPrices}
 
+@app.route('/debug/get/<version>/', methods=['GET'])
+@rest.userAuthenticate(secretLookup=singleUserAuthenticate)
+def debugGet(version):
+	theTerminal = terminal.getTerminal()
+	return {'log':theTerminal.get(request.values['key'])}
+
 
 @app.route('/export/json/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=singleUserAuthenticate)
