@@ -55,10 +55,10 @@ class JSONDataEngine(DataEngine):
 			if type(data[k]) not in (int, list, float):
 				raise DataEngineException('Values must be arrays or numbers')
 			if type(data[k]) == list:
-				if len(data[k]) > 8:
-					raise DataEngineException('Array values must length of up to 8 items')
-				if any(map(lambda i: type(i) not in [int, float], data[k])):
-					raise DataEngineException('Array values must be all numbers')
+				if len(data[k]) != 8:
+					raise DataEngineException('Array values must have exactly 8 elements')
+				if any(map(lambda i: type(i) not in [int, float, type(None)], data[k])):
+					raise DataEngineException('Array values must be all numbers or null')
 		return data
 
 
@@ -77,17 +77,38 @@ class CSVDataEngine(DataEngine):
 		for row in raw:
 			if len(row) == 0:
 				continue
-			if len(row) > 2 or len(row) == 1:
-
+			elif len(row) > 2 or len(row) == 1:
 				raise DataEngineException('Rows must have exactly 2 columns')
-			if len(row) == 2:
+			elif len(row) == 2:
 				try:
 					data[row[0].strip()] = [float(row[1])]+[None]*7
 				except:
 					raise DataEngineException('The first column must be a string, the second column must be a number')
+			elif len(row) == 8:
+				try:
+					data[row[0].strip()] = []
+					for item in row[1:]:
+						if item == None: 
+							data[row[0].strip()].append(item)
+						else:
+							data[row[0].strip()].append(float(item))
+				except:
+					raise DataEngineException('The first column must be a string, the other 8 columns must be numbers')
+			else: 
+				raise DataEngineException('Prices for goods must either be in a single currency or have 8 currencies defined')
 		return data
 
 class MetricCSVDataEngine(DataEngine):
+	def getPrices(self, progress):
+		p = progress[self.data['metric']]
+		
+		if type(p) == str:
+			p = p.strip().lower()
+
+		if p in self.data['data']:
+			return self.data['data'][p]
+
+		return self.data['data']['default']
 
 	@staticmethod
 	def validate(prices):
@@ -111,8 +132,23 @@ class MetricCSVDataEngine(DataEngine):
 		except:
 			raise DataEngineException('Metric name not valid/recognized')
 
-		progress = list(map(lambda p: p.strip(), rows[0][1:]))
-		data = dict(map(lambda p: (p.strip(), {}), rows[0][1:]))
+		if metric<8:
+			progress = list(map(lambda p: p.strip().lower(), rows[0][1:]))
+		else:
+			try:
+				progress = []
+				for p in rows[0][1:]:
+					if p.strip().lower() == 'default':
+						progress.append('default')
+					else:
+						progress.append(float(p))
+			except: 
+				raise DataEngineException('Numberic progress metric must have numeric progress values for the columns')
+
+		data = dict(map(lambda p: (p, {}), progress))
+
+		if any(map(lambda p: p.lower() == 'default', progress)) == False:
+			raise DataEngineException('Missing default pricing column')
 		
 		for row in rows[1:]:
 			# Remove trailing spaces

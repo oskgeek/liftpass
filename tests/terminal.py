@@ -49,5 +49,5 @@ class TestTerminal(APITest):
 
 
 suite = unittest.TestSuite()
-suite.addTests(discoverTests(TestTerminal, config.APIAddress, config.APIPort, config.UserKey, config.UserSecret, main.app))
+suite.addTests(discoverTests(TestTerminal, config.APIServer['address'], config.APIServer['port'], config.UserKey, config.UserSecret, main.app))
 unittest.TextTestRunner(verbosity=2).run(suite)

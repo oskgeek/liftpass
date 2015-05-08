@@ -29,7 +29,7 @@
 	<div class="col-xs-12 col-sm-4">
 		<div class="icon-player"></div>
 		<h3>Target Players</h3>
-		<p>Develop complex pricing strategies that can target everything from whole groups down to single players. Experiment with individual prices for each segment to optimize retention and monetization.</p>
+		<p>Develop complex pricing strategies that can target everything from large groups down to single players. Experiment with individual prices for each segment to optimize retention and monetization.</p>
 	</div>
 </div>
 
@@ -98,10 +98,7 @@
 <div class="row use-cases">
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
 		<h3>Prices according to progress</h3>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		consequat.</p>
+		<p>With Liftpass, you can adjust virtual goods prices depending on how players progress through your game. Reduce the price for the shotgun if a player is struggling in the beginning, and increase the price for the Bazooka for experts to challenge them towards the end.</p>
 		
 {% highlight 'json' %}{
   "com.game-dev.iap1": 500,
@@ -109,9 +106,10 @@
   "com.game-dev.iap3": 5000,
 }{% endhighlight %}
 	</div>
+
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
 		<h3>Localized pricing</h3>
-		<p>Using Liftpass's Country Pricing Engine it is easy to set unique virtual good prices and IAP rewards. Each column of your excel sheet is a unique country and rows are the names of your virtual goods and IAP.
+		<p>Have you ever investigated how certain countries are more drawn towards some virtual goods in your game than others? Your Japanese players might prefer the samurai sword, while your fans in the US like the tomahawk. Users in the Uk rather buy rubies, while users in Argentina love emeralds. Liftpass allows you to take these insights and create pricing strategies for each country.</p>
 
 <pre><code>Goods, Default, US, BR, DE
 com.game-dev.iap1, 500, 550, 400, 500,
@@ -119,7 +117,30 @@ com.game-dev.iap2, 1200, 1300, 1400, 1300
 com.game-dev.iap3, 5000, 6000, 5500, 4500
 </code></pre>
 	</div>
+
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
+		<h3>EXPORT DATA TO ANALYZE</h3>
+		<p>Liftpass allows you to easily export all behavioral player data you record in your game. Just download a CSV or JSON file, and use it for in depth analysis with another analytics tool, or sell it to user acquisition or advertising vendors for some extra cash.</p>
+
+
+<pre><code>Goods, Default, US, BR, DE
+com.game-dev.iap1, 500, 550, 400, 500,
+com.game-dev.iap2, 1200, 1300, 1400, 1300
+com.game-dev.iap3, 5000, 6000, 5500, 4500
+</code></pre>
+	</div>
+
+	<div class="col-xs-12 col-sm-6 col-md-3 case">
+		<h3>SAFELY EXPERIMENT</h3>
+		<p>Keep experimenting with new price sets. Even if you mess up, you can always go back to the last known good configuration. Adjusting your game content is fast and safe at the same time.</p>
+		
+<pre><code>Goods, Default, US, BR, DE
+com.game-dev.iap1, 500, 550, 400, 500,
+com.game-dev.iap2, 1200, 1300, 1400, 1300
+com.game-dev.iap3, 5000, 6000, 5500, 4500
+</code></pre>
+	</div>
+<!--	<div class="col-xs-12 col-sm-6 col-md-3 case">
 		<h3>When and what is purchased</h3>
 		<p>The Liftpass SDK keeps track of the exact location the player was in the game when making an IAP or virtual good purchase. 
 {% highlight 'objective-c' %}[[Liftpass sharedInstance] recordVirtualGoodPurchase:@"com.monopoly.newyork"];{% endhighlight %}
@@ -128,9 +149,8 @@ com.game-dev.iap3, 5000, 6000, 5500, 4500
 		<h3>Finding the right price</h3>
 		<p>It takes a million A/B tests to find the right prices for the right player. Liftpass serves all prices in an A/B test configuration so that you never loose the chance to see which prices your players prefer. Liftpass also enables third party providers to do the hard work for you via the API.</p>
 <pre><code>
-
 </code></pre>
-	</div>
+	</div>-->
 </div>
 
 <div class="row blog">

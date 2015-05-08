@@ -46,7 +46,7 @@ def applications():
 
 def start():
 	global app
-	app.run(debug=config.DashboardDebug, host=config.DashboardAddress, port=config.DashboardPort)
+	#app.run(debug=config.DashboardDebug, host=config.DashboardAddress, port=config.DashboardPort)
 
 
 def getApp():

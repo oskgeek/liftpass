@@ -68,7 +68,7 @@ class TestJSONEngine(unittest.TestCase):
 		p = pricing.JSONDataEngine.validate({'data': json.dumps({'sword':1000})})
 		self.assertIsInstance(p, dict)
 
-		p = pricing.JSONDataEngine.validate({'data': json.dumps({'sword':[1000]})})
+		p = pricing.JSONDataEngine.validate({'data': json.dumps({'sword':[1000]+[None]*7})})
 		self.assertIsInstance(p, dict)
 
 		with self.assertRaises(pricing.DataEngineException):
@@ -117,9 +117,11 @@ class TestCSVEngine(unittest.TestCase):
 			p = pricing.CSVDataEngine.validate({'data': data})
 
 class TestMetricCSVEngine(unittest.TestCase):
+	def __makeProgress(self, p, v):
+		return [None]*(p-1) + [v] + [None]*(32-p)
 
 	def testEngine(self):
-
+	
 		data = """
 			metricString5, Default, US, BR, DE
 			sword, 100, 200, 300, 500
@@ -127,18 +129,30 @@ class TestMetricCSVEngine(unittest.TestCase):
 			knife, 300, 400, 500, 700
 
 		"""
-		p = pricing.MetricCSVDataEngine.validate({'data':data})
-		self.assertEqual(p['data']['Default']['sword'][0], 100)
-		self.assertEqual(p['data']['Default']['knife'][0], 300)
-		self.assertEqual(p['data']['US']['sword'][0], 200)
-		self.assertEqual(p['data']['US']['knife'][0], 400)
-		self.assertEqual(p['data']['DE']['sword'][0], 500)
-		self.assertEqual(p['data']['DE']['knife'][0], 700)
-		self.assertEqual(p['metric'], 4)
+		p = pricing.MetricCSVDataEngine({'data':data})
+		self.assertEqual(p.getPrices(self.__makeProgress(5, 'US'))['sword'][0], 200)
+		self.assertEqual(p.getPrices(self.__makeProgress(5, 'BR'))['saber'][0], 400)
+		self.assertEqual(p.getPrices(self.__makeProgress(5, 'DE'))['knife'][0], 700)
+		self.assertEqual(p.getPrices(self.__makeProgress(5, 'JP'))['knife'][0], 300)
 
 		# Check number metric conversion 
 		data = """
-			metricNumber5, Default, US, BR, DE
+			metricString8, Default, A, B, C
+			sword, 100, 200, 300, 500
+		"""
+		p = pricing.MetricCSVDataEngine.validate({'data':data})
+
+		# Check number metric conversion 
+		data = """
+			metricNumber1, Default, 1, 2, 3
+			sword, 100, 200, 300, 500
+		"""
+		p = pricing.MetricCSVDataEngine.validate({'data':data})
+
+
+		# Check number metric conversion 
+		data = """
+			metricNumber5, Default, 10, 20, 30
 			sword, 100, 200, 300, 500
 		"""
 		p = pricing.MetricCSVDataEngine.validate({'data':data})
@@ -146,7 +160,7 @@ class TestMetricCSVEngine(unittest.TestCase):
 
 		# Metric number out of bound
 		data = """
-			metricNumber40, Default, US, BR, DE
+			metricNumber40, Default, 10, 20, 30
 			sword, 100, 200, 300, 500
 		"""
 		with self.assertRaises(pricing.DataEngineException):
@@ -162,7 +176,7 @@ class TestMetricCSVEngine(unittest.TestCase):
 
 		# Row with missing column
 		data = """
-			metricNumber5, Default, US, BR, DE
+			metricNumber5, Default, 10, 20, 30
 			sword, 100, 200, 300
 		"""
 		with self.assertRaises(pricing.DataEngineException):
@@ -170,7 +184,7 @@ class TestMetricCSVEngine(unittest.TestCase):
 
 		# Row with too many elements
 		data = """
-			metricNumber5, Default, US, BR, DE
+			metricNumber5, Default, 10, 20, 30
 			sword, 100, 200, 300, 400, 500
 		"""
 		with self.assertRaises(pricing.DataEngineException):
