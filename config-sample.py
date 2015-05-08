@@ -39,7 +39,7 @@ MonitorEngine = None
 # Debug Terminal - caches user updates for debuging
 # ------------------------------------------------------------------------------
 DashboardTerminal = {
-	'engine': 'core.dashboard.terminal.local',
+	'engine': 'core.terminal.local',
 	'path': os.path.join(DataPath, 'terminal/')
 }
 
