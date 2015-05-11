@@ -15,3 +15,6 @@ class Storage():
 
 	def load(self, filename):
 		pass
+	
+	def delete(self, filename):
+		pass

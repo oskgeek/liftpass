@@ -62,7 +62,7 @@ setup(
 		'libsass',
 		'jinja2_highlight',
 		'flask-cors',
-
+		'boto',
 	], 
 	cmdclass = {
 		'config': ConfigureCommand

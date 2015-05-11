@@ -12,12 +12,9 @@ class Filesystem(Storage):
 		pass
 
 	def save(self, filename, data):
-		f = open('%s/%s'%(self.root, filename), 'w+')
+		f = open(os.path.join(self.root, filename), 'w+')
 		f.write(data)
 		f.close()
-
-	def saveStream(self, filename):
-		return open('%s/%s'%(self.root, filename), 'w+')
 
 	def count(self):
 		return len(os.listdir(self.root))
@@ -26,6 +23,8 @@ class Filesystem(Storage):
 		return os.listdir(self.root)
 
 	def load(self, filename):
-		f = open('%s/%s'%(self.root, filename), 'r')
+		f = open(os.path.join(self.root, filename), 'r')
 		return f.read()
 
+	def delete(self, filename):
+		os.remove(os.path.join(self.root, filename))
