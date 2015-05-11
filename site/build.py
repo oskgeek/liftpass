@@ -9,6 +9,7 @@ import sass
 import yaml
 import coffeescript
 import jinja2_highlight
+import datetime
 
 
 contentDir = 'content/'
@@ -49,6 +50,10 @@ class Build:
 				self.globalData[name] = list(csv.reader(open(os.path.join(dataDir, data), 'r')))
 			elif data.endswith('.yml'):
 				self.globalData[name] = yaml.safe_load(open(os.path.join(dataDir, data), 'r'))
+
+		self.globalData['created'] = datetime.datetime.now()
+
+
 	# --------------------------------------------------------------------------
 	# 2) Render content 
 	# --------------------------------------------------------------------------

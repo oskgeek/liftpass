@@ -46,6 +46,9 @@ html,body{
 	display: block;
 	height: 200px;
 }
+.print-header {
+	display: none;
+}
 h1 {
 	font-family: $headingFont;
 	color: $red-1;
@@ -380,6 +383,11 @@ a:hover {
 }
 .footer p {
 	text-align: center;
+	color: white;
+}
+.footer .info {
+	font-size: 12px;
+	margin: 20px 0;
 }
 .footer p a{
 	font-size: 16px;
@@ -458,3 +466,52 @@ a:hover {
 .label-post { background: $blue-2; }
 .label-delete { background: $red-1; }
 .label-put { background: $yellow-2; }
+
+
+
+
+
+
+
+//------------------------------------------------------------------------------
+// Printing 
+//------------------------------------------------------------------------------
+@media print {
+	body {
+		margin: 25px;
+	}
+	.contents, .signup {
+		display: none;
+	}
+
+	h1 {
+		font-size: 32px;
+	}
+	h2 {
+		font-size: 32px;
+	}
+	h3 {
+		font-size: 26px;
+	}
+	h4 {
+		font-size: 18px;
+	}
+	p { 
+		font-size: 12px;
+	}
+	pre {
+		font-size: 9px;
+	}
+	.print-header {
+		display: block;
+	}
+	.print-header img {
+		height: 32px;
+		width: auto;
+	}
+	.footer a {
+		display: none;
+	}
+}
+
+

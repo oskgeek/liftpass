@@ -109,7 +109,7 @@
 				<tbody>
 					<tr ng-repeat="good in goods">
 						<td>{{good.name}}</td>
-						<td><button class="btn btn-danger" ng-click="deleteGood(good.key)">Remove</button></td>
+						<td><button class="btn btn-danger btn-xs" ng-click="deleteGood(good.key)">Remove</button></td>
 					</tr>
 				</tbody>
 			</table>
@@ -198,11 +198,14 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="price in prices">
-						<td>{{price.created}}</td>
+					<tr ng-repeat="price in prices | orderBy: '-created'" ng-class="{'text-muted': price.deleted}">
+						<td >{{price.created}}</td>
 						<td>{{price.engine}}</td>
-						<td><button type="button" class="btn btn-default" ng-click="viewPrice(price)">View</button></td>
-						<td><button type="button" class="btn btn-danger" ng-click="deletePrice(price)">Delete</button></td>
+						<td>
+							<button type="button" class="btn btn-default btn-xs" ng-click="viewPrice(price)" ng-show="!price.deleted">View</button>
+							<span ng-show="price.deleted">Deleted</span>
+						</td>
+						<td><button type="button" class="btn btn-danger btn-xs" ng-click="deletePrice(price)" ng-show="!price.deleted">Delete</button></td>
 					</tr>
 			</table>
 		</div>
