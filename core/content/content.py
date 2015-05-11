@@ -96,27 +96,39 @@ class Content:
 
 	def getABTest(self, application_key):
 		session = models.getSession()
-		abtest = session.query(models.ABTest).join(models.Application).filter(models.Application.key == application_key).first()
+		abtest = session.query(models.ABTest).join(models.Application).filter(models.Application.key == application_key).order_by(models.ABTest.created.desc()).first()
 		return abtest
 
 	def setABTest(self, application_key, json):
 		session = models.getSession()
 
-		abtest = session.query(models.ABTest).join(models.Application).filter(models.Application.key == application_key).first()
+		abtest = session.query(models.ABTest).join(models.Application).filter(models.Application.key == application_key).order_by(models.ABTest.created.desc()).first()
 
 		if abtest:
+
+			newABTest = models.ABTest()
+			newABTest.application_key = abtest.application_key
+			newABTest.countryWhiteList = abtest.countryWhiteList
+			newABTest.countryBlackList = abtest.countryBlackList
+			newABTest.modulus = abtest.modulus
+			newABTest.modulusLimit = abtest.modulusLimit
+			newABTest.groupAPrices_key = abtest.groupAPrices_key
+			newABTest.groupBPrices_key = abtest.groupBPrices_key
+
 			# Check price foreign keys manually
 			for prices in ['groupAPrices_key', 'groupBPrices_key']:
 				if prices in json and json[prices] != None:
-					count = session.query(models.Prices).join(models.Application).filter(models.Application.key == abtest.application_key).filter(models.Prices.key==json[prices]).count()
+					count = session.query(models.Prices).join(models.Application).filter(models.Application.key == newABTest.application_key).filter(models.Prices.key==json[prices]).count()
 					if count == 1:
 						pass
 					else:
 						del json[prices]
 
-			models.updateObjectWithJSON(abtest, json, ['key'])
+			models.updateObjectWithJSON(newABTest, json, ['key'])
+			session.add(newABTest)
 			session.commit()
-		return abtest 
+
+			return newABTest 
 
 	def getMetrics(self, application_key):
 		session = models.getSession()
@@ -147,17 +159,20 @@ class Content:
 		session = models.getSession()
 
 		# Check if prices is currently used
-		count =  session.query(models.ABTest).join(models.Application).filter(models.Application.key == models.ABTest.application_key).filter(models.ABTest.groupAPrices_key == prices_key).count()
-		if count != 0:
-			return 0
+		# count =  session.query(models.ABTest).join(models.Application).filter(models.Application.key == models.ABTest.application_key).filter(models.ABTest.groupAPrices_key == prices_key).count()
+		# if count != 0:
+		# 	return 0
+		# count =  session.query(models.ABTest).join(models.Application).filter(models.Application.key == models.ABTest.application_key).filter(models.ABTest.groupBPrices_key == prices_key).count()
+		# if count != 0:
+		# 	return 0
 		
-		count =  session.query(models.ABTest).join(models.Application).filter(models.Application.key == models.ABTest.application_key).filter(models.ABTest.groupBPrices_key == prices_key).count()
-		if count != 0:
-			return 0
+		prices = session.query(models.Prices).filter_by(key = prices_key).first()
+		prices.data = None
+		prices.path = None
+		prices.deleted = True
 
-		res = session.query(models.Prices).filter_by(key = prices_key).delete()
 		session.commit()
-		return res
+		return True
 
 	def addPrices(self, application_key, engine, data, path):
 		session = models.getSession()

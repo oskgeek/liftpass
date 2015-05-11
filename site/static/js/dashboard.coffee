@@ -55,14 +55,12 @@ DashboardController = ($scope) ->
 				'liftpass-hash': hash
 			},
 			success: (json) ->
-				console.log json
 				if 'error' of json
 					$scope.errorMessage(json['error'])
 				else
 					callback(json)
 			error: (response, status, error) ->
-				console.log response, status, error
-				$scope.errorMessage(error)
+				$scope.errorMessage("An error occured while talking to Liftpass")
 		})
 			
 

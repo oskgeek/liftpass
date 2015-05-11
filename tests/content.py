@@ -240,9 +240,10 @@ class TestABTest(APITest):
 		(status, f) = self.request('GET', '/abtest/get/v1/', {'key': a['key']})
 
 		# Fail to delete price when being used in an AB Test
-		self.assertEqual(e['deleted'], 0)
-		self.assertEqual(f['groupAPrices_key'], b['key'])
 		self.assertEqual(c['groupAPrices_key'], b['key'])
+
+		self.assertEqual(e['deleted'], 1)
+		self.assertEqual(f['groupAPrices_key'], b['key'])
 
 		# Delete of price works when price not being used in an AB Test
 		(status, g) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'groupAPrices_key':None})

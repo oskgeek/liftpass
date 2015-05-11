@@ -10,7 +10,7 @@ import core.content.errors as errors
 import core.api.main as main
 import core.content.content as content
 import core.util.extras as extras
-import core.dashboard.terminal as terminal
+import core.terminal as terminal
 from core.util.test import *
 
 

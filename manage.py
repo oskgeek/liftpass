@@ -34,7 +34,7 @@ elif sys.argv[1] == 'demo':
 		print('Nevermind - incorrect answer. No demo will be built.')
 
 elif sys.argv[1] == 'test':
-	if sys.argv[2] == 'API':
+	if sys.argv[2] == 'content':
 		import tests.content
 	elif sys.argv[2] == 'pricing':
 		import tests.pricing

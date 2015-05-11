@@ -1,5 +1,5 @@
 import sqlalchemy
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Text
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Text, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -158,6 +158,8 @@ class ABTest(Base, CoreBase):
 	groupAPrices_key = Column(String, ForeignKey('prices.key'), nullable=True)
 	groupBPrices_key = Column(String, ForeignKey('prices.key'), nullable=True)
 
+	created = Column(DateTime, default=datetime.datetime.utcnow)
+
 
 class Prices(Base, CoreBase):
 
@@ -172,6 +174,8 @@ class Prices(Base, CoreBase):
 	path = Column(String, nullable=True)
 
 	engine = Column(String)
+
+	deleted = Column(Boolean, default=lambda: False)
 
 	created = Column(DateTime, default=datetime.datetime.utcnow)
 
