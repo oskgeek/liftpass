@@ -5,4 +5,90 @@
 
 <h2>Metrics</h2>
 
+<p>Liftpass is designed to track up to 32 metrics that reflect the progress and profile of the user. The metrics are subdevided into 8 string values metrics and 24 numeric values. Metrics are represented as part of an array of 32 elements, and consequently the 32 metrics Liftpass can track have integer index values. Once the metrics for the application are defined for the application they can be referenced in the code by their index value - the first 8 index values represent the 8 string values, followed by the 24 numeric values. This means the 9th metric is the first numeric progress metric.</p>
+
+
+<table class="table table-condensed table-bordered">
+	<tr>
+		<th>Index</th>
+		<td>1</td>
+		<td>2</td>
+		<td>3</td>
+		<td>4</td>
+		<td>5</td>
+		<td>6</td>
+		<td>7</td>
+		<td>8</td>
+		<td>9</td>
+		<td>10</td>
+		<td>11</td>
+		<td>12</td>
+		<td>13</td>
+		<td>14</td>
+		<td>15</td>
+		<td>16</td>
+		<td>17</td>
+		<td>18</td>
+		<td>19</td>
+		<td>20</td>
+		<td>21</td>
+		<td>22</td>
+		<td>23</td>
+		<td>24</td>
+		<td>25</td>
+		<td>26</td>
+		<td>27</td>
+		<td>28</td>
+		<td>29</td>
+		<td>30</td>
+		<td>31</td>
+		<td>32</td>
+	</tr>
+	<tr>
+		<th>Type</th>
+		<td colspan="8" class="success text-center">
+			String
+		</td>
+		<td colspan="24" class="info text-center">
+			Number
+		</td>
+	</tr>
+</table>
+
+<p>Metrics are propagated as a series of 32 elements threw all other events that are trigered in the game. This means that even when a virtual good is purchased, information about the 32 progress metrics is also contained with the virtual good purchase event.</p>
+
+<div class="alert alert-info">
+Not all 32 progress metrics must be defined for the application. Non-defined metrics take the value of Null and are ignored by the SDK and Liftpass, however the array representation of the 32 progress metrics always contains 32 elements.
+</div>
+
+<h3>Metric Pipes</h3>
+
+<p>Certain commonly used metrics are automatically tracked by Liftpass's SDK. It is up to the developer however to choose to use them in the analyics. This is done by directing the internally tracked metrics to an index position of the metrics registered by the application. Whenever another progress metric is updated, or purchase event is triggered, the piped metrics will automatically update themselves.</p>
+
+<p>The currently supported metric pipes are:</p>
+
+<ul>
+	<li>Operating system name</li>
+	<li>Operating system version</li>
+	<li>Device name</li>
+	<li>Timezone</li>
+	<li>Device language</li>
+	<li>Total number of sessions</li>
+	<li>Total number of seconds played</li>
+	<li>Number of virtual goods purchased</li>
+	<li>Number of in-app purchases</li>
+	<li>Total virtual currency spent (broken down into the individual 8 currencies Liftpass tracks)</li>
+	<li>Total Dollars spent by the user in the game</li>
+</ul>
+
+<p>In order to use one of these pipes, they must be configured in the code at the time the SDK is first initialized. This involves registering with the SDK where the value of the pipe should be directed to, more specifically which metric the value should be recorded to.</p>
+
+<p>In the native iOS SDK this is how to direct the total number of virtual goods purchased to the 14th progress metric:</p>
+
+{% highlight 'objective-c' %}
+[[Liftpass sharedInstance] setNumberPipe:LiftpassTotalVirtualPurchases toMetric:14];
+{% endhighlight %}
+
+<p>In Liftpass the developer should also record the fact that progress metric 14 represents the total number of virtual goods purchased.</p>
+
 {% endblock %}

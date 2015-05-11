@@ -27,8 +27,10 @@ AnalyticsStorage = {
 # ------------------------------------------------------------------------------
 # Content Database - Where application content and settings are stored
 # ------------------------------------------------------------------------------
-ContentAddress = 'sqlite:///%s/content.db'%DataPath
-ContentDebug = False
+ContentDatabase = {
+	'address': 'sqlite:///%s/content.db'%DataPath,
+	'debug': False
+}
 
 # ------------------------------------------------------------------------------
 # Monitoring  - records server activity and performance (not yet supported)

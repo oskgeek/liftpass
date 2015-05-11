@@ -5,4 +5,59 @@
 
 <h2>Settings</h2>
 
+<p>Liftpass stores settings in the <code>config.py</code> file found in the base directory of Liftpass. This file is generated automatically when the <code>setup.py</code> script is run:</p>
+
+{% highlight 'bash' %}
+python setup.py config
+{% endhighlight %}
+
+<p>The script will create the <code>config.py</code> and create the user credentials required for conducting API calls.</p>
+
+<h3>User Credentials</h3>
+
+<p>Liftpass is a single user server. The developer can interact using the dashboard and API using the single user key and secret. Changing the key and secret is as easy as modifying the <code>config.py</code> file. Both the <code>UserKey</code> as well as <code>UserSecret</code> should be 32 character long byte strings.</p>
+
+<h3>Paths</h3>
+
+<p>For convenience Liftpass is configured to run on a single computing unit and all in the same hard drive. For this reason both the database and auxilary files are stored in the <code>DataPath</code>.</p>
+
+<h3>Analytics</h3>
+
+<p>Analytics data transmitted by the SDK to the Liftpass server are stored for being processed. This ensures that SDK requests are completed as fast as possible and the analytics component can be analyzed offline.</p>
+
+<p><code>AnalyticsStorage</code> has the following fields:</p>
+<ul>
+	<li><strong>engine</strong>: The default is <code>core.storage.filesystem</code> which stores analytics data waiting to be processed in the hard-drive.</li>
+	<li><strong>path</strong>: Used by the <strong>engine</strong> to direct where exactly the analytics should be stored. Must be an absolute path to the directory/resource.</li>
+</ul>
+
+<h3>Content</h3>
+
+<p>Content database is where the application information (including currencies, goods, metrics, and prices) are stored. Additionally the content database is where the user analytics is stored after it is processed.</p>
+
+<p><code>ContentDatabase</code> has the following fields</p>
+<ul>
+	<li><strong>address</strong>: The address used to connect to the content database - in SQLAlchemy format as specified in their <a href="http://docs.sqlalchemy.org/en/rel_1_0/core/engines.html#sqlalchemy.create_engine">documentation.</a></li>
+	<li><strong>debug</strong>: If set to true, errors will be printed to stderr.</li>
+</ul>
+
+<h3>Dashboard Terminal</h3>
+<p>The dashboard terminal allows the developer to inspect the inbound and outbound traffic from the SDK from the convenience of the browser. When the SDK is enables the <code>debug</code> flag, the traffic from and too the SDK is saved locally and made visible in the dashboard. </p>
+
+<p><code>DashboardTerminal</code> has the following fields</p>
+<ul>
+	<li><strong>engine</strong>: The default is <code>core.storage.filesystem</code> which stores the SDK traffic data that is visualized in the dashboard.</li>
+	<li><strong>path</strong>: Used by the <strong>engine</strong> to direct where exactly the data should be stored. Must be an absolute path to the directory/resource.</li>
+</ul>
+
+<h3>API Server</h3>
+<p>Liftpass is ultimately a server application. By default it is configured to accept calls locally. It is highly advised that Liftpass be configured with another HTTP server for communicating with the outside world.</p>
+
+<p><code>APIServer</code> has the following fields:</p>
+<ul>
+	<li><strong>address</strong>: Address the server will be listening to. To enable Liftpass to accept calls from any IP, set this to '0.0.0.0'.</li>
+	<li><strong>port</strong>: The default port Liftpass listens to is 9090.</li>
+	<li><strong>debug</strong>: If set to true, errors will be printed to stderr.</li>
+</ul> 
+
 {% endblock %}

@@ -5,4 +5,81 @@
 
 <h2>Currencies</h2>
 
+<p>Liftpass supports up to 8 virtual currencies. A virtual currency is a resource the user of the application can earn by means of interacting with the game or by purchasing in bulk via in-app purchase packages. Additionally virtual currencies are those which can be used in a later time in the application to purchase virtual goods. </p>
+
+<h3>Examples</h3>
+
+<p>Bellow are some examples of virtual currencies in mobile applications</p>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Application</th>
+			<th>Currency 1</th>
+			<th>Currency 2</th>
+			<th>Currency 3</th>
+			<th>Currency 4</th>
+			<th>Currency 5</th>
+			<th>Currency 6</th>
+			<th>Currency 7</th>
+			<th>Currency 8</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Boom Beach</td>
+			<td>Gold</td>
+			<td>Wood</td>
+			<td>Stone</td>
+			<td>Iron</td>
+			<td>Diamonds</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Zoosk</td>
+			<td>Coins</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="alert alert-info">
+Notice most applications do not have 8 currencies - quite the contrary, they often have fewer than 4. 
+</div>
+
+<h3>Currencies for prices</h3>
+
+<p>Currencies are represented as an array of 8 elements representing the 8 virtual currencies an application can have. When defining prices for the goods in the application the JSON and CSV and support the pricing of goods as an array. For example in Boom Beach, when the price for upgrading the Gold Storage to Level 8 the price in JSON format would be represented as:</p>
+
+{% highlight 'json' %}
+{
+"gold-storage-8":[0, 158000, 40000, 12800, 0, 0, 0, 0]
+}
+{% endhighlight %}
+
+<p>The first and fourth 0 represents the fact that upgrading this building costs no Gold. The 3 trailing 0's are place holders for the other currencies not actively used in Boom Beach.</p>
+
+<h3>Currencies for rewards</h3>
+
+<p>Rewards are the things a user gets when they purchase an in-app purchase. The rewards that Liftpass supports are of the virtual currency type. In Boom Beach for example the reward for purchasing the $19.99 "Bag of Diamonds" the reward is 2500 diamonds. In Liftpass this is represented the same way as the price for virtual goods. The JSON equivalent that should be placed in the pricing data for the application would be:</p>
+
+{% highlight 'json' %}
+{
+"bag-of-diamonds": [0,0,0,0,2500,0,0,0]
+}
+{% endhighlight %}
+
+<div class="alert alert-info">
+Rewards for in-app purchases and prices for virtual goods are both recorded in the pricing data that Liftpass manages. The actual Dollar amount for in-app purchases must be supplied by the mobile application store provider.
+</div>
+
+
 {% endblock %}

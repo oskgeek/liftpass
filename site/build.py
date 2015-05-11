@@ -10,6 +10,7 @@ import yaml
 import coffeescript
 import jinja2_highlight
 import datetime
+import re
 
 
 contentDir = 'content/'
@@ -83,6 +84,8 @@ class Build:
 
 				# Make it pretty
 				data = BeautifulSoup(data).prettify()
+				# Ugly hack to remove trailing spaces from the code tag
+				data = re.sub('\s+</code>', '</code>', data)
 
 				# Save
 				open(os.path.join(currentDir, content), 'w+').write(data)

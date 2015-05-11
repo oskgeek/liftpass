@@ -10,7 +10,7 @@ import functools
 
 import config
 
-engine = sqlalchemy.create_engine(config.ContentAddress, echo=config.ContentDebug)
+engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'])
 event.listen(engine, 'connect', lambda conn, record: conn.execute('pragma foreign_keys=ON'))
 
 Base = declarative_base()
