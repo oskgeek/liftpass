@@ -23,7 +23,8 @@ import core.terminal as terminal
 
 
 app = Flask(__name__)
-CORS(app)
+if config.APIServer['cors']:
+	CORS(app)
 
 
 def singleUserAuthenticate(key): 

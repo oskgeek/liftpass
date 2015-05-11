@@ -5,4 +5,22 @@
 
 <h2>Security</h2>
 
+<p>Liftpass is designed to sit on top of several existing and well developed technologies - making Liftpass very secure. That said, Liftpass has fundamentally two points where security must be looked at.</p>
+
+<h3>Authentication</h3>
+
+<p>Authentication happens when the developer executes any API call. API requests are signed using HMAC as described in the <a href="/doc/api/">API</a> page. The user secret is used to sign the API request and should never be transmitted with the API request. If there is a belief that the secret has become known to an outsider, Liftpass can easily change the secret in the <code>config.py</code> file as described in the <a href="/doc/server/settings/">settings</a> page of the documentation.</p>
+
+<p>Authentication also happens when the SDK communicates with Liftpass. Also using HMAC except this time the requests are signed using the application secret.</p>
+
+<p>Using HMAC allows Liftpass and the SDK to know if the request has been tempered with while in transmission. Each request also contains the request URL and time which cannot be modified without breaking the signature. So API and SDK calls are procted from calls sent after the fact.</p>
+
+<h3>Liftpass and the Internet</h3>
+
+<p>Although Liftpass can be run and interface directly with the outside world this is not recomended. Using a dedicated server such as Apache or NGinx will add an extra layer of security.</p>
+
+<h3>Database and Resources</h3>
+
+<p>It is recomended that databases and filesystem resources be located within a virtual private network not accessible from the internet.</p> 
+
 {% endblock %}

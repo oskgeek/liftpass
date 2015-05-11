@@ -58,6 +58,7 @@ python setup.py config
 	<li><strong>address</strong>: Address the server will be listening to. To enable Liftpass to accept calls from any IP, set this to '0.0.0.0'.</li>
 	<li><strong>port</strong>: The default port Liftpass listens to is 9090.</li>
 	<li><strong>debug</strong>: If set to true, errors will be printed to stderr.</li>
+	<li><strong>cors</strong>: CORS stands for Cross-origin resource sharing. If the Liftpass dashboard is not serverd from the same address and port as the API, CORS must be set to true. Setting CORS to true however does open Liftpass for API exploits via the browser.</li>
 </ul> 
 
 {% endblock %}
