@@ -61,6 +61,7 @@ setup(
 		'pyyaml',
 		'libsass',
 		'jinja2_highlight',
+		'flask-cors',
 
 	], 
 	cmdclass = {
