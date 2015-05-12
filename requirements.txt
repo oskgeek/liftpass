@@ -7,7 +7,6 @@ Jinja2==2.7.3
 jinja2-highlight==0.6.1
 language-selector==0.1
 libsass==0.8.0
-liftpass==1.0
 Markdown==2.6.2
 MarkupSafe==0.23
 mysqlclient==1.3.6
