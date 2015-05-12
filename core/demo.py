@@ -84,6 +84,6 @@ def start():
 		'modulusLimit': 3,
 	})
 
-	print('Demo application key:', app.key)
-	print('Demo application sercret:', app.secret)
+	print('Demo application key:', game.key)
+	print('Demo application sercret:', game.secret)
 
