@@ -1,0 +1,23 @@
+{% extends "base-documentation.html" %}
+
+
+{% block documentation %}
+
+<h3>Running the Liftpass Dashboard</h3>
+
+<p>The easier way to interact with Liftpass API and manage/configure application content is using the dashboard. The Dashboard can be built using the <code>build.py</code> script which also genereates the documentation for Liftpass. The dashboard will be generated and placed into the folder <code>liftpass/site/build/dashboard/</code></p>
+
+{% highlight 'bash' %}
+cd site
+python build.py
+{% endhighlight %}
+
+<p>To run the dashboard the easiest way is to start Python's native HTTP server from within the built site document folder:</p>
+{% highlight 'bash' %}
+cd build
+python -m http.server
+{% endhighlight %}
+
+<p>From your browser you can then navigate to the URL <a href="http://127.0.0.1:8000/dashboard/">http://127.0.0.1:8000/dashboard/</a>.</p>
+
+{% endblock %}

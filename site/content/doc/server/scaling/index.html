@@ -11,17 +11,50 @@
 
 <p>Liftpass is not as database intensive as it might seem. The serving of prices of mostly done in-memory and does not require looking up anything in the database on a per request basis. Liftpass has been tested on MySQL, PostgreSQL and Amazon's RDS and Redshift.</p>
 
+<p>Here is how the <code>ContentDatabase['address']</code> variable in the <code>config.py</code> file should be tweaked to work on various kinds of databases:</p>
+
+<h4>SQLite</h4>
+{% highlight 'python' %}
+ContentDatabase['address'] = 'sqlite:///home/ubuntu/liftpass/data/content.py'
+{% endhighlight %}
+
+<h4>MySQL</h4>
+{% highlight 'python' %}
+ContentDatabase['address'] = 'mysql://username:password@server-address.com:3306/databasename'
+{% endhighlight %}
+
 <div class="alert alert-warning">
 	The processing of the analytics information sent back from the SDK can take up a lot of storage space depending on the application and how the application was configured.
 </div>
-
 
 <h3>Liftpass API Server</h3>
 
 <p>The actual Liftpass API server is designed to be easily cloned from a single instance to several hundred - with no additional configuration. When scaling the API server it is advised that the analytics data sent back from the SDK be stored in a central location such as in Amazon's S3 or NAS solution. By having the analytics data stored in a central location, processing can happen from a single node.</p>
 
+<p>Liftpass's API server natively runs in WSGI configuration which makes it easy to interface with load balancers.</p>
+
 <h3>Data</h3>
 
 <p>Both the analytics data as well as the dashboard terminal require the storage of files. Except for the single node configuration, Liftpass should be configured to store any files in some kind of distributed filesystem such as Amazon's S3 or a NAS solution.</p>
+
+<p>Both the DashboardTerminal['engine'] and AnalyticsStorage['engine'] can be configured to run and store files in different kinds of file storage. Here are the ways to configure alternative storage engines:</p>
+
+<h4>Local storage</h4>
+{% highlight 'python' %}
+{
+	'engine': 'core.terminal.local',
+	'path': os.path.join(DataPath, 'directory/')
+}
+{% endhighlight %}
+
+<h4>Amazon S3</h4>
+{% highlight 'python' %}
+{
+	'engine': 'core.storage.s3',
+	'bucket': 'bucket-name',
+	'key': 'access key',
+	'secret': 'secret access key'
+}
+{% endhighlight %}
 
 {% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base-documentation.html" %}
+
+
+{% block documentation %}
+
+<h2>Configuring Liftpass for deployment</h2>
+
+<p>The ideal configuration of Liftpass is in conjunction with some kind of outside world facing HTTP server such as NGINX. Additionally Liftpass can be run as a service using Supervisor.</p>
+
+<h3>NGINX Configuration</h3>
+
+<p>The most basic configuration NGINX to work with Liftpass is as follows:</p>
+
+{% highlight 'nginx' %}
+server {
+
+        listen 80;
+        server_name example.com;
+
+        location / {
+                #proxy_pass_header Server;
+                proxy_set_header Host $http_host;
+                proxy_redirect off;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Scheme $scheme;
+                proxy_pass http://127.0.0.1:9090;
+        }
+
+}
+{% endhighlight %}
+
+<h3>Supervisor</h3>
+
+<p>An easy way to bring Liftpass up and down is using it with conjunction with Supervisor. A sample configuration for Supervisor can look like:</p>
+
+<pre><code>[program:liftpass]
+command = python3 manage.py API start
+directory = /home/ubuntu/liftpass/
+</code></pre>
+
+
+
+{% endblock %}
