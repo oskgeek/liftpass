@@ -63,6 +63,7 @@ setup(
 		'jinja2_highlight',
 		'flask-cors',
 		'boto',
+		'tornado',
 	], 
 	cmdclass = {
 		'config': ConfigureCommand
