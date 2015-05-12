@@ -1,15 +1,18 @@
 import os
 import sys
 
-import config
+try:
+	import config
+except:
+	pass
 
-
-if len(sys.argv) < 3:
+if len(sys.argv) < 2:
 	print(' - manage API start')
 	print(' - manage content flush/create')
 	print(' - manage analytics update')
 	print(' - manage dashboard start')
 	print(' - manage demo build')
+	print(' - manage configure')
 	print(' - manage test API/pricing/analytics/all/coverage')
 elif sys.argv[1] == 'API':
 	if sys.argv[2] == 'start':
@@ -40,7 +43,9 @@ elif sys.argv[1] == 'demo':
 		print('Demo build aborted.')
 	else:
 		print('Nevermind - incorrect answer. No demo will be built.')
-
+elif sys.argv[1] == 'configure':
+	import core.configure as configure
+	configure.run()
 elif sys.argv[1] == 'test':
 	if sys.argv[2] == 'content':
 		import tests.content

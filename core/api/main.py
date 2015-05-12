@@ -313,11 +313,9 @@ def start():
 	from tornado.httpserver import HTTPServer
 	from tornado.ioloop import IOLoop
 
-	#wsgi = WSGIContainer(app)
-	
-
 	server = HTTPServer(WSGIContainer(app))
 	server.listen(config.APIServer['port'], address=config.APIServer['address'])
+	debug.log('Starting server at %s:%d'%(config.APIServer['address'], config.APIServer['port']))
 	IOLoop.instance().start()
 
 
