@@ -184,6 +184,11 @@ a:hover {
 }
 .features h3 {
 	font-size: 16px;
+	margin-top: 48px;
+	padding: 0 16px;
+}
+.features p {
+	padding: 0 16px;
 }
 @mixin feature-icon($image, $height:92px, $margin:24px) {
 	height: $height;
@@ -228,12 +233,15 @@ a:hover {
 
 .icon-sdk {
 	@include feature-icon("sdk.png", 52px, 0);
+	margin-top: 10px;
 }
 .icon-api {
 	@include feature-icon("api.png", 42px, 0);
+	margin-top: 10px;
 }
 .icon-scale {
 	@include feature-icon("scale.png", 42px, 0);
+	margin-top: 10px;
 }
 
 
@@ -265,7 +273,7 @@ a:hover {
 // Sign up 
 //------------------------------------------------------------------------------
 .install {
-	padding: 52px 0;
+	padding: 64px 0;
 }
 .install h3 {
 	color: $black-1;
@@ -277,6 +285,7 @@ a:hover {
 }
 .install .btn {
 	margin: 0 32px;
+	width: 180px;
 }
 
 //------------------------------------------------------------------------------
@@ -348,10 +357,11 @@ a:hover {
 // Blog
 //------------------------------------------------------------------------------
 .blog {
-	padding: 32px 0;
+	padding: 64px 0;
 }
 .blog h3 {
 	color: $black-1;
+	margin-top: 42px;
 }
 .blog ul {
 	padding: 32px 12px;
@@ -360,7 +370,7 @@ a:hover {
 	padding: 6px inherit;
 }
 .icon-cartoon {
-	@include feature-icon("cartoon.png", 256px, 24px);
+	@include feature-icon("cartoon.png", 256px, 0);
 }
 
 //------------------------------------------------------------------------------
@@ -436,6 +446,14 @@ a:hover {
 	padding-bottom: 12px;
 }
 
+.contents li ul {
+	list-style: disc;
+	margin-top: 12px;
+	margin-left: -8px;
+}
+.contents li ul li {
+	padding: 2px 0;
+}
 .api-function {
 	padding: 12px 0;
 
