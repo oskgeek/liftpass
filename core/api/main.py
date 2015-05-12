@@ -314,12 +314,14 @@ def start():
 	from tornado.wsgi import WSGIContainer
 	from tornado.httpserver import HTTPServer
 	from tornado.ioloop import IOLoop
+
+	#wsgi = WSGIContainer(app)
+	
+
 	server = HTTPServer(WSGIContainer(app))
-	server.listen(config.APIServer.get('port', 8000))
+	server.listen(config.APIServer.get('port', 8000), address=config.APIServer.get('address', '127.0.0.1'))
 	IOLoop.instance().start()
-#	app.run(debug=config.APIServer.get('debug', False), 
-#		host=config.APIServer.get('address', '127.0.0.1'), 
-#		port=config.APIServer.get('port', 8000))
+
 
 
 def getApp():
