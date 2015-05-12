@@ -243,11 +243,9 @@ def terminalLog():
 	return decorator
 
 
-
-
 @app.route('/sdk/update/<version>/', methods=['POST'])
 @terminalLog()
-@rest.applicationAuthenticate(secretLookup=content.Content().getApplicationSecret)
+@rest.applicationAuthenticate(secretLookup=lambda key: content.Content().getApplicationSecret(key))
 def update(version):
 	theTerminal = terminal.getTerminal()
 
@@ -273,8 +271,8 @@ def update(version):
 	# Try getting price engine
 	try:
 		prices = backend.getPricingEngine(request.values['liftpass-application'])
-	except pricing.ApplicationNotFoundException:
-		return errors.ApplicationKeyDoesNotExist
+	except pricing.ApplicationNotFoundException as e:
+		return errors.ApplicationNotConfigured
 
 	# Try getting price for user + progress
 	try:
@@ -319,7 +317,7 @@ def start():
 	
 
 	server = HTTPServer(WSGIContainer(app))
-	server.listen(config.APIServer.get('port', 8000), address=config.APIServer.get('address', '127.0.0.1'))
+	server.listen(config.APIServer['port'], address=config.APIServer['address'])
 	IOLoop.instance().start()
 
 

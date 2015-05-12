@@ -6,6 +6,7 @@ import config
 
 if len(sys.argv) < 3:
 	print(' - manage API start')
+	print(' - manage content flush/create')
 	print(' - manage analytics update')
 	print(' - manage dashboard start')
 	print(' - manage demo build')
@@ -14,6 +15,13 @@ elif sys.argv[1] == 'API':
 	if sys.argv[2] == 'start':
 		import core.api.main as main
 		main.start()
+elif sys.argv[1] == 'content':
+	if sys.argv[2] == 'flush':
+		import core.content.models as models
+		models.flush()
+	elif sys.argv[2] == 'create':
+		import core.content.models as models
+		models.create()
 elif sys.argv[1] == 'analytics':
 	if sys.argv[2] == 'update':
 		import core.analytics.analytics as analytics

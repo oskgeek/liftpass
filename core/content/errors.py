@@ -25,11 +25,6 @@ PricesKeyDoesNotExist = {
 	'status': rest.ERROR_BAD_REQUEST
 }
 
-ApplicationKeyDoesNotExist =  {
-	'message': 'Application key does not exist',
-	'status': rest.ERROR_BAD_REQUEST
-}
-
 ApplicationUpdateIncomplete = {
 	'message': 'JSON game update is incomplete',
 	'status': rest.ERROR_BAD_REQUEST
@@ -42,5 +37,9 @@ ApplicationUpdateMissingEvents = {
 
 ApplicationHasNoPriceForUser = {
 	'message': 'Application has no specified prices for user/group',
+	'status': rest.ERROR_BAD_REQUEST
+}
+ApplicationNotConfigured = {
+	'message': 'Application has not been configured completely yet',
 	'status': rest.ERROR_BAD_REQUEST
 }

@@ -116,14 +116,15 @@ def applicationAuthenticate(secretLookup):
 				request.values = request.json
 
 			# JSON must include time and user key
-			if not all(map(lambda k: k in request.json, ['liftpass-time', 'liftpass-application'])):
+			if not all(map(lambda k: k in request.values, ['liftpass-time', 'liftpass-application'])):
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing liftpass-time and/or liftpass-application keys'}, secret)
 
 			# HTTP header must include hash for all requests
 			if 'liftpass-hash' not in request.headers:
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing liftpass-hash in header'}, secret)
 
-			secret = secretLookup(request.json['liftpass-application'])
+
+			secret = secretLookup(request.values['liftpass-application'])
 			if secret == None:
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Application key not valid'}, secret)
 
@@ -133,6 +134,6 @@ def applicationAuthenticate(secretLookup):
 			if digest != request.headers['liftpass-hash']:
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'}, secret)
 			
-			return buildResponse(f(*args, **kwargs), secret, request.json['liftpass-application'])
+			return buildResponse(f(*args, **kwargs), secret, request.values['liftpass-application'])
 		return update_wrapper(aux, f)
 	return decorator

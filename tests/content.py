@@ -234,16 +234,18 @@ class TestABTest(APITest):
 	def testDeletePrices(self):
 		(status, a) = self.request('POST', '/applications/add/v1/', {'name': 'Test application'})
 		(status, b) = self.request('POST', '/prices/add/v1/', {'key': a['key'], 'engine':'JSON', 'data':'{}', 'path':None})
+
+		# Set group A prices
 		(status, c) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'groupAPrices_key':b['key']})
-		(status, d) = self.request('GET', '/abtest/get/v1/', {'key': a['key']})
+		self.assertEqual(c['groupAPrices_key'], b['key'])
+
+		# Delete group A prices
 		(status, e) = self.request('DELETE', '/prices/delete/v1/', {'key': b['key']})
 		(status, f) = self.request('GET', '/abtest/get/v1/', {'key': a['key']})
 
 		# Fail to delete price when being used in an AB Test
-		self.assertEqual(c['groupAPrices_key'], b['key'])
-
 		self.assertEqual(e['deleted'], 1)
-		self.assertEqual(f['groupAPrices_key'], b['key'])
+		self.assertEqual(f['groupAPrices_key'], None)
 
 		# Delete of price works when price not being used in an AB Test
 		(status, g) = self.request('PUT', '/abtest/update/v1/', {'key': a['key'], 'groupAPrices_key':None})
@@ -260,7 +262,7 @@ class TestSDK(APITest):
 		
 		jsonPricesA = backend.addPrices(a.key, 'JSON', json.dumps({'sword':1000}), None)
 		jsonPricesB = backend.addPrices(a.key, 'JSON', json.dumps({'sword':2000}), None)
-		
+
 		backend.setABTest(a.key, {'groupAPrices_key': jsonPricesA.key})
 		backend.setABTest(a.key, {'groupBPrices_key': jsonPricesB.key})
 		
@@ -286,7 +288,7 @@ class TestSDK(APITest):
 	def testCallWithMissingData(self):
 		backend = content.Content()
 		a = backend.addApplication('Test') 
-
+		
 		(status, b) = self.request('POST', '/sdk/update/v1/', {'user':'', 'events':[{}]}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 		
@@ -302,6 +304,7 @@ class TestSDK(APITest):
 	def testCallWithBadKey(self):
 		backend = content.Content()
 		a = backend.addApplication('Test') 
+
 		(status, a) = self.request('POST', '/sdk/update/v1/', {'user':'', 'events':[{}]}, application = a)
 		self.assertEqual(status, errors.ApplicationUpdateIncomplete['status'])
 

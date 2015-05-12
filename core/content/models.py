@@ -9,9 +9,13 @@ import uuid
 import functools
 
 import config
+import core.util.debug as debug
 
-engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'])
-event.listen(engine, 'connect', lambda conn, record: conn.execute('pragma foreign_keys=ON'))
+if 'sqlite' in config.ContentDatabase['address']:
+	engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'])
+	event.listen(engine, 'connect', lambda conn, record: conn.execute('pragma foreign_keys=ON'))
+else:
+	engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'], isolation_level="READ COMMITTED")
 
 Base = declarative_base()
 sessions = sessionmaker(bind=engine)
@@ -55,10 +59,10 @@ class CoreBase:
 class Application(Base, CoreBase):
 	__tablename__ = 'application'
 
-	key = Column(String, default=generateUUID, primary_key=True)
-	secret = Column(String, default=generateUUID)
+	key = Column(String(32), default=generateUUID, primary_key=True)
+	secret = Column(String(32), default=generateUUID)
 
-	name = Column(String)
+	name = Column(String(32))
 
 	created = Column(DateTime, default=datetime.datetime.utcnow)
 
@@ -69,29 +73,29 @@ class Currencies(Base, CoreBase):
 
 	id = Column(Integer, primary_key=True)
 
-	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
+	application_key = Column(String(32), ForeignKey('application.key', ondelete='CASCADE'))
 	application = relationship('Application', backref=backref('currencies'))
 
-	currency1 = Column(String, nullable=True)
-	currency2 = Column(String, nullable=True)
-	currency3 = Column(String, nullable=True)
-	currency4 = Column(String, nullable=True)
-	currency5 = Column(String, nullable=True)
-	currency6 = Column(String, nullable=True)
-	currency7 = Column(String, nullable=True)
-	currency8 = Column(String, nullable=True)
+	currency1 = Column(String(128), nullable=True)
+	currency2 = Column(String(128), nullable=True)
+	currency3 = Column(String(128), nullable=True)
+	currency4 = Column(String(128), nullable=True)
+	currency5 = Column(String(128), nullable=True)
+	currency6 = Column(String(128), nullable=True)
+	currency7 = Column(String(128), nullable=True)
+	currency8 = Column(String(128), nullable=True)
 
 	created = Column(DateTime, default=datetime.datetime.utcnow)
 
 class Good(Base, CoreBase):
 	__tablename__ = 'goods'
 
-	key = Column(String, default=generateUUID, primary_key=True)
+	key = Column(String(32), default=generateUUID, primary_key=True)
 
-	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
+	application_key = Column(String(32), ForeignKey('application.key', ondelete='CASCADE'))
 	application = relationship('Application', backref=backref('goods'))
 
-	name = Column(String)
+	name = Column(String(128))
 
 	created = Column(DateTime, default=datetime.datetime.utcnow)
 
@@ -102,42 +106,60 @@ class Metrics(Base, CoreBase):
 
 	id = Column(Integer, primary_key=True)
 
-	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
+	application_key = Column(String(32), ForeignKey('application.key', ondelete='CASCADE'))
 	application = relationship('Application', backref=backref('metrics'))
 
-	metricString1 = Column(String, nullable=True)
-	metricString2 = Column(String, nullable=True)
-	metricString3 = Column(String, nullable=True)
-	metricString4 = Column(String, nullable=True)
-	metricString5 = Column(String, nullable=True)
-	metricString6 = Column(String, nullable=True)
-	metricString7 = Column(String, nullable=True)
-	metricString8 = Column(String, nullable=True)
+	metricString1 = Column(String(128), nullable=True)
+	metricString2 = Column(String(128), nullable=True)
+	metricString3 = Column(String(128), nullable=True)
+	metricString4 = Column(String(128), nullable=True)
+	metricString5 = Column(String(128), nullable=True)
+	metricString6 = Column(String(128), nullable=True)
+	metricString7 = Column(String(128), nullable=True)
+	metricString8 = Column(String(128), nullable=True)
 
-	metricNumber1 = Column(String, nullable=True)
-	metricNumber2 = Column(String, nullable=True)
-	metricNumber3 = Column(String, nullable=True)
-	metricNumber4 = Column(String, nullable=True)
-	metricNumber5 = Column(String, nullable=True)
-	metricNumber6 = Column(String, nullable=True)
-	metricNumber7 = Column(String, nullable=True)
-	metricNumber8 = Column(String, nullable=True)
-	metricNumber9 = Column(String, nullable=True)
-	metricNumber10 = Column(String, nullable=True)
-	metricNumber11 = Column(String, nullable=True)
-	metricNumber12 = Column(String, nullable=True)
-	metricNumber13 = Column(String, nullable=True)
-	metricNumber14 = Column(String, nullable=True)
-	metricNumber15 = Column(String, nullable=True)
-	metricNumber16 = Column(String, nullable=True)
-	metricNumber17 = Column(String, nullable=True)
-	metricNumber18 = Column(String, nullable=True)
-	metricNumber19 = Column(String, nullable=True)
-	metricNumber20 = Column(String, nullable=True)
-	metricNumber21 = Column(String, nullable=True)
-	metricNumber22 = Column(String, nullable=True)
-	metricNumber23 = Column(String, nullable=True)
-	metricNumber24 = Column(String, nullable=True)
+	metricNumber1 = Column(String(128), nullable=True)
+	metricNumber2 = Column(String(128), nullable=True)
+	metricNumber3 = Column(String(128), nullable=True)
+	metricNumber4 = Column(String(128), nullable=True)
+	metricNumber5 = Column(String(128), nullable=True)
+	metricNumber6 = Column(String(128), nullable=True)
+	metricNumber7 = Column(String(128), nullable=True)
+	metricNumber8 = Column(String(128), nullable=True)
+	metricNumber9 = Column(String(128), nullable=True)
+	metricNumber10 = Column(String(128), nullable=True)
+	metricNumber11 = Column(String(128), nullable=True)
+	metricNumber12 = Column(String(128), nullable=True)
+	metricNumber13 = Column(String(128), nullable=True)
+	metricNumber14 = Column(String(128), nullable=True)
+	metricNumber15 = Column(String(128), nullable=True)
+	metricNumber16 = Column(String(128), nullable=True)
+	metricNumber17 = Column(String(128), nullable=True)
+	metricNumber18 = Column(String(128), nullable=True)
+	metricNumber19 = Column(String(128), nullable=True)
+	metricNumber20 = Column(String(128), nullable=True)
+	metricNumber21 = Column(String(128), nullable=True)
+	metricNumber22 = Column(String(128), nullable=True)
+	metricNumber23 = Column(String(128), nullable=True)
+	metricNumber24 = Column(String(128), nullable=True)
+
+class Prices(Base, CoreBase):
+
+	__tablename__ = 'prices'
+
+	application_key = Column(String(32), ForeignKey('application.key', ondelete='CASCADE'))
+	application = relationship('Application', backref=backref('prices'))
+
+	key = Column(String(32), default=generateUUID, primary_key=True)
+
+	data = Column(Text, nullable=True)
+	path = Column(String(256), nullable=True)
+
+	engine = Column(String(32))
+
+	deleted = Column(Boolean, default=lambda: False)
+
+	created = Column(DateTime, default=datetime.datetime.utcnow)
 
 class ABTest(Base, CoreBase):
 
@@ -145,39 +167,21 @@ class ABTest(Base, CoreBase):
 
 	id = Column(Integer, primary_key=True)
 
-	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
+	application_key = Column(String(32), ForeignKey('application.key', ondelete='CASCADE'))
 	application = relationship('Application', backref=backref('abtest'))
 
 
-	countryWhiteList = Column(String, default=str)
-	countryBlackList = Column(String, default=str)
+	countryWhiteList = Column(String(256), default=str)
+	countryBlackList = Column(String(256), default=str)
 
 	modulus = Column(Integer, default=lambda: 2)
 	modulusLimit = Column(Integer, default=lambda: 0)
 
-	groupAPrices_key = Column(String, ForeignKey('prices.key'), nullable=True)
-	groupBPrices_key = Column(String, ForeignKey('prices.key'), nullable=True)
+	groupAPrices_key = Column(String(32), ForeignKey('prices.key'), nullable=True)
+	groupBPrices_key = Column(String(32), ForeignKey('prices.key'), nullable=True)
 
 	created = Column(DateTime, default=datetime.datetime.utcnow)
 
-
-class Prices(Base, CoreBase):
-
-	__tablename__ = 'prices'
-
-	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
-	application = relationship('Application', backref=backref('prices'))
-
-	key = Column(String, default=generateUUID, primary_key=True)
-
-	data = Column(Text, nullable=True)
-	path = Column(String, nullable=True)
-
-	engine = Column(String)
-
-	deleted = Column(Boolean, default=lambda: False)
-
-	created = Column(DateTime, default=datetime.datetime.utcnow)
 
 class Events(Base, CoreBase):
 
@@ -186,27 +190,27 @@ class Events(Base, CoreBase):
 	id = Column(Integer, primary_key=True)
 
 	# Application the event belongs to
-	application_key = Column(Integer, ForeignKey('application.key', ondelete='CASCADE'))
+	application_key = Column(String(32), ForeignKey('application.key', ondelete='CASCADE'))
 	application = relationship('Application', backref=backref('events'))
 
 	# The user ID
-	user = Column(String)
+	user = Column(String(32))
 
 	# User IP address 
-	ip = Column(String)
+	ip = Column(String(32))
 
 	# User country derived from IP address
-	country = Column(String)
+	country = Column(String(32))
 
 	# Metrics
-	metricString1 = Column(String, nullable=True)
-	metricString2 = Column(String, nullable=True)
-	metricString3 = Column(String, nullable=True)
-	metricString4 = Column(String, nullable=True)
-	metricString5 = Column(String, nullable=True)
-	metricString6 = Column(String, nullable=True)
-	metricString7 = Column(String, nullable=True)
-	metricString8 = Column(String, nullable=True)
+	metricString1 = Column(String(128), nullable=True)
+	metricString2 = Column(String(128), nullable=True)
+	metricString3 = Column(String(128), nullable=True)
+	metricString4 = Column(String(128), nullable=True)
+	metricString5 = Column(String(128), nullable=True)
+	metricString6 = Column(String(128), nullable=True)
+	metricString7 = Column(String(128), nullable=True)
+	metricString8 = Column(String(128), nullable=True)
 
 	metricNumber1 = Column(Float, nullable=True)
 	metricNumber2 = Column(Float, nullable=True)
@@ -234,13 +238,13 @@ class Events(Base, CoreBase):
 	metricNumber24 = Column(Float, nullable=True)
 
 	# Name of the event
-	name = Column(String)
+	name = Column(String(128))
 
 	# Event attributes
-	attributeString1 = Column(String, nullable=True)
-	attributeString2 = Column(String, nullable=True)
-	attributeString3 = Column(String, nullable=True)
-	attributeString4 = Column(String, nullable=True)
+	attributeString1 = Column(String(128), nullable=True)
+	attributeString2 = Column(String(128), nullable=True)
+	attributeString3 = Column(String(128), nullable=True)
+	attributeString4 = Column(String(128), nullable=True)
 	attributeNumber1 = Column(Float, nullable=True)
 	attributeNumber2 = Column(Float, nullable=True)
 	attributeNumber3 = Column(Float, nullable=True)
@@ -262,13 +266,28 @@ class Events(Base, CoreBase):
 
 
 
+def create():
+	Application.__table__.create(engine, checkfirst=True)
+	Currencies.__table__.create(engine, checkfirst=True)
+	Good.__table__.create(engine, checkfirst=True)
+	Metrics.__table__.create(engine, checkfirst=True)
+	Prices.__table__.create(engine, checkfirst=True)
+	ABTest.__table__.create(engine, checkfirst=True)
+	Events.__table__.create(engine, checkfirst=True)
 
-Application.__table__.create(engine, checkfirst=True)
-Currencies.__table__.create(engine, checkfirst=True)
-Good.__table__.create(engine, checkfirst=True)
-Metrics.__table__.create(engine, checkfirst=True)
-ABTest.__table__.create(engine, checkfirst=True)
-Prices.__table__.create(engine, checkfirst=True)
-Events.__table__.create(engine, checkfirst=True)
+def flush():
+	global engine
 
+	# s = getSession()
+	for table in [Application, Currencies, Good, Metrics, ABTest, Prices, Events]:
+		try:
+			# rows = s.query(table).count()
+			rows = 0
+			debug.log('Deleting table %s with %d rows'%(table.__name__, rows))
+			table.__table__.drop(engine)
+			# s.commit()
+			# s.flush()
+		except Exception as e:
+			debug.error('%s'%e)
+	
 

@@ -23,7 +23,7 @@ class Content:
 		session.add(abtest)
 		session.add(metrics)
 		session.commit()
-
+		
 		return application
 
 	def getApplications(self):
@@ -96,13 +96,18 @@ class Content:
 
 	def getABTest(self, application_key):
 		session = models.getSession()
-		abtest = session.query(models.ABTest).join(models.Application).filter(models.Application.key == application_key).order_by(models.ABTest.created.desc()).first()
-		return abtest
+
+		abtests = session.query(models.ABTest).join(models.Application).filter(models.Application.key == application_key).order_by(models.ABTest.id.desc()).limit(1).all()
+		
+		if len(abtests) == 1:
+			return abtests[0]
+
+		return None
 
 	def setABTest(self, application_key, json):
 		session = models.getSession()
 
-		abtest = session.query(models.ABTest).join(models.Application).filter(models.Application.key == application_key).order_by(models.ABTest.created.desc()).first()
+		abtest = self.getABTest(application_key)
 
 		if abtest:
 
@@ -123,7 +128,7 @@ class Content:
 						pass
 					else:
 						del json[prices]
-
+			
 			models.updateObjectWithJSON(newABTest, json, ['key'])
 			session.add(newABTest)
 			session.commit()
@@ -170,6 +175,14 @@ class Content:
 		prices.data = None
 		prices.path = None
 		prices.deleted = True
+
+		abtest = self.getABTest(prices.application_key)
+		if abtest.groupAPrices_key == prices_key and abtest.groupBPrices_key != prices_key:
+			self.setABTest(prices.application_key, {'groupAPrices_key': None})
+		elif abtest.groupAPrices_key != prices_key and abtest.groupBPrices_key == prices_key:
+			self.setABTest(prices.application_key, {'groupBPrices_key': None})
+		elif abtest.groupAPrices_key == prices_key and abtest.groupBPrices_key == prices_key:
+			self.setABTest(prices.application_key, {'groupAPrices_key': None, 'groupBPrices_key': None})
 
 		session.commit()
 		return True

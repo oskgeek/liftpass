@@ -23,11 +23,11 @@ def discoverTests(testcase, *args):
 
 class APITest(unittest.TestCase):
 
-	def __init__(self, f, address, port, userKey, userSecret, flask = None):
+	def __init__(self, f, address, port, userKey, userSecret, client = None):
 		unittest.TestCase.__init__(self, f)
 		
-		if flask: 
-			self.client = flask.test_client()
+		if client: 
+			self.client = client.test_client()
 		else:
 			self.client = None
 		
