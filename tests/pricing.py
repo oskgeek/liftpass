@@ -54,8 +54,10 @@ class TestPricingEngine(unittest.TestCase):
 		pricesA = pricing.getPrices('a', [0]*32)
 		pricesB = pricing.getPrices('b', [0]*32)
 		
-		self.assertEqual(pricesA['sword'][0], 1000)
-		self.assertEqual(pricesB['sword'][0], 2000)
+		self.assertEqual(pricesA[0], jsonPricesA.key)
+		self.assertEqual(pricesB[0], jsonPricesB.key)
+		self.assertEqual(pricesA[1]['sword'][0], 1000)
+		self.assertEqual(pricesB[1]['sword'][0], 2000)
 		
 
 	def testPricesWithBadApplicationKey(self):

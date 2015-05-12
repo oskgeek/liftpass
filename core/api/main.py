@@ -280,7 +280,7 @@ def update(version):
 	except pricing.NoPricingForGroup:
 		return errors.ApplicationHasNoPriceForUser
 
-	return {'goods':userPrices}
+	return {'goods':userPrices[1], 'version':userPrices[0]}
 
 @app.route('/debug/get/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=singleUserAuthenticate)

@@ -233,12 +233,12 @@ class PricingEngine:
 		
 		if userID % self.abtest['modulus'] <= self.abtest['modulusLimit']:
 			if self.groupAPrices:
-				return self.groupAPrices.getPrices(progress)
+				return (self.abtest['groupAPrices_key'], self.groupAPrices.getPrices(progress))
 			else:
 				raise NoPricingForGroup()
 		else:
 			if self.groupBPrices:
-				return self.groupBPrices.getPrices(progress)
+				return (self.abtest['groupBPrices_key'], self.groupBPrices.getPrices(progress))
 			else:
 				raise NoPricingForGroup()
 
