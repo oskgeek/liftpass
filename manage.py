@@ -15,6 +15,9 @@ if len(sys.argv) < 2:
 	print(' - manage configure')
 	print(' - manage test API/pricing/analytics/all/coverage')
 elif sys.argv[1] == 'API':
+	if len(sys.argv) == 5:
+		config.APIServer['address'] = sys.argv[3]
+		config.APIServer['port'] = int(sys.argv[4])
 	if sys.argv[2] == 'start':
 		import core.api.main as main
 		main.start()
