@@ -77,13 +77,13 @@
       response: >
         {
             "currency1": "Gems",
-            "currency2": None,
-            "currency3": None,
-            "currency4": None,
-            "currency5": None,
-            "currency6": None,
-            "currency7": None,
-            "currency8": None,
+            "currency2": null,
+            "currency3": null,
+            "currency4": null,
+            "currency5": null,
+            "currency6": null,
+            "currency7": null,
+            "currency8": null,
         }
     - url: /currencies/update/v1/
       method: put
@@ -109,13 +109,13 @@
       response: > 
         {
             "currency1": "Gems",
-            "currency2": None,
-            "currency3": None,
-            "currency4": None,
-            "currency5": None,
-            "currency6": None,
-            "currency7": None,
-            "currency8": None,
+            "currency2": null,
+            "currency3": null,
+            "currency4": null,
+            "currency5": null,
+            "currency6": null,
+            "currency7": null,
+            "currency8": null,
         }
 
 - name: Goods
@@ -197,12 +197,12 @@
       response: > 
         {
             "key": "z4K4EK3nHpRXeD1XCgE6YN4pF3UrnZ8P"
-            "countryBlackList": None,
+            "countryBlackList": null,
             "countryWhiteList": "NZ, CA",
             "modulus": 5,
             "modulusLimit": 3,
-            "groupAPrices_key": 
-            "groupBPrices_key": 
+            "groupAPrices_key": "t7jftocxfo2zxmatnzl75yf5koanw1z0",
+            "groupBPrices_key": "w5qxqev3nb4ufh5imvdw1p3pjigyeygv"
         }
 
     - url: /abtest/update/v1/
@@ -225,12 +225,12 @@
       response: > 
         {
             "key": "z4K4EK3nHpRXeD1XCgE6YN4pF3UrnZ8P"
-            "countryBlackList": None,
+            "countryBlackList": null,
             "countryWhiteList": "NZ, CA",
             "modulus": 5,
             "modulusLimit": 3,
-            "groupAPrices_key": 
-            "groupBPrices_key": 
+            "groupAPrices_key": "t7jftocxfo2zxmatnzl75yf5koanw1z0",
+            "groupBPrices_key": "w5qxqev3nb4ufh5imvdw1p3pjigyeygv"
         }
 - name: Metrics
   bookmark: metrics

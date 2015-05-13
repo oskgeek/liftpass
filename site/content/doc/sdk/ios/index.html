@@ -1,0 +1,138 @@
+{% extends "base-documentation.html" %}
+
+
+{% block documentation %}
+
+<h2>iOS SDK</h2>
+
+<p>You can get the lastest version of the library by downloading it from <a href="http://github.com/whiteshoemedia/liftpass-ios-sdk/">Github</a> and copying it into your project.
+
+<h3>Initiating Liftpass</h3>
+
+<p>To start receiving prices from Liftpass, you must first initialize the iOS SDK with your application key and secret. This can be found either by doing an API request or using the dashboard.</p>
+
+<p>Import <code>Liftpass.h</code> and call <code>setApplicationKey:secret:</code> with your application credentials. Once you've called this method you also have to set the address of the Liftpass server using <code>setServer:port:</code>. Tou are now ready to start recording and receiving price updates.</p>
+
+{% highlight 'objective-c' %}
+#import "Liftpass.h"
+
+// Update the SDK with the application's key and secret
+[[Liftpass sharedInstance] setApplicationKey:YOUR_LIFTPASS_KEY secret:YOUR_LIFTPASS_SECRET];
+// Set the server and port the Liftpass server is located
+[[Liftpass sharedInstance] setServer:@"https://your-server.com" port:80];
+
+{% endhighlight %}
+
+<h3>Getting virtual good prices and IAP rewards</h3>
+
+Prices for virtual goods and the rewards for IAP are received at the time that the Liftpass SDK sends analytics back to the server. This process is initiated with the <code>sync</code> function. 
+
+{% highlight 'objective-c' %}
+[[Liftpass sharedInstance] sync];
+{% endhighlight %}
+
+Once the SDK has completed the <code>sync</code> function you can start looking up prices for virtual goods and rewards for the IAP. 
+
+{% highlight 'objective-c' %}
+// For virtual goods use the function getPrice:
+LiftpassCurrency *virtualGoodPrice = [[Liftpass sharedInstance] getPrice:THE_NAME_OF_THE_VIRTUAL_GOOD];
+
+// For IAP use the function gerReward:
+LiftpassCurrency *iapReward = [[Liftpass sharedInstance] getReward:THE_NAME_OF_THE_IAP];
+{% endhighlight %}
+
+<p>The price/reward is stored in the <code>LiftpassCurrency</code> object which contains eight variable representing the 8 possible currencies Liftpass can support. More information about managing and using Liftpass's currency model can be found in the <a href="/doc/content/">Content Management</a> page.</p>
+
+<div class="alert alert-warning">
+	If the virtual good or IAP is not found the result of <code>getPrice:</code> and <code>getReward:</code> will be nil. You can also check wether there is a price/reward for a good using the function <code>hasPricesForGood:</code> and <code>hasRewardForGood:</code> respectively.
+</div>
+
+<div class="alert alert-info">
+	Prices and rewards are cached by the SDK so that even without Internet access prices will still be served to the user. Additionally the developer can package the application with a list of static prices to be used in the event that no Liftpass update is received.
+</div>
+
+<h3>Recording purchases</h3>
+
+<p>When the user makes a virtual good purchase the Liftpass SDK must be notified of the transaction.</p>
+
+{% highlight 'objective-c' %}
+[[Liftpass sharedInstance] recordVirtualGoodPurchase:THE_NAME_OF_THE_VIRTUAL_GOOD];
+{% endhighlight %}
+
+<p>Similarly when the user makes an IAP purchase and the receipt has been verified by a third-party, the purchase must be recorded by the Liftpass SDK.</p>
+
+{% highlight 'objective-c' %}
+[[Liftpass sharedInstance] recordIAPPurchase:THE_NAME_OF_THE_IAP 
+                                   withPrice:product.price 
+                            withCurrencyCode:product.currency];
+{% endhighlight %}
+
+<h3>Recording progress</h3>
+
+<p>The SDK can manage and track up to 32 unique progress metrics devided into 8 string based metrics and 24 numeric metrics. More information on how to use Liftpass' metric model can be found in the <a href="/doc/content/">Content Management</a> page.</p>
+
+{% highlight 'objective-c' %}
+
+#define LIFTPASS_ROUNDS_WON	12
+
+// Updating a numeric metric
+[[Liftpass sharedInstance] updateNumberMetric:LIFTPASS_ROUNDS_WON withValue:roundsWon];
+// Or more shorter version 
+[[Liftpass sharedInstance] incrementNumberMetric:LIFTPASS_ROUNDS_WON];
+
+#define LIFTPASS_PLAYER_COLOR	3
+
+// Updating a string metric
+[[Liftpass sharedInstance] updateStringMetric:LIFTPASS_PLAYER_COLOR withValue:@"blue"];
+{% endhighlight %}
+
+<p>The index of each metric reflect those configured in the Liftpass server using either the API or dashboard.</p>
+
+<h3>Pipes</h3>
+
+<p>The Liftpass SDK can track automatically several kinds of progress metrics. Once you configure the application and allocate the location of progress metric they can be configured in the application code using "pipes". Pipes will automatically update certain progress metrics for you.</p>
+
+{% highlight 'objective-c' %}
+#define LIFTPASS_SESSION_COUNT	16
+
+// Configure pipe - every time the number of sessions increases, metric LIFTPASS_SESSION_COUNT will automatically update
+[[Liftpass sharedInstance] setNumberPipe:LiftpassSessionsCount 
+                                toMetric:LIFTPASS_SESSION_COUNT];
+
+#define LIFTPASS_LANGUAGE	6
+
+// The device language will now be recorded as the 6th metric
+[[Liftpass sharedInstance] setStringPipe:LiftpassLanguage toMetric:LIFTPASS_LANGUAGE];
+{% endhighlight %}
+
+<p>Liftpass comes with a large collection of built-in pipes, not all are useful for all applications and so it is up to the developer to choose which make sense. </p>
+
+<ul>
+	<li><strong>LiftpassOSVersion</strong>: The version of the operating system.</li>
+	<li><strong>LiftpassSessionsCount</strong>: The number of sessions the application has had.</li>
+	<li><strong>LiftpassTotalVirtualPurchases</strong>: The number of virtual goods the user has purchased.</li>
+	<li><strong>LiftpassTotalIAPPurchases</strong>: The number of in-app purchases the user has purchased.</li>
+	<li><strong>LiftpassTimezone</strong>: The timezone of the user as configured on the device (ex. -600 for EST).</li>
+	<li><strong>LiftpassTotalPlayTime</strong>: Total number of seconds the application has been open for.</li>
+	<li><strong>LiftpassDeviceModel</strong>: The model of the device the application is running on.</li>
+</ul>
+
+<div class="alert alert-warning">
+	For pipes to work correctly they should be defined at the very beginning of the application launching procedure, right after <code>setApplicationKey:secret:</code> is called.
+</div>
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

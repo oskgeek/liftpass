@@ -11,7 +11,7 @@ import coffeescript
 import jinja2_highlight
 import datetime
 import re
-
+import extensions.content
 
 contentDir = 'content/'
 outputDir = 'build/'
@@ -25,6 +25,7 @@ class Build:
 		self.globalData = {}
 		self.env = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'), extensions=[jinja2_highlight.HighlightExtension])
 		self.env.globals = self.globalData
+		
 		if cache:
 			self.cache = dbm.open('.cache', 'c')
 		else:

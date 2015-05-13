@@ -1,0 +1,32 @@
+{% extends "base-documentation.html" %}
+
+
+{% block documentation %}
+
+<h2>A/B Test</h2>
+
+<p>Liftpass always servers prices to users in an A/B testing like configuration where a group of players will receive one set of prices and another group will receive a different set of prices. Which set of prices the player gets is based on three factors:</p>
+
+<ol>
+	<li>The user's unique ID</li>
+	<li>The "modulus" set for the application</li>
+	<li>The "modulus limit" which determines the portion of the population that will receive the secondary set of prices</li>
+</ol>
+
+<p>When an SDK requests new prices from the Liftpass server a basic formula is calculated <code>UserID mod Modulus > ModulusLimit</code>. If the expression is true the user will get the secondary set of prices, otherwise they will get the primary set of prices.</p>
+
+<p>By tweaking the modulus and the modulus limit you can create an infinite set of population divisions when testing prices.</p>
+
+<div class="alert alert-info">
+Every change to an applications A/B test is recorded and kept for historical purposes. This way when analyzing the user behavior you can determine the exact source for the prices and resulting behavior.
+</div>
+
+<h3>Geographical testing</h3>
+
+<p>You can fence users from certain countries from receiving any prices from Liftpass by setting the Country White and Black lists. The value for these two variables should be a comma separated string of two letter country codes.</p>
+
+<div class="alert alert-warning">
+Users who are black listed will receive no prices when the SDK communicates with the Liftpass server. Unless you specify default prices in the application, the user may see blank price tags! Check the <a href="/doc/sdk/">SDK</a> documentation on how to set default prices in the application.
+</div>
+
+{% endblock %}

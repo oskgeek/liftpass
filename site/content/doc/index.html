@@ -3,26 +3,30 @@
 
 {% block documentation %}
 
-<h2>Liftpass Documentation</h2>
 
-<h3>What is Liftpass?</h3>
+<h2>What is Liftpass?</h2>
 <p>Liftpass makes managing prices of virtual goods and rewards for IAP easier. Get started by installing the server, and jumpy into our getting started guide to start managing your prices and rewards.</p>
 
-<div class="row">
-	<div class="col-xs-4">
-		<a href="/doc/get-started/" class="btn btn-default">Quick Start</a>
-	</div>
-	<div class="col-xs-4">
-		<a href="/doc/content/" class="btn btn-default">Management Content</a>
-	</div>
-	<div class="col-xs-4">
-		<a href="/doc/api/" class="btn btn-default">API Reference</a>
-	</div>
-</div>
+<ol>
+	<li><strong><a href="/doc/get-started/">Get Started</a></strong> How to install the Liftpass server on any Linux based system in minutes.</li>
+	<li><strong><a href="/doc/content/">Content Management</a></strong> Understand the aspects of an application that Liftpass manages.</li>
+	<li><strong><a href="/doc/sdk/">SDK Implementation</a></strong> Start sending new prices to users with the Liftpass SDK.</li>
+	<li><strong><a href="/doc/api/">API Reference</a></strong> Manage the application content and prices with the full featured API.</li>
+</ol>
 
-<h3>Liftpass in Two Minutes</h3>
 
-<h3>Featured Articles</h3>
+<h3>How Liftpass works</h3>
 
+<p>Fundamentally Liftpass manages prices of virtual goods and the rewards for in-app purchases. In conjunction with the SDK Liftpass enables developers to iterate on those prices and target specific users with custumized prices based on their progress in the application.</p>
+
+<p>At the moment the SDK requests a new set of prices the Liftpass server figures out based on the analytics recorded about the user which set of prices the user should receive.</p>
+
+
+<h3>Popular documentation pages</h3>
+
+<ul>
+	<li><a href="/doc/how-to/deployment/">Configuring Liftpass for deployment</a></li>
+	<li><a href="/doc/how-to/dashboard/">Running the Liftpass dashboard</a></li>
+</ul>
 
 {% endblock %}

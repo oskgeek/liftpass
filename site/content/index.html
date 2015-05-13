@@ -83,74 +83,59 @@
 	</div>
 </div>
 
-<!-- <div class="row video">
-	<div class="col-xs-12 col-sm-6 info">
-		<h3>What is Dynamic Pricing</h3>
-		<p>This how the stuff that airlines have been doing for decades applies to games too!</p>
-		<p><a href="/doc/dynamic-pricing/" class="btn btn-default">Read more</a></p>
-	</div>
-	<div class="col-xs-12 col-sm-6 video-frame stetch-and-center">
-		<iframe src="//player.vimeo.com/video/88884107?title=0&amp;byline=0&amp;portrait=0&amp;" width="100%" height="326px" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
-	</div>
-</div>
- -->
 
 <div class="row use-cases">
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
 		<h3>Prices according to progress</h3>
 		<p>With Liftpass, you can adjust virtual goods prices depending on how players progress through your game. Reduce the price for the shotgun if a player is struggling in the beginning, and increase the price for the Bazooka for experts to challenge them towards the end.</p>
 		
-{% highlight 'json' %}{
-  "com.game-dev.iap1": 500,
-  "com.game-dev.iap2": 1200,
-  "com.game-dev.iap3": 5000,
-}{% endhighlight %}
+{% highlight 'objective-c' %}
+[[Liftpass sharedInstance] 
+ incrementNumberMetric:RoundsWon];
+
+[[Liftpass sharedInstance] 
+ updateNumberMetric:CoinsCollected 
+          withValue:coinsCollected];
+{% endhighlight %}
+	
+		<p class="note"><a href="/doc/sdk/">See more uses of the SDK</a></p>
 	</div>
+
 
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
 		<h3>Localized pricing</h3>
 		<p>Have you ever investigated how certain countries are more drawn towards some virtual goods in your game than others? Your Japanese players might prefer the samurai sword, while your fans in the US like the tomahawk. Users in the Uk rather buy rubies, while users in Argentina love emeralds. Liftpass allows you to take these insights and create pricing strategies for each country.</p>
 
-<pre><code>Goods, Default, US, BR, DE
-com.game-dev.iap1, 500, 550, 400, 500,
-com.game-dev.iap2, 1200, 1300, 1400, 1300
-com.game-dev.iap3, 5000, 6000, 5500, 4500
+<pre><code>Goods, Default, US, BR
+com.game-dev.iap1, 500, 550, 400
+com.game-dev.iap2, 1200, 1300, 1400
+com.game-dev.iap3, 5000, 6000, 5500
 </code></pre>
+
+		<p class="note"><a href="/doc/content/prices/">More on Price Management</a></p>
+
 	</div>
 
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
 		<h3>EXPORT DATA TO ANALYZE</h3>
 		<p>Liftpass allows you to easily export all behavioral player data you record in your game. Just download a CSV or JSON file, and use it for in depth analysis with another analytics tool, or sell it to user acquisition or advertising vendors for some extra cash.</p>
 
+<pre><code><div class="label label-get">GET</div> /analytics/export/v1/2015-03-6/2015-04-12/</code></pre>
 
-<pre><code>Goods, Default, US, BR, DE
-com.game-dev.iap1, 500, 550, 400, 500,
-com.game-dev.iap2, 1200, 1300, 1400, 1300
-com.game-dev.iap3, 5000, 6000, 5500, 4500
-</code></pre>
+		<p class="note"><a href="/doc/api/">Liftpass API</a></p>
+
 	</div>
 
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
 		<h3>SAFELY EXPERIMENT</h3>
 		<p>Keep experimenting with new price sets. Even if you mess up, you can always go back to the last known good configuration. Adjusting your game content is fast and safe at the same time.</p>
 		
-<pre><code>Goods, Default, US, BR, DE
-com.game-dev.iap1, 500, 550, 400, 500,
-com.game-dev.iap2, 1200, 1300, 1400, 1300
-com.game-dev.iap3, 5000, 6000, 5500, 4500
-</code></pre>
+<pre><code><div class="label label-post">POST</div> /analytics/abtest/v1/</code></pre>
+
+		<p class="note"><a href="/doc/content/">A/B Testing with Liftpass</a></p>
+
 	</div>
-<!--	<div class="col-xs-12 col-sm-6 col-md-3 case">
-		<h3>When and what is purchased</h3>
-		<p>The Liftpass SDK keeps track of the exact location the player was in the game when making an IAP or virtual good purchase. 
-{% highlight 'objective-c' %}[[Liftpass sharedInstance] recordVirtualGoodPurchase:@"com.monopoly.newyork"];{% endhighlight %}
-	</div>
-	<div class="col-xs-12 col-sm-6 col-md-3 case">
-		<h3>Finding the right price</h3>
-		<p>It takes a million A/B tests to find the right prices for the right player. Liftpass serves all prices in an A/B test configuration so that you never loose the chance to see which prices your players prefer. Liftpass also enables third party providers to do the hard work for you via the API.</p>
-<pre><code>
-</code></pre>
-	</div>-->
+
 </div>
 
 <div class="row blog">

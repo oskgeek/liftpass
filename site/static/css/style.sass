@@ -344,13 +344,21 @@ a:hover {
 	margin: 0 0 2px 0;
 }
 .use-cases .case pre {
-	margin: 0 0 20px 0;
+	margin: 0 0 2px 0;
 	padding: 10px;
 	border: 0;
 	border-radius: 0;
 	color: $black-2;
 	background: transparentize(white, .025);
 	font-size: 11px;
+}
+.use-cases .case .note {
+	background: none;
+	margin-bottom: 20px;
+	font-size: 12px;
+	padding: 10px 0 0 0;
+	text-align: center;
+	color: $black-2;
 }
 
 //------------------------------------------------------------------------------
@@ -486,8 +494,15 @@ a:hover {
 .label-delete { background: $red-1; }
 .label-put { background: $yellow-2; }
 
-
-
+.documentation-content p, .documentation-content pre {
+	margin: 20px 0;
+}
+.documentation-content ul li, .documentation-content ol li, {
+	padding: 6px 0;
+}
+.documentation-content p code, .documentation-content .alert code {
+	background: none;
+}
 
 
 
