@@ -282,6 +282,7 @@ def update(version):
 
 	return {'goods':userPrices[1], 'version':userPrices[0]}
 
+
 @app.route('/debug/get/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def debugGet(version):
@@ -318,8 +319,3 @@ def start():
 	debug.log('Starting server at %s:%d'%(config.APIServer['address'], config.APIServer['port']))
 	IOLoop.instance().start()
 
-
-
-def getApp():
-	global app
-	return app

@@ -33,6 +33,14 @@ ContentDatabase = {
 }
 
 # ------------------------------------------------------------------------------
+# Pricing Engine - Where data for prices are stored
+# ------------------------------------------------------------------------------
+PricingStorage = {
+	'engine': 'core.storage.filesystem',
+	'path': os.path.join(DataPath, 'prices/')
+}
+
+# ------------------------------------------------------------------------------
 # Monitoring  - records server activity and performance (not yet supported)
 # ------------------------------------------------------------------------------
 MonitorEngine = None

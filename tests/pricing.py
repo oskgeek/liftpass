@@ -10,6 +10,7 @@ import core.content.errors as errors
 import core.api.main as main
 import core.content.content as content
 import core.pricing.pricing as pricing
+import core.storage as storage
 
 from core.util.test import *
 
@@ -19,7 +20,7 @@ class TestPricingEngine(unittest.TestCase):
 	def testLoadEmptyPrices(self):
 		backend = content.Content()
 		a = backend.addApplication('Test')
-		p = pricing.PricingEngine(a.key)
+		p = pricing.PricingEngine.getApplicationPricing(a.key)
 
 		self.assertEqual(p.groupAPrices, None)
 		self.assertEqual(p.groupBPrices, None)
@@ -33,7 +34,7 @@ class TestPricingEngine(unittest.TestCase):
 
 		backend.setABTest(a.key, {'groupAPrices_key': jsonPrices.key})
 
-		p = pricing.PricingEngine(a.key)
+		p = pricing.PricingEngine.getApplicationPricing(a.key)
 
 		self.assertNotEqual(p.groupAPrices, None)
 		self.assertEqual(p.groupBPrices, None)
@@ -117,6 +118,33 @@ class TestCSVEngine(unittest.TestCase):
 		"""	
 		with self.assertRaises(pricing.DataEngineException):
 			p = pricing.CSVDataEngine.validate({'data': data})
+
+	def testPath(self):
+		backend = content.Content()
+		a = backend.addApplication('Test')
+		
+		data = """
+			sword, 1000
+			saber, 2000
+			knife, 500
+		"""	
+
+		fileStorage = storage.getStorage(config.PricingStorage)
+		fileStorage.save('test.csv', data)
+
+		csvPrices = backend.addPrices(a.key, 'CSV', None, 'test.csv')
+
+		backend.setABTest(a.key, {'groupAPrices_key': csvPrices.key})
+		backend.setABTest(a.key, {'groupBPrices_key': csvPrices.key})
+		
+		p = pricing.PricingEngine.getApplicationPricing(a.key)
+
+		self.assertNotEqual(p.groupAPrices, None)
+		self.assertNotEqual(p.groupBPrices, None)
+
+		prices = p.getPrices('1'*32, [None]*32)
+		
+
 
 class TestMetricCSVEngine(unittest.TestCase):
 	def __makeProgress(self, p, v):

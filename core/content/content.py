@@ -157,20 +157,12 @@ class Content:
 		return session.query(models.Prices).filter_by(key = prices_key).first()
 
 	def getPricingEngine(self, application_key):
-		return pricing.PricingEngine(application_key)
+		return pricing.PricingEngine.getApplicationPricing(application_key)
 
 
 	def deletePrices(self, prices_key):
 		session = models.getSession()
 
-		# Check if prices is currently used
-		# count =  session.query(models.ABTest).join(models.Application).filter(models.Application.key == models.ABTest.application_key).filter(models.ABTest.groupAPrices_key == prices_key).count()
-		# if count != 0:
-		# 	return 0
-		# count =  session.query(models.ABTest).join(models.Application).filter(models.Application.key == models.ABTest.application_key).filter(models.ABTest.groupBPrices_key == prices_key).count()
-		# if count != 0:
-		# 	return 0
-		
 		prices = session.query(models.Prices).filter_by(key = prices_key).first()
 		prices.data = None
 		prices.path = None
