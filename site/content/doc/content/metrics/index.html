@@ -5,7 +5,7 @@
 
 <h2>Metrics</h2>
 
-<p>Liftpass is designed to track up to 32 metrics that reflect the progress and profile of the user. The metrics are subdevided into 8 string values metrics and 24 numeric values. Metrics are represented as part of an array of 32 elements, and consequently the 32 metrics Liftpass can track have integer index values. Once the metrics for the application are defined for the application they can be referenced in the code by their index value - the first 8 index values represent the 8 string values, followed by the 24 numeric values. This means the 9th metric is the first numeric progress metric.</p>
+<p>Liftpass is designed to track up to 32 metrics that reflect the progress and profile of the user. The metrics are subdivided into 8 string values metrics and 24 numeric values. Metrics are represented as part of an array of 32 elements, and consequently the 32 metrics Liftpass can track have integer index values. Once the metrics for the application are defined for the application they can be referenced in the code by their index value - the first 8 index values represent the 8 string values, followed by the 24 numeric values. This means the 9th metric is the first numeric progress metric.</p>
 
 
 <table class="table table-condensed table-bordered">
@@ -55,7 +55,7 @@
 	</tr>
 </table>
 
-<p>Metrics are propagated as a series of 32 elements threw all other events that are trigered in the game. This means that even when a virtual good is purchased, information about the 32 progress metrics is also contained with the virtual good purchase event.</p>
+<p>Metrics are propagated as a series of 32 elements through all other events that are trigered in the game. This means that even when a virtual good is purchased, information about the 32 progress metrics is also contained with the virtual goods purchase event.</p>
 
 <div class="alert alert-info">
 Not all 32 progress metrics must be defined for the application. Non-defined metrics take the value of Null and are ignored by the SDK and Liftpass, however the array representation of the 32 progress metrics always contains 32 elements.
@@ -63,7 +63,7 @@ Not all 32 progress metrics must be defined for the application. Non-defined met
 
 <h3>Metric Pipes</h3>
 
-<p>Certain commonly used metrics are automatically tracked by Liftpass's SDK. It is up to the developer however to choose to use them in the analyics. This is done by directing the internally tracked metrics to an index position of the metrics registered by the application. Whenever another progress metric is updated, or purchase event is triggered, the piped metrics will automatically update themselves.</p>
+<p>Certain commonly used metrics are automatically tracked by Liftpass SDK. It is up to the developer however to choose to use them in the analytics. This is done by directing the internally tracked metrics to an index position of the metrics registered by the application. Whenever another progress metric is updated, or purchase event is triggered, the piped metrics will automatically update themselves.</p>
 
 <p>The currently supported metric pipes are:</p>
 

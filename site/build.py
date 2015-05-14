@@ -11,7 +11,6 @@ import coffeescript
 import jinja2_highlight
 import datetime
 import re
-import extensions.content
 
 contentDir = 'content/'
 outputDir = 'build/'

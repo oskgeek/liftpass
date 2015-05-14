@@ -11,7 +11,7 @@
 
 <p>To start receiving prices from Liftpass, you must first initialize the iOS SDK with your application key and secret. This can be found either by doing an API request or using the dashboard.</p>
 
-<p>Import <code>Liftpass.h</code> and call <code>setApplicationKey:secret:</code> with your application credentials. Once you've called this method you also have to set the address of the Liftpass server using <code>setServer:port:</code>. Tou are now ready to start recording and receiving price updates.</p>
+<p>Import <code>Liftpass.h</code> and call <code>setApplicationKey:secret:</code> with your application credentials. Once you've called this method you also have to set the address of the Liftpass server using <code>setServer:port:</code>. You are now ready to start recording and receiving price updates.</p>
 
 {% highlight 'objective-c' %}
 #import "Liftpass.h"
@@ -37,7 +37,7 @@ Once the SDK has completed the <code>sync</code> function you can start looking 
 // For virtual goods use the function getPrice:
 LiftpassCurrency *virtualGoodPrice = [[Liftpass sharedInstance] getPrice:THE_NAME_OF_THE_VIRTUAL_GOOD];
 
-// For IAP use the function gerReward:
+// For IAP use the function getReward:
 LiftpassCurrency *iapReward = [[Liftpass sharedInstance] getReward:THE_NAME_OF_THE_IAP];
 {% endhighlight %}
 
@@ -69,7 +69,7 @@ LiftpassCurrency *iapReward = [[Liftpass sharedInstance] getReward:THE_NAME_OF_T
 
 <h3>Recording progress</h3>
 
-<p>The SDK can manage and track up to 32 unique progress metrics devided into 8 string based metrics and 24 numeric metrics. More information on how to use Liftpass' metric model can be found in the <a href="/doc/content/">Content Management</a> page.</p>
+<p>The SDK can manage and track up to 32 unique progress metrics divided into 8 string based metrics and 24 numeric metrics. More information on how to use Liftpass' metric model can be found in the <a href="/doc/content/">Content Management</a> page.</p>
 
 {% highlight 'objective-c' %}
 

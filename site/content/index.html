@@ -19,7 +19,7 @@
 	<div class="col-xs-12 col-sm-4">
 		<div class="icon-metrics"></div>
 		<h3>Track Metrics</h3>
-		<p>Track how your players earn and spend virtual money. Learn how they progress through the game. See comprehensive player logs, and freely export to CSV.</p>
+		<p>Track how your players earn and spend virtual currency. Learn how they progress through the game. See comprehensive player logs, and freely export to CSV.</p>
 	</div>
 	<div class="col-xs-12 col-sm-4">
 		<div class="icon-goods"></div>
@@ -29,7 +29,7 @@
 	<div class="col-xs-12 col-sm-4">
 		<div class="icon-player"></div>
 		<h3>Target Players</h3>
-		<p>Develop complex pricing strategies that can target everything from large groups down to single players. Experiment with individual prices for each segment to optimize retention and monetization.</p>
+		<p>Develop complex pricing strategies that can target everything from large groups down to single players. Experiment with prices for each segment to optimize retention and monetization.</p>
 	</div>
 </div>
 
@@ -42,7 +42,7 @@
 				</div>
 				<div class="col-xs-8">
 					<h4>API</h4>
-					<p>Fully controllable by code. Automate analytics and in-game price management or connect Liftpass with other third-party services.</p>
+					<p>Fully controllable by code. Automate analytics and in-game price management. Connect Liftpass with other third-party services.</p>
 				</div>
 			</div>
 			<div class="dev-features-item">
@@ -51,7 +51,7 @@
 				</div>
 				<div class="col-xs-8">
 					<h4>SDK</h4>
-					<p>The open source, flexible SDK can integrate seamlessly with any kind of game. Works on iOS, Android, and Unity.</p>
+					<p>The open source SDK can integrate seamlessly with any kind of game. Works on iOS, Android, and Unity.</p>
 				</div>
 			</div>
 			<div class="dev-features-item">
@@ -60,7 +60,7 @@
 				</div>
 				<div class="col-xs-8">
 					<h4>Scale &amp; Optimize</h4>
-					<p>Designed with the whole game economy in mind, Liftpass can scale on any cloud architecture - from a few thousand players to millions. Easily extend and customize the backend to fit your needs and existing infrastructure.</p>
+					<p>Designed with the whole virtual economy in mind, Liftpass can scale on any cloud architecture - from a few thousand players to millions. Easily extend and customize the backend to fit your needs and existing infrastructure.</p>
 				</div>
 			</div>
 		</div>
@@ -86,8 +86,8 @@
 
 <div class="row use-cases">
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
-		<h3>Prices according to progress</h3>
-		<p>With Liftpass, you can adjust virtual goods prices depending on how players progress through your game. Reduce the price for the shotgun if a player is struggling in the beginning, and increase the price for the Bazooka for experts to challenge them towards the end.</p>
+		<h3>Align prices to progress</h3>
+		<p>With Liftpass, you can track how players progress through your game and use the information to adjust in-game prices accordingly. For example, reduce the price for the shotgun if a player is struggling in the beginning, or increase the price for the Bazooka to challenge experts in the final levels.</p>
 		
 {% highlight 'objective-c' %}
 [[Liftpass sharedInstance] 
@@ -104,12 +104,11 @@
 
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
 		<h3>Localized pricing</h3>
-		<p>Have you ever investigated how certain countries are more drawn towards some virtual goods in your game than others? Your Japanese players might prefer the samurai sword, while your fans in the US like the tomahawk. Users in the Uk rather buy rubies, while users in Argentina love emeralds. Liftpass allows you to take these insights and create pricing strategies for each country.</p>
+		<p>Have you ever considered that certain countries are more drawn towards some virtual goods in your game than others? Your Japanese players might prefer the samurai sword, while your fans in the Australia like the boomerang. Liftpass allows you to take these insights and create pricing strategies for each country.</p>
 
-<pre><code>Goods, Default, US, BR
-com.game-dev.iap1, 500, 550, 400
-com.game-dev.iap2, 1200, 1300, 1400
-com.game-dev.iap3, 5000, 6000, 5500
+<pre><code>Goods, Default, JP, AU
+samurai-sword, 600, 800, 700
+boomerang, 500, 500, 700
 </code></pre>
 
 		<p class="note"><a href="/doc/content/prices/">More on Price Management</a></p>
@@ -117,8 +116,8 @@ com.game-dev.iap3, 5000, 6000, 5500
 	</div>
 
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
-		<h3>EXPORT DATA TO ANALYZE</h3>
-		<p>Liftpass allows you to easily export all behavioral player data you record in your game. Just download a CSV or JSON file, and use it for in depth analysis with another analytics tool, or sell it to user acquisition or advertising vendors for some extra cash.</p>
+		<h3>Export data to analyze</h3>
+		<p>Liftpass allows you to export all player data you record in your game. Just download a CSV or JSON file, and use it for in-depth analysis with another analytics tool, or sell it to user acquisition or advertising vendors for some extra cash.</p>
 
 <pre><code><div class="label label-get">GET</div> /analytics/export/v1/2015-03-6/2015-04-12/</code></pre>
 
@@ -127,8 +126,8 @@ com.game-dev.iap3, 5000, 6000, 5500
 	</div>
 
 	<div class="col-xs-12 col-sm-6 col-md-3 case">
-		<h3>SAFELY EXPERIMENT</h3>
-		<p>Keep experimenting with new price sets. Even if you mess up, you can always go back to the last known good configuration. Adjusting your game content is fast and safe at the same time.</p>
+		<h3>Safely experiment</h3>
+		<p>From all your game content that you can play around with, prices are the easiest. Liftpass enables you to create various pricing sets and continuously A/B test them to find the one that works best. Even if you mess up, you can always go back to the last known good configuration.</p>
 		
 <pre><code><div class="label label-post">POST</div> /analytics/abtest/v1/</code></pre>
 
