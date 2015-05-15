@@ -229,8 +229,74 @@ class TestMetricCSVEngine(unittest.TestCase):
 			p = pricing.MetricCSVDataEngine.validate({'data':data})
 
 
+class TestDTJSONEngine(unittest.TestCase):
+	def __makeProgress(self, p, v):
+		prog = [None] * 32
+		for i in range(len(p)):
+			prog[p[i]] = v[i]
+		return prog
 
+	def testLookup(self):
+		data = {
+			'metric': 12,
+			'method': 'lookup',
+			'keys': [[1,2,3], [5,6,7]],
+			'values': [{'sword': 1000}, {'sword': 500}]
+		}
+		data = json.dumps(data)
+		p = pricing.DTJSONData({'data':data})
 
+		a = p.getPrices(self.__makeProgress([12], [2]))
+		self.assertEqual(a['sword'][0], 1000)
+
+		b = p.getPrices(self.__makeProgress([12], [7]))
+		self.assertEqual(b['sword'][0], 500)
+
+	def testRange(self):
+		data = {
+			'metric': 12,
+			'method': 'range',
+			'keys': [[0,10], [11, 20]],
+			'values': [{'sword': 1000}, {'sword': 500}]
+		}
+		data = json.dumps(data)
+		p = pricing.DTJSONData({'data':data})
+
+		a = p.getPrices(self.__makeProgress([12], [8]))
+		self.assertEqual(a['sword'][0], 1000)
+
+		b = p.getPrices(self.__makeProgress([12], [13]))
+		self.assertEqual(b['sword'][0], 500)
+
+	def testLookupRange(self):
+		data = {
+			'metric': 12,
+			'method': 'range',
+			'keys': [[0,10], [11, 20]],
+			'values': [{
+				'metric': 5,
+				'method': 'lookup',
+				'keys': [['US', 'BR'], ['JP', 'IT']],
+				'values':[{'sword': 1000}, {'sword': 500}]
+			},{
+				'metric': 5,
+				'method': 'lookup',
+				'keys': [['US', 'BR'], ['JP', 'IT']],
+				'values':[{'sword': 500}, {'sword': 1000}]
+			}]
+		}
+		data = json.dumps(data)
+		p = pricing.DTJSONData({'data':data})
+
+		a = p.getPrices(self.__makeProgress([12, 5], [5, 'BR']))
+		self.assertEqual(a['sword'][0], 1000)
+		b = p.getPrices(self.__makeProgress([12, 5], [5, 'JP']))
+		self.assertEqual(b['sword'][0], 500)
+
+		c = p.getPrices(self.__makeProgress([12, 5], [11, 'US']))
+		self.assertEqual(c['sword'][0], 500)
+		d = p.getPrices(self.__makeProgress([12, 5], [20, 'IT']))
+		self.assertEqual(d['sword'][0], 1000)
 
 
 suite = unittest.TestSuite()
@@ -238,6 +304,7 @@ suite.addTests(discoverTests(TestPricingEngine))
 suite.addTests(discoverTests(TestCSVEngine))
 suite.addTests(discoverTests(TestJSONEngine))
 suite.addTests(discoverTests(TestMetricCSVEngine))
+suite.addTests(discoverTests(TestDTJSONEngine))
 
 unittest.TextTestRunner(verbosity=2).run(suite)
 

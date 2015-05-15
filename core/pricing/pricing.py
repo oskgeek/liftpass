@@ -1,21 +1,21 @@
 import json
 import csv
 import io
+import time
 
 import config
 import core.util.debug as debug
-
-
 from core.pricing.jsondata import *
 from core.pricing.csvdata import *
 from core.pricing.metriccsvdata import *
+from core.pricing.dtjsondata import *
 from core.pricing.exceptions import *
+
 
 
 class PricingEngine:
 
 	cached = {}
-
 
 	def __init__(self, application_key):
 		import core.content.content as content
@@ -40,9 +40,15 @@ class PricingEngine:
 
 	@staticmethod
 	def getApplicationPricing(application_key):
-		if application_key not in PricingEngine.cached:
-			PricingEngine.cached[application_key] = PricingEngine(application_key)
-		return PricingEngine.cached[application_key]
+		lastUpdated = PricingEngine.cached.get(application_key, {'time': None})['time']
+
+		if lastUpdated == None or time.time()-lastUpdated>config.AnalyticsStorage['update']:
+			PricingEngine.cached[application_key] = {
+				'prices': PricingEngine(application_key),
+				'time': time.time()
+			}
+
+		return PricingEngine.cached[application_key]['prices']
 
 
 	@staticmethod
@@ -51,8 +57,10 @@ class PricingEngine:
 			return JSONDataEngine
 		elif name.upper() == 'CSV':
 			return CSVDataEngine
-		elif name.upper() == 'MetricCSV':
+		elif name.upper() == 'METRICCSV':
 			return MetricCSVDataEngine
+		elif name.upper() == 'DTJSON':
+			return DTJSONData
 		raise DataEngineException('Pricing data engine not recognized')
 
 	

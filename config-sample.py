@@ -21,7 +21,8 @@ DataPath = os.path.join(BasePath,'data/')
 # ------------------------------------------------------------------------------
 AnalyticsStorage = {
 	'engine': 'core.storage.filesystem',
-	'path': os.path.join(DataPath, 'analytics/')
+	'path': os.path.join(DataPath, 'analytics/'),
+	'update': 600,
 }
 
 # ------------------------------------------------------------------------------
