@@ -66,8 +66,69 @@ knife, 50, 50, 100, 150
 
 <h3>DTJSON</h3>
 
+<p>When targeting players with more than a single metric, DTJSON (for Decision Tree JSON) is the prefered pricing engine. The decision tree has nodes with 4 keys:</p>
+<ul>
+	<li><code>metric</code>: The index number of the progress metric used for deciding which child node to go to next. Values are between 0 (representing metricString1) and 31 (representing metricNumber24).</li>
+	<li><code>method</code>: The method of comparing the metric. The value can be either:
+		<ul>
+			<li><code>lookup</code>: The metric value must be contained in the child node's key.</li>
+			<li><code>range</code>: The metric value must be within the range of the child node's key.</li>
+		</ul>
+	</li>
+	<li><code>keys</code>: Every child node has a corresponding key. A key is an array containing either possible values for the metric (when the <code>method</code> is equal to <code>lookup</code>) or two values corresponding to the minimum and maximum (when the <code>method</code> is equal to <code>range</code>).</li>
+	<li><code>values</code>: List of children. Children can either be further decision tree nodes or be a set of prices. This is determined by wether the node has the 4 primary described keys.</li>
+</ul>
 
+<p>A simple example of DTJSON below has a height of 2 and provides 4 sets of prices depending on two different player metrics.</p>
 
+{% highlight 'json' %}
+{
+	"metric": 12,
+	"method": "range",
+	"keys": [[0,10], [11, 20]],
+	"values": [{
+		"metric": 5,
+		"method": "lookup",
+		"keys": [["US", "BR"], ["JP", "IT"]],
+		"values":[{"sword": 1000}, {"sword": 500}]
+	},{
+		"metric": 5,
+		"method": "lookup",
+		"keys": [["US", "BR"], ["JP", "IT"]],
+		"values":[{"sword": 500}, {"sword": 1000}]
+	}]
+}
+{% endhighlight %}
 
+<p>For example if a user has progress metric 12 (which is a numeric metric) with the value of 16, and metric 5 (which is a string metric) with value of "BR", the price for "sword" will be 1000 for currency 1. However if progress mertric 12 is 7 and progress metric 5 is 'UK' then the user will receive no prices. </p>
+
+<div class="alert alert-warning">
+	DTJSON has very limited error checking. If there is an error the user will receive no prices and only those cahced on the device will be used. 
+</div>
+
+<h4>Wildcard values</h4>
+
+<p>If a metric value does not match any of the keys, DTJSON will return to the user no prices. The safest way to ensure that the user always gets new sets of prices is to have at least one key contain the '*' (or wildcard token). If no key matches the current progress metric value, the node that has the key with the wildcard will be used. Below is the same example as above, however using wildcards.</p>
+
+{% highlight 'json' %}
+{
+	"metric": 12,
+	"method": "range",
+	"keys": [[0,10], [11, 20]],
+	"values": [{
+		"metric": 5,
+		"method": "lookup",
+		"keys": [["US", "BR", "*"], ["JP", "IT"]],
+		"values":[{"sword": 1000}, {"sword": 500}]
+	},{
+		"metric": 5,
+		"method": "lookup",
+		"keys": [["US", "BR"], ["JP", "IT", "*"]],
+		"values":[{"sword": 500}, {"sword": 1000}]
+	}]
+}
+{% endhighlight %}
+
+<p>Now if progress mertric 12 is 7 and progress metric 5 is 'UK' then the user will see that the price for the sword is 1000.</p>
 
 {% endblock %}

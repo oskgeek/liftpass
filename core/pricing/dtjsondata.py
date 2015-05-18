@@ -10,24 +10,28 @@ class DTJSONData(DataEngine):
 		root = self.data
 
 		while True:
+			if root == None:
+				return {}
+
 			if all(map(lambda k: k in root, ['metric', 'method', 'keys', 'values'])):
 				index = root['metric']
 
-				if root['method'] == 'lookup':
-					for i, key in enumerate(root['keys']):
-						if progress[index] in set(key):
-							root = root['values'][i]
-							continue
+				defaultIndex = None
+				nextRoot = None
+				for i, key in enumerate(root['keys']):
+					if root['method'] == 'lookup' and progress[index] in set(key):
+						nextRoot = root['values'][i]
+						break
+					elif root['method'] == 'range' and progress[index] >= key[0] and progress[index] <= key[1]:
+						nextRoot = root['values'][i]
+						break
+					elif '*' in key:
+						defaultIndex = i
 
+				if nextRoot == None and defaultIndex != None:
+					nextRoot = root['values'][defaultIndex]
 
-				elif root['method'] == 'range':
-					for i, key in enumerate(root['keys']):
-						if progress[index] >= key[0] and progress[index] <= key[1]:
-							root = root['values'][i]
-							continue
-
-				else:
-					return {}
+				root = nextRoot
 			else:
 				res = {}
 				for g in root:
