@@ -8,9 +8,9 @@ python:
   - 3.4
 
 install: 
-  - sudo pip install -r requirements.txt
-  - python manage.py configure
-  - python manage.py content create
+  - sudo pip3 install -r requirements.txt
+  - python3 manage.py configure
+  - python3 manage.py content create
 
 script: 
-  - python manage.py test all
+  - python3 manage.py test all
