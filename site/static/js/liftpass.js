@@ -13,7 +13,7 @@ $(document).ready(function() {
 					$('input[name="email"]').addClass('error');
 				}else{
 					form.css('display','none');
-					$('.signup').append($('<p>Thank you for signing up for the beta! Look out for an e-mail soon.</p>'))
+					$('.signup').append($('<p>Awesome! Look out for an e-mail from us soon.</p>'))
 				}
 				$('button[type="submit"]').prop('disabled', false);
 			}
