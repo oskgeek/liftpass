@@ -1,6 +1,6 @@
 before_install:
  - sudo apt-get update -qq
- - sudo apt-get install git python3-setuptools build-essential python3-dev libmysqlclient-dev python3-pip
+ - sudo apt-get install git build-essential python3-dev libmysqlclient-dev
 
 language: python
 
