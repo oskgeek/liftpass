@@ -58,6 +58,12 @@ elif sys.argv[1] == 'test':
 		import tests.analytics
 	elif sys.argv[2] == 'terminal':
 		import tests.terminal
+	elif sys.argv[2] == 'stress':
+		import tests.stress
+		if len(sys.argv) > 3 and sys.argv[3] == 'analyze':
+			tests.stress.analyze()
+		else:
+			tests.stress.run()
 	elif sys.argv[2] == 'all':
 		import tests.content
 		import tests.pricing

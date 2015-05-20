@@ -3,7 +3,7 @@ import os
 
 from core.storage.storage import Storage
 import config
-
+import core.util.debug as debug
 
 class Filesystem(Storage):
 
@@ -24,7 +24,9 @@ class Filesystem(Storage):
 
 	def load(self, filename):
 		f = open(os.path.join(self.root, filename), 'r')
-		return f.read()
+		data = f.read()
+		f.close()
+		return data
 
 	def delete(self, filename):
 		os.remove(os.path.join(self.root, filename))
