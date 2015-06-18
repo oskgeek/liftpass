@@ -36,3 +36,6 @@ def run():
 	if os.path.exists('tmp') == False:
 		print('Creating tmp/ directory')
 		os.mkdir('tmp')
+	if os.path.exists('data/prices') == False:
+		print('Creating data/prices directory')
+		os.mkdir('data/prices')

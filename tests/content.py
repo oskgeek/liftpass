@@ -344,7 +344,7 @@ class TestExport(APITest):
 
 
 # Start server
-server = subprocess.Popen(['python3.4','%s/manage.py'%config.BasePath,'API','start'], preexec_fn=os.setsid, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+server = subprocess.Popen([os.environ['_'],'%s/manage.py'%config.BasePath,'API','start'], preexec_fn=os.setsid, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 time.sleep(2)
 
 suite = unittest.TestSuite()
