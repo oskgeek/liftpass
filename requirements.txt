@@ -16,3 +16,4 @@ requests==2.7.0
 SQLAlchemy==1.0.4
 tornado==4.2b1
 Werkzeug==0.10.4
+CoffeeScript==1.1.0
