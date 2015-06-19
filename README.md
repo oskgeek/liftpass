@@ -7,4 +7,4 @@
 ## [License](LICENSE)
 
 Copyright (c) 2015 [White Shoe Media, Inc.](http://whiteshoemedia.com)
-Licensed under the [Apache License](LICENSE).
+Licensed under the [Apache License, Version 2.0](LICENSE).
