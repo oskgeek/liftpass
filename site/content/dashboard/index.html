@@ -193,6 +193,7 @@
 					<tr>
 						<th>Date</th>
 						<th>Engine</th>
+						<th>Key</th>
 						<th></th>
 						<th></th>
 					</tr>
@@ -201,6 +202,7 @@
 					<tr ng-repeat="price in prices | orderBy: '-created'" ng-class="{'text-muted': price.deleted}">
 						<td >{{price.created}}</td>
 						<td>{{price.engine}}</td>
+						<td>{{price.key}}</td>
 						<td>
 							<button type="button" class="btn btn-default btn-xs" ng-click="viewPrice(price)" ng-show="!price.deleted">View</button>
 							<span ng-show="price.deleted">Deleted</span>
@@ -257,6 +259,8 @@
 			<div class="alert alert-warning">
 				<strong>Under construction:</strong> The SDK view will generate macros that should be used with the Liftpass SDK - they make it easier to refer to game specific metrics and currencies. This feature has not yet been implemented to the dashboard.
 			</div>
+			<p><strong>Application Key</strong> {{application.key}}</p>
+			<p><strong>Application Secret</strong> {{application.secret}}</p>
 		</div>
 
 	</div>

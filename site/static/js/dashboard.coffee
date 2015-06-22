@@ -297,6 +297,7 @@ DashboardController = ($scope) ->
 				speed: 500
 			}
 		})
+		return  
 	$scope.errorMessage = (message) ->
 		noty({
 			layout: 'center'
@@ -311,22 +312,25 @@ DashboardController = ($scope) ->
 				speed: 500
 			}
 		})
+		return
 
 	$scope.openDeleteModal = (title, message, callback) =>
 		$scope.deleteModal['title'] = title
 		$scope.deleteModal['message'] = message
 		$scope.deleteModal['callback'] = callback
 		$('#deleteModal').modal('show')
+		return
 
 	$scope.confirmDelete = () =>
 		console.log($scope.deleteModal)
 		$scope.deleteModal['callback']()
 		$('#deleteModal').modal('hide')
+		return
 
 	$scope.toggleDashboardView = (view) =>
-
 		$('.subview').hide()
 		$(view).show()
+		return
 
 	$scope.viewVisible = (name) ->
 		return $("##{name}View").is(':visible') == true
