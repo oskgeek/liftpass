@@ -8,6 +8,7 @@ from functools import update_wrapper
 import time
 import json
 import base64
+import datetime
 
 import core.util.debug as debug
 import core.util.extras as extras
@@ -111,6 +112,8 @@ def applicationAuthenticate(secretLookup):
 	def decorator(f): 
 		def aux(*args, **kwargs):
 
+			debug.log('%s %s %s'%(request.method, request.path, request.environ.get('HTTP_X_REAL_IP')))
+
 			# All user input goes to the values field of the request
 			if len(request.json):
 				request.values = request.json
@@ -122,7 +125,6 @@ def applicationAuthenticate(secretLookup):
 			# HTTP header must include hash for all requests
 			if 'liftpass-hash' not in request.headers:
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing liftpass-hash in header'}, secret)
-
 
 			secret = secretLookup(request.values['liftpass-application'])
 			if secret == None:

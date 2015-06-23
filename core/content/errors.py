@@ -43,3 +43,7 @@ ApplicationNotConfigured = {
 	'message': 'Application has not been configured completely yet',
 	'status': rest.ERROR_BAD_REQUEST
 }
+ApplicationUpdateBadUser = {
+	'message': 'Application user key must be exactly 32 characters.',
+	'status': rest.ERROR_BAD_REQUEST
+}

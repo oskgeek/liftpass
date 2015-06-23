@@ -2,17 +2,19 @@ import blessings
 import sys
 import io 
 import traceback 
+import datetime
 
 terminal = blessings.Terminal()
 
 def log(text):
-	print(terminal.bold+'[Log] '+terminal.normal+text)
+	print('%s %s'%(datetime.datetime.now(), text))
 
 def error(text):
-	print(terminal.bold+terminal.red+'[Log] '+terminal.normal+terminal.white+text, file=sys.stderr)
+	print(text, file=sys.stderr)
 
 def stacktrace(exception):
 	error('-'*60)
+	print(datetime.datetime.now())
 	error(str(exception))
 	stream = io.StringIO()
 	traceback.print_exc(file=stream)

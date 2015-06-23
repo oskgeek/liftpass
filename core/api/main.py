@@ -7,6 +7,7 @@ from functools import update_wrapper
 from flask import Flask
 from flask import request
 from flask import make_response
+from flask import Response
 from flask.ext.cors import CORS
 
 import config
@@ -256,6 +257,9 @@ def update(version):
 	if extras.keysInDict(request.values, ['user', 'events']) == False:
 		return errors.ApplicationUpdateIncomplete
 
+	if len(request.values['user']) != 32:
+		return errors.ApplicationUpdateBadUser
+
 	# Events must have at least one item
 	if len(request.values['events']) == 0:
 		return errors.ApplicationUpdateMissingEvents
@@ -265,8 +269,10 @@ def update(version):
 		return errors.ApplicationUpdateMissingEvents
 	
 	# Save update (include IP address of user)
-	request.values['liftpass-ip'] = request.remote_addr
+	
+	request.values['liftpass-ip'] = request.environ.get('HTTP_X_REAL_IP')
 	theAnalytics.saveUpdate(request.values)
+	
 	
 	# Try getting price engine
 	try:
@@ -279,9 +285,15 @@ def update(version):
 		userPrices = prices.getPrices(request.values['user'], request.values['events'][-1]['progress'])
 	except pricing.NoPricingForGroup:
 		return errors.ApplicationHasNoPriceForUser
-
-	return {'goods':userPrices[1], 'version':userPrices[0]}
-
+	
+	# Build response
+	response = {'goods':userPrices[1], 'version':userPrices[0]}
+	
+	# If debug mode save to terminal
+	if 'liftpass-debug' in request.values and request.values['liftpass-debug'] == True:
+		theTerminal.put(request.values['liftpass-application'], request.values, response)
+	
+	return response
 
 @app.route('/debug/get/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=singleUserAuthenticate)
@@ -307,6 +319,9 @@ def page_not_found(e):
 	debug.stacktrace(e)
 	return rest.errorResponse({'status': 500, 'message': 'An unexpected error occured. If it continues please contact the system administrator.'})
 
+@app.route('/ping/', methods=['GET'])
+def ping():
+	return ''
 
 def start():
 	global app
