@@ -3,6 +3,7 @@ import hashlib
 import json
 from functools import wraps
 from functools import update_wrapper
+import datetime
 
 from flask import Flask
 from flask import request
@@ -269,7 +270,7 @@ def update(version):
 		return errors.ApplicationUpdateMissingEvents
 	
 	# Save update (include IP address of user)
-	
+
 	request.values['liftpass-ip'] = request.environ.get('HTTP_X_REAL_IP')
 	theAnalytics.saveUpdate(request.values)
 	
@@ -321,7 +322,7 @@ def page_not_found(e):
 
 @app.route('/ping/', methods=['GET'])
 def ping():
-	return ''
+	return '%s'%datetime.datetime.now()
 
 def start():
 	global app

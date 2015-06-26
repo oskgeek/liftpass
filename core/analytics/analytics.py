@@ -6,6 +6,7 @@ import core.storage as storage
 import core.util.extras as extras
 import core.util.debug as debug
 import core.content.models as models
+from core.content.content import Content
 
 import config
 
@@ -166,17 +167,22 @@ class Analytics:
 
 
 	def processUpdates(self):
-		
+		content = Content()
+
 		totalFiles = self.storage.count()
 
 		for i, filename in enumerate(self.storage.getFiles()):
 			if 'json' in filename:
 				print('[%d of %d] Processing...'%(i, totalFiles))
-				
+
 				data = self.storage.load(filename)
 				data = json.loads(data)
-				
-				self.processUpdate(data)
+			
+				if content.getApplication(data['liftpass-application']) != None:
+					self.processUpdate(data)
+
+				self.storage.delete(filename)
+
 
 		
 
