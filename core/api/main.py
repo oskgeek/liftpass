@@ -22,6 +22,8 @@ import core.util.rest as rest
 import core.util.debug as debug
 import core.util.extras as extras
 import core.terminal as terminal
+import core.monitoring as monitor
+
 
 
 app = Flask(__name__)
@@ -256,39 +258,48 @@ def update(version):
 
 	# Check minimum number of keys required in JSON update
 	if extras.keysInDict(request.values, ['user', 'events']) == False:
+		monitor.getMonitor().count('ApplicationUpdateMissingKeys')
 		return errors.ApplicationUpdateIncomplete
 
 	if len(request.values['user']) != 32:
+		monitor.getMonitor().count('ApplicationUpdateMissingUsers')
 		return errors.ApplicationUpdateBadUser
 
 	# Events must have at least one item
 	if len(request.values['events']) == 0:
+		monitor.getMonitor().count('ApplicationUpdateNoEvents')
 		return errors.ApplicationUpdateMissingEvents
 	
 	# Event has progress
 	if 'progress' not in request.values['events'][-1]:
+		monitor.getMonitor().count('ApplicationUpdateMissingProgress')
 		return errors.ApplicationUpdateMissingEvents
 	
 	# Save update (include IP address of user)
 
-	request.values['liftpass-ip'] = request.environ.get('HTTP_X_REAL_IP')
-	theAnalytics.saveUpdate(request.values)
+	with monitor.getMonitor().time('ApplicationUpdateSaveUpdate'):
+		request.values['liftpass-ip'] = request.environ.get('HTTP_X_REAL_IP')
+		theAnalytics.saveUpdate(request.values)
 	
 	
-	# Try getting price engine
-	try:
-		prices = backend.getPricingEngine(request.values['liftpass-application'])
-	except pricing.ApplicationNotFoundException as e:
-		return errors.ApplicationNotConfigured
+	response = None
+	with monitor.getMonitor().time('ApplicationUpdateBuildResponse'):
+		# Try getting price engine
+		try:
+			prices = backend.getPricingEngine(request.values['liftpass-application'])
+		except pricing.ApplicationNotFoundException as e:
+			monitor.getMonitor().count('ApplicationUpdateNoApplication')
+			return errors.ApplicationNotConfigured
 
-	# Try getting price for user + progress
-	try:
-		userPrices = prices.getPrices(request.values['user'], request.values['events'][-1]['progress'])
-	except pricing.NoPricingForGroup:
-		return errors.ApplicationHasNoPriceForUser
-	
-	# Build response
-	response = {'goods':userPrices[1], 'version':userPrices[0]}
+		# Try getting price for user + progress
+		try:
+			userPrices = prices.getPrices(request.values['user'], request.values['events'][-1]['progress'])
+		except pricing.NoPricingForGroup:
+			monitor.getMonitor().count('ApplicationUpdateNoPrice')
+			return errors.ApplicationHasNoPriceForUser
+		
+		# Build response
+		response = {'goods':userPrices[1], 'version':userPrices[0]}
 	
 	# If debug mode save to terminal
 	if 'liftpass-debug' in request.values and request.values['liftpass-debug'] == True:

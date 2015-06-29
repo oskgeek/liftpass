@@ -10,6 +10,7 @@ from core.pricing.csvdata import *
 from core.pricing.metriccsvdata import *
 from core.pricing.dtjsondata import *
 from core.pricing.exceptions import *
+import core.monitoring as monitor
 
 
 
@@ -28,6 +29,7 @@ class PricingEngine:
 		
 		# If there is no AB test for application.. we are done
 		if self.abtest == None:
+			monitor.getMonitor().count('PricingNoPriceFound')
 			raise ApplicationNotFoundException()
 		
 		self.abtest = self.abtest.as_dict()
@@ -80,6 +82,8 @@ class PricingEngine:
 		
 		userID = int(user, 16)
 		
+		monitor.getMonitor().count('PricingUserRequest')
+
 		if userID % self.abtest['modulus'] <= self.abtest['modulusLimit']:
 			if self.groupAPrices:
 				return (self.abtest['groupAPrices_key'], self.groupAPrices.getPrices(progress))
@@ -89,6 +93,7 @@ class PricingEngine:
 			if self.groupBPrices:
 				return (self.abtest['groupBPrices_key'], self.groupBPrices.getPrices(progress))
 			else:
+				monitor.getMonitor().count('PricingNoPrice')
 				raise NoPricingForGroup()
 
 		return None

@@ -12,6 +12,7 @@ import datetime
 
 import core.util.debug as debug
 import core.util.extras as extras
+import core.monitoring as monitor
 
 
 ERROR_BAD_REQUEST = 400
@@ -112,30 +113,37 @@ def applicationAuthenticate(secretLookup):
 	def decorator(f): 
 		def aux(*args, **kwargs):
 
+			monitor.getMonitor().count('ApplicationRequest')
 			debug.log('%s %s %s'%(request.method, request.path, request.environ.get('HTTP_X_REAL_IP')))
 
-			# All user input goes to the values field of the request
-			if len(request.json):
-				request.values = request.json
+			with monitor.getMonitor().time('ApplicationValidate'):
+				# All user input goes to the values field of the request
+				if len(request.json):
+					request.values = request.json
 
-			# JSON must include time and user key
-			if not all(map(lambda k: k in request.values, ['liftpass-time', 'liftpass-application'])):
-				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing liftpass-time and/or liftpass-application keys'}, secret)
+				# JSON must include time and user key
+				if not all(map(lambda k: k in request.values, ['liftpass-time', 'liftpass-application'])):
+					monitor.getMonitor().count('ApplicationRequestMissingHeader')
+					return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing liftpass-time and/or liftpass-application keys'}, secret)
 
-			# HTTP header must include hash for all requests
-			if 'liftpass-hash' not in request.headers:
-				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing liftpass-hash in header'}, secret)
+				# HTTP header must include hash for all requests
+				if 'liftpass-hash' not in request.headers:
+					monitor.getMonitor().count('ApplicationRequestMissingHash')
+					return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing liftpass-hash in header'}, secret)
 
-			secret = secretLookup(request.values['liftpass-application'])
-			if secret == None:
-				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Application key not valid'}, secret)
+				secret = secretLookup(request.values['liftpass-application'])
+				if secret == None:
+					monitor.getMonitor().count('ApplicationRequestApplicationNotFound')
+					return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Application key not valid'}, secret)
 
-			secret = secret.encode('utf-8')	
-			digest = hmac.new(secret, request.get_data(), hashlib.sha256).hexdigest()
-			
-			if digest != request.headers['liftpass-hash']:
-				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'}, secret)
-			
-			return buildResponse(f(*args, **kwargs), secret, request.values['liftpass-application'])
+				secret = secret.encode('utf-8')	
+				digest = hmac.new(secret, request.get_data(), hashlib.sha256).hexdigest()
+				
+				if digest != request.headers['liftpass-hash']:
+					monitor.getMonitor().count('ApplicationRequestBadHash')
+					return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'}, secret)
+				
+				with monitor.getMonitor().time('ApplicationProcessResponse'):
+					return buildResponse(f(*args, **kwargs), secret, request.values['liftpass-application'])
 		return update_wrapper(aux, f)
 	return decorator

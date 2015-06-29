@@ -51,10 +51,7 @@ def checkFloat(x):
 
 class Analytics:
 	def __init__(self):
-
 		self.storage = storage.getStorage(config.AnalyticsStorage)
-
-
 
 	def saveUpdate(self, update):
 		key = '%s-%s-%s.json'%(update['liftpass-application'], extras.datetimeStamp(), update['user'])
