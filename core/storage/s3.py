@@ -1,4 +1,5 @@
 import boto.s3 as s3
+import threading
 
 from core.storage.storage import Storage
 
@@ -9,6 +10,10 @@ class S3(Storage):
 		self.bucket = self.conn.get_bucket(settings['bucket'])
 
 	def save(self, filename, data):
+		t = threading.Thread(target=self.__saveAux, args=(filename, data))
+		t.start()
+
+	def __saveAux(self, filename, data):
 		k = s3.key.Key(self.bucket)
 		k.key = filename
 		k.set_contents_from_string(data)

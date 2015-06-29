@@ -26,11 +26,15 @@ class Content:
 		
 		return application
 
+
 	def getApplications(self):
 		return models.getSession().query(models.Application).all()
 
 	def getApplication(self, application_key):
 		return models.getSession().query(models.Application).filter_by(key=application_key).first()
+
+	def getApplicationWithName(self, name):
+		return models.getSession().query(models.Application).filter_by(name=name).first()		
 
 	def deleteApplication(self, application_key):
 		session = models.getSession()

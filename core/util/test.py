@@ -37,7 +37,7 @@ class APITest(unittest.TestCase):
 		self.userSecret = userSecret
 		
 
-	def request(self, method, url, data, application=None, raw=False):
+	def request(self, method, url, data, application=None, raw=False, forceNetwork=False):
 		address = 'http://%s:%d%s'%(self.address, self.port, url)
 
 		if application:
@@ -54,7 +54,7 @@ class APITest(unittest.TestCase):
 		header = {'liftpass-hash': digest}
 		
 		try:
-			if self.client: 
+			if self.client and forceNetwork == False: 
 				if method == 'POST':
 					result = self.client.post(address, data=json.dumps(data), headers=header, content_type='application/json')
 				elif method == 'GET':
@@ -75,14 +75,14 @@ class APITest(unittest.TestCase):
 				return (result.status_code, data)			
 			else:
 				if method == 'POST':
-					result = requests.post(address, json=data, headers=header)
+					result = requests.post(address, json=data, headers=header, timeout=1.0)
 				elif method == 'GET':
-					result = requests.get(address, json=data, headers=header)
+					result = requests.get(address, json=data, headers=header, timeout=1.0)
 				elif method == 'DELETE':
-					result = requests.delete(address, json=data, headers=header)
+					result = requests.delete(address, json=data, headers=header, timeout=1.0)
 				elif method == 'PUT':
-					result = requests.put(address, json=data, headers=header)
-
+					result = requests.put(address, json=data, headers=header, timeout=1.0)
+				
 				if len(result.content) == 0:
 					return (result.status_code, None)
 				

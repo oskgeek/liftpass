@@ -7,22 +7,37 @@ from sqlalchemy import event
 import datetime
 import uuid
 import functools
+import threading
 
 import config
 import core.util.debug as debug
 
-if 'sqlite' in config.ContentDatabase['address']:
-	engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'])
-	event.listen(engine, 'connect', lambda conn, record: conn.execute('pragma foreign_keys=ON'))
-else:
-	engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'], isolation_level="READ COMMITTED")
+
+threadData = {}
 
 Base = declarative_base()
-sessions = sessionmaker(bind=engine)
-scopedSessions = scoped_session(sessions)
+
+def getLocalThreadData():
+	global threadData
+	tid = threading.current_thread().name
+
+	if tid not in threadData:
+		threadData[tid] = threading.local()
+		if 'sqlite' in config.ContentDatabase['address']:
+			threadData[tid].engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'])
+			event.listen(threadData[tid].engine, 'connect', lambda conn, record: conn.execute('pragma foreign_keys=ON'))
+		else:
+			threadData[tid].engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'], isolation_level="READ COMMITTED",  pool_size=20, max_overflow=0)
+		threadData[tid].sessionMaker = sessionmaker(bind=threadData[tid].engine)
+		threadData[tid].scopedSessions = scoped_session(threadData[tid].sessionMaker)	
+
+	return threadData[tid]
+
+def getEngine():
+	return getLocalThreadData().engine
 
 def getSession():
-	return scopedSessions()
+	return getLocalThreadData().scopedSessions()
 
 def generateUUID():
 	return uuid.uuid4().hex.replace('-', '')

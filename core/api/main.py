@@ -326,6 +326,11 @@ def ping():
 
 def start():
 	global app
+
+	# Flask server
+	# app.run(host=config.APIServer['address'], port=config.APIServer['port'], debug=config.APIServer.get('debug', False), threaded=True)
+
+	# Tornado server
 	from tornado.wsgi import WSGIContainer
 	from tornado.httpserver import HTTPServer
 	from tornado.ioloop import IOLoop
