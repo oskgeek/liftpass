@@ -329,6 +329,7 @@ def exportJSON(version):
 @app.errorhandler(500)
 def page_not_found(e):
 	debug.stacktrace(e)
+	monitor.getMonitor().count('APIError500')
 	return rest.errorResponse({'status': 500, 'message': 'An unexpected error occured. If it continues please contact the system administrator.'})
 
 @app.route('/ping/', methods=['GET'])
