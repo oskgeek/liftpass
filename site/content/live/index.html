@@ -1,0 +1,74 @@
+{% extends "dashboard.html" %}
+
+
+{% block content %}
+
+<style>
+	.details {
+		background: #efefef;
+	}
+	.details>td {
+		padding: 20px !important
+	}
+	.events .small, .prices .small {
+		border: 1px solid #efefef;
+	}
+</style>
+
+<script src="/static/js/live.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.1.2/mustache.min.js"></script>
+
+
+<div class="row">
+
+	<div class="col-xs-12" id="error" style="display:none">
+		<div class="alert-warning"></div>
+	</div>
+
+	<div class="col-xs-12" id="login">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Authenticate</h3>
+			</div>
+			<div class="panel-body">
+				<form onsubmit="window.live.login();">
+					<div class="form-group">
+						<label for="userKey">Applicaton Key</label>
+						<input type="text" class="form-control" name="appKey" id="appKey" value="ded3be3334814d8b9a8ad84dbc4ca8f4">
+					</div>
+					<div class="form-group">
+						<label for="userSecret">Applicaton Secret</label>
+						<input type="text" class="form-control" name="appSecret" id="appSecret" value="212f125e5c23467ea86d3e016cff84e5">
+					</div>
+					<div class="form-group">
+						<label for="serverAddress">Server Address</label>
+						<input type="url" class="form-control" name="serverAddress" id="serverAddress" value="{{config.APIServer.url}}">
+					</div>
+					<button type="submit" class="btn btn-default">Authenticate</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-xs-12" id="terminal" style="display:none">
+		<p class="small text-right">Updating every 5sec</p>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Time</th>
+					<th>IP Address</th>
+					<th>User Id</th>
+					<th>Events</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="terminalBody">
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
+
+
+{% endblock %}

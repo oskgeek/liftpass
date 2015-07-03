@@ -12,6 +12,16 @@ import jinja2_highlight
 import datetime
 import re
 
+import sys
+import os
+
+
+# Import Liftpass config 
+BasePath = os.path.abspath('../')
+sys.path.append(BasePath)
+import config
+
+
 contentDir = 'content/'
 outputDir = 'build/'
 dataDir = 'data/'
@@ -43,6 +53,10 @@ class Build:
 	# 1) Load data 
 	# --------------------------------------------------------------------------
 	def loadData(self):
+
+
+		self.globalData['config'] = config
+
 		for data in os.listdir(dataDir):
 			name = data[0: data.find('.')]
 			print('Loading:', name)

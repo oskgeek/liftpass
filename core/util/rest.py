@@ -117,9 +117,15 @@ def applicationAuthenticate(secretLookup):
 			debug.log('%s %s %s'%(request.method, request.path, request.environ.get('HTTP_X_REAL_IP')))
 
 			with monitor.getMonitor().time('ApplicationValidate'):
+				
 				# All user input goes to the values field of the request
-				if len(request.json):
+				message = request.get_data()
+				if 'json' in request.args:
+					message = base64.b64decode(request.args['json'])
+					request.values = json.loads(message.decode('utf-8'))
+				elif len(request.json):
 					request.values = request.json
+
 
 				# JSON must include time and user key
 				if not all(map(lambda k: k in request.values, ['liftpass-time', 'liftpass-application'])):
@@ -137,7 +143,7 @@ def applicationAuthenticate(secretLookup):
 					return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Application key not valid'}, secret)
 
 				secret = secret.encode('utf-8')	
-				digest = hmac.new(secret, request.get_data(), hashlib.sha256).hexdigest()
+				digest = hmac.new(secret, message, hashlib.sha256).hexdigest()
 				
 				if digest != request.headers['liftpass-hash']:
 					monitor.getMonitor().count('ApplicationRequestBadHash')

@@ -307,6 +307,13 @@ def update(version):
 	
 	return response
 
+@app.route('/debug-app/get/<version>/', methods=['GET'])
+@rest.applicationAuthenticate(secretLookup=lambda key: content.Content().getApplicationSecret(key))
+def debugAppGet(version):
+	theTerminal = terminal.getTerminal()
+	return {'log':theTerminal.get(request.values['liftpass-application'])}
+
+
 @app.route('/debug/get/<version>/', methods=['GET'])
 @rest.userAuthenticate(secretLookup=singleUserAuthenticate)
 def debugGet(version):
@@ -340,15 +347,15 @@ def start():
 	global app
 
 	# Flask server
-	# app.run(host=config.APIServer['address'], port=config.APIServer['port'], debug=config.APIServer.get('debug', False), threaded=True)
+	app.run(host=config.APIServer['address'], port=config.APIServer['port'], debug=config.APIServer.get('debug', False), threaded=True)
 
 	# Tornado server
-	from tornado.wsgi import WSGIContainer
-	from tornado.httpserver import HTTPServer
-	from tornado.ioloop import IOLoop
+	# from tornado.wsgi import WSGIContainer
+	# from tornado.httpserver import HTTPServer
+	# from tornado.ioloop import IOLoop
 
-	server = HTTPServer(WSGIContainer(app))
-	server.listen(config.APIServer['port'], address=config.APIServer['address'])
-	debug.log('Starting server at %s:%d'%(config.APIServer['address'], config.APIServer['port']))
-	IOLoop.instance().start()
+	# server = HTTPServer(WSGIContainer(app))
+	# server.listen(config.APIServer['port'], address=config.APIServer['address'])
+	# debug.log('Starting server at %s:%d'%(config.APIServer['address'], config.APIServer['port']))
+	# IOLoop.instance().start()
 
