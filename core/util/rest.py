@@ -114,6 +114,7 @@ def applicationAuthenticate(secretLookup):
 		def aux(*args, **kwargs):
 
 			monitor.getMonitor().count('ApplicationRequest')
+			
 			debug.log('%s %s %s'%(request.method, request.path, request.environ.get('HTTP_X_REAL_IP')))
 
 			with monitor.getMonitor().time('ApplicationValidate'):

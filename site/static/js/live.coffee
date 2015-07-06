@@ -25,6 +25,7 @@ class Live
 			return Math.round(elapsed/msPerYear ) + ' years ago'
 
 	update: () =>
+		console.log 'Updating'
 		serverAddress = $('#serverAddress').val()
 		appKey = $('#appKey').val()
 		appSecret = $('#appSecret').val()
@@ -52,8 +53,13 @@ class Live
 				'liftpass-hash': hash
 			},
 			success: (json) ->
+				localStorage.setItem('appKey', $('#appKey').val())
+				localStorage.setItem('appSecret', $('#appSecret').val())
+				localStorage.setItem('serverAddress', serverAddress)
+
 				window.live.updateTerminal(json)
-				setTimeout(window.live.login, 5000)
+
+				setTimeout(window.live.login, 5000)				
 			error: (response, status, error) ->
 				console.log "An error occured while talking to Liftpass"
 		})
@@ -69,8 +75,11 @@ class Live
 		$('#terminal').show()
 
 		for item in json.log
+			if item.length == 0 
+				continue
+			
 			data = JSON.parse(item)
-
+			
 			time = data.request['liftpass-time']*1000
 			tdTime = @timeDifference(time)
 			tdIP = data.request['liftpass-ip']
@@ -161,4 +170,8 @@ class Live
 
 
 $(document).ready () ->
+	$('#serverAddress').val(localStorage.getItem('serverAddress'))
+	$('#appKey').val(localStorage.getItem('appKey'))
+	$('#appSecret').val(localStorage.getItem('appSecret'))
+
 	window.live = new Live()
