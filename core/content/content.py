@@ -7,6 +7,14 @@ import core.pricing.pricing as pricing
 import core.util.debug as debug
 
 
+def cacheObject(obj):
+	list(map(lambda i: getattr(obj, i), dir(obj)))
+	return obj
+
+def cacheObjects(objs):
+	list(map(lambda o: cacheObject(o), objs))
+	return objs
+
 class Content:
 
 	def addApplication(self, name):	
@@ -23,23 +31,47 @@ class Content:
 		session.add(abtest)
 		session.add(metrics)
 		session.commit()
+
+		cacheObject(application)
+		session.close()
 		
 		return application
 
 
 	def getApplications(self):
-		return models.getSession().query(models.Application).all()
+		session = models.getSession()
+		applications = session.query(models.Application).all()
+
+		cacheObjects(applications)
+		session.close()
+
+		return applications
 
 	def getApplication(self, application_key):
-		return models.getSession().query(models.Application).filter_by(key=application_key).first()
+		session = models.getSession()
+		app = session.query(models.Application).filter_by(key=application_key).first()
+
+		cacheObject(app)
+		session.close()
+		
+		return app
 
 	def getApplicationWithName(self, name):
-		return models.getSession().query(models.Application).filter_by(name=name).first()		
+		session = models.getSession()
+		app = session.query(models.Application).filter_by(name=name).first()		
+		
+		cacheObject(app)
+		session.close()
+		
+		return app
 
 	def deleteApplication(self, application_key):
 		session = models.getSession()
 		res = session.query(models.Application).filter_by(key=application_key).delete()
 		session.commit()
+		
+		session.close()
+
 		return res
 
 	def setApplication(self, application_key, json):
@@ -48,11 +80,20 @@ class Content:
 		if application:
 			models.updateObjectWithJSON(application, json, ['key'])
 			session.commit()
+
+		cacheObject(application)
+		session.close()
+		
 		return application
 
 	def getCurrency(self, application_key):
 		session = models.getSession()
-		return session.query(models.Currencies).join(models.Application).filter_by(key=application_key).first()
+		currency = session.query(models.Currencies).join(models.Application).filter_by(key=application_key).first()
+		
+		cacheObject(currency)
+		session.close()
+
+		return currency
 
 	def setCurrency(self, application_key, json):
 		session = models.getSession()
@@ -61,6 +102,10 @@ class Content:
 		if currencies:
 			models.updateObjectWithJSON(currencies, json, ['key'])
 			session.commit()
+
+		cacheObject(currencies)
+		session.close()
+
 		return currencies
 
 	def addGood(self, application_key, name):
@@ -74,20 +119,37 @@ class Content:
 		session.add(good)
 		session.commit()
 
+		cacheObject(good)
+		session.close()
+
 		return good
 
 	def getGood(self, key):
 		session = models.getSession()
-		return session.query(models.Good).filter_by(key = key).first()
+		good = session.query(models.Good).filter_by(key = key).first()
+		
+		cacheObject(good)
+		session.close()
+
+		return good
 
 	def getGoods(self, application_key):
 		session = models.getSession()
-		return session.query(models.Good).join(models.Application).filter(models.Application.key == application_key).all()
+		goods = session.query(models.Good).join(models.Application).filter(models.Application.key == application_key).all()
+		
+		cacheObjects(goods)
+		session.close()
+
+		return goods
 
 	def deleteGood(self, good_key):
 		session = models.getSession()
 		res = session.query(models.Good).filter_by(key=good_key).delete()
 		session.commit()
+
+		
+		session.close()
+		
 		return res
 
 	def updateGood(self, good_key, json):
@@ -96,6 +158,10 @@ class Content:
 		if good:
 			models.updateObjectWithJSON(good, json, ['key', 'application_key'])
 			session.commit()
+
+		cacheObject(good)
+		session.close()
+
 		return good
 
 	def getABTest(self, application_key):
@@ -104,8 +170,13 @@ class Content:
 		abtests = session.query(models.ABTest).join(models.Application).filter(models.Application.key == application_key).order_by(models.ABTest.id.desc()).limit(1).all()
 		
 		if len(abtests) == 1:
+			
+			cacheObject(abtests[0])
+			session.close()
+			
 			return abtests[0]
 
+		session.close()		
 		return None
 
 	def setABTest(self, application_key, json):
@@ -137,11 +208,20 @@ class Content:
 			session.add(newABTest)
 			session.commit()
 
-			return newABTest 
+			cacheObject(newABTest)
+			
+		session.close()
+
+		return newABTest 
 
 	def getMetrics(self, application_key):
 		session = models.getSession()
-		return session.query(models.Metrics).join(models.Application).filter(models.Application.key == application_key).first()
+		metrics = session.query(models.Metrics).join(models.Application).filter(models.Application.key == application_key).first()
+		if metrics:
+			cacheObject(metrics)
+		session.close()
+		
+		return metrics
 
 	def setMetrics(self, application_key, json):
 		session = models.getSession()
@@ -150,15 +230,29 @@ class Content:
 		if metrics:
 			models.updateObjectWithJSON(metrics, json, ['key'])
 			session.commit()
+			cacheObject(metrics)
+		
+		session.close()
+
 		return metrics 
 
 	def getPrices(self, application_key):
 		session = models.getSession()
-		return session.query(models.Prices).join(models.Application).filter(models.Application.key == application_key).all()
+		prices = session.query(models.Prices).join(models.Application).filter(models.Application.key == application_key).all()
+		
+		cacheObjects(prices)
+		session.close()
+		
+		return prices
 
 	def getPrice(self, prices_key):
 		session = models.getSession()
-		return session.query(models.Prices).filter_by(key = prices_key).first()
+		price = session.query(models.Prices).filter_by(key = prices_key).first()
+		
+		cacheObject(price)
+		session.close()
+		
+		return price
 
 	def getPricingEngine(self, application_key):
 		return pricing.PricingEngine.getApplicationPricing(application_key)
@@ -181,6 +275,9 @@ class Content:
 			self.setABTest(prices.application_key, {'groupAPrices_key': None, 'groupBPrices_key': None})
 
 		session.commit()
+		
+		session.close()
+
 		return True
 
 	def addPrices(self, application_key, engine, data, path):
@@ -189,6 +286,10 @@ class Content:
 		pricing.PricingEngine.validate(prices)
 		session.add(prices)
 		session.commit()
+
+		cacheObject(prices)
+		session.close()
+		
 		return prices
 
 
@@ -197,7 +298,10 @@ class Content:
 		application = session.query(models.Application).filter_by(key = application_key).first()
 	
 		if application != None:
+			session.close()
 			return application.secret
+
+		session.close()
 		return None
 		
 

@@ -45,7 +45,7 @@ class TestTerminal(APITest):
 
 		res = theTerminal.get(a.key)
 
-		self.assertEqual(len(res), 2)
+		self.assertEqual(len(res), 3)
 
 
 suite = unittest.TestSuite()

@@ -25,7 +25,8 @@ if 'sqlite' in config.ContentDatabase['address']:
 	event.listen(engine, 'connect', lambda conn, record: conn.execute('pragma foreign_keys=ON'))
 else:
 	engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'], isolation_level="READ COMMITTED",  pool_size=20, max_overflow=0)
-sessionMaker = sessionmaker(bind=engine)
+
+sessionMaker = sessionmaker(bind=engine, autoflush=True)
 scopedSessions = scoped_session(sessionMaker)	
 
 def getEngine():
