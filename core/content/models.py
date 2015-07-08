@@ -17,30 +17,24 @@ threadData = {}
 
 Base = declarative_base()
 
-def getLocalThreadData():
-	global threadData
-	tid = threading.current_thread().name
-
-	if tid not in threadData:
-		threadData[tid] = threading.local()
-		if 'sqlite' in config.ContentDatabase['address']:
-			threadData[tid].engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'])
-			event.listen(threadData[tid].engine, 'connect', lambda conn, record: conn.execute('pragma foreign_keys=ON'))
-		else:
-			threadData[tid].engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'], isolation_level="READ COMMITTED",  pool_size=20, max_overflow=0)
-		threadData[tid].sessionMaker = sessionmaker(bind=threadData[tid].engine)
-		threadData[tid].scopedSessions = scoped_session(threadData[tid].sessionMaker)	
-
-	return threadData[tid]
-
-def getEngine():
-	return getLocalThreadData().engine
-
-def getSession():
-	return getLocalThreadData().scopedSessions()
-
 def generateUUID():
 	return uuid.uuid4().hex.replace('-', '')
+
+if 'sqlite' in config.ContentDatabase['address']:
+	engine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'], connect_args={'check_same_thread':False})
+	event.listen(engine, 'connect', lambda conn, record: conn.execute('pragma foreign_keys=ON'))
+else:
+	tengine = sqlalchemy.create_engine(config.ContentDatabase['address'], echo=config.ContentDatabase['debug'], isolation_level="READ COMMITTED",  pool_size=20, max_overflow=0)
+sessionMaker = sessionmaker(bind=engine)
+scopedSessions = scoped_session(sessionMaker)	
+
+def getEngine():
+	global engine
+	return engine
+
+def getSession():
+	global scopedSessions
+	return scopedSessions()
 
 def updateObjectWithJSON(object, json, ignore = []):
 	for key, val in json.items():
@@ -282,16 +276,16 @@ class Events(Base, CoreBase):
 
 
 def create():
-	Application.__table__.create(engine, checkfirst=True)
-	Currencies.__table__.create(engine, checkfirst=True)
-	Good.__table__.create(engine, checkfirst=True)
-	Metrics.__table__.create(engine, checkfirst=True)
-	Prices.__table__.create(engine, checkfirst=True)
-	ABTest.__table__.create(engine, checkfirst=True)
-	Events.__table__.create(engine, checkfirst=True)
+	Application.__table__.create(getEngine(), checkfirst=True)
+	Currencies.__table__.create(getEngine(), checkfirst=True)
+	Good.__table__.create(getEngine(), checkfirst=True)
+	Metrics.__table__.create(getEngine(), checkfirst=True)
+	Prices.__table__.create(getEngine(), checkfirst=True)
+	ABTest.__table__.create(getEngine(), checkfirst=True)
+	Events.__table__.create(getEngine(), checkfirst=True)
 
 def flush():
-	global engine
+	
 
 	# s = getSession()
 	for table in [Application, Currencies, Good, Metrics, ABTest, Prices, Events]:
@@ -299,7 +293,7 @@ def flush():
 			# rows = s.query(table).count()
 			rows = 0
 			debug.log('Deleting table %s with %d rows'%(table.__name__, rows))
-			table.__table__.drop(engine)
+			table.__table__.drop(getEngine())
 			# s.commit()
 			# s.flush()
 		except Exception as e:
