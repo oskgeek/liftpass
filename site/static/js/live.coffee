@@ -10,8 +10,9 @@ class Live
 		msPerYear = msPerDay * 365
 		elapsed = current - previous
 
-
-		if elapsed < msPerMinute
+		if elapsed < 0
+			return '<span class="text-danger">Incorrect time</span>'
+		else if elapsed < msPerMinute
 			return Math.round(elapsed/1000) + ' seconds ago'
 		else if elapsed < msPerHour
 			return Math.round(elapsed/msPerMinute) + ' minutes ago'
@@ -67,7 +68,7 @@ class Live
 	updateTime: () =>
 
 		$('.time').each (i, e) ->
-			$(e).text window.live.timeDifference($(e).data('time'))
+			$(e).html window.live.timeDifference($(e).data('time'))
 		
 
 	updateTerminal: (json) =>
