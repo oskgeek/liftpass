@@ -3,6 +3,20 @@ import threading
 
 from core.storage.storage import Storage
 
+class IterableWrap:
+
+	def __init__(self, data, attribute):
+		self.data = data
+		self.attribute = attribute
+
+	def __iter__(self):
+		return self
+
+	def __next__(self):
+		return getattr(self.data.__next__(), self.attribute)
+
+
+
 class S3(Storage):
 
 	def __init__(self, settings):
@@ -22,10 +36,10 @@ class S3(Storage):
 		return len(list(self.bucket.list()))
 
 	def getFiles(self):
-		return self.bucket.list()
+		return IterableWrap(iter(self.bucket.list()), 'name')
 
 	def load(self, filename):
-		return self.bucket.get_key(filename).get_contents_as_string()
+		return self.bucket.get_key(filename).get_contents_as_string().decode('utf-8')
 
 	def delete(self, filename):
 		self.bucket.get_key(filename).delete()

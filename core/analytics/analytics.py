@@ -1,6 +1,8 @@
 import json
 import datetime
-
+import time
+import multiprocessing
+import functools
 
 import core.storage as storage
 import core.util.extras as extras
@@ -52,6 +54,7 @@ def checkFloat(x):
 class Analytics:
 	def __init__(self):
 		self.storage = storage.getStorage(config.AnalyticsStorage)
+		self.cachedApplications = {}
 
 	def saveUpdate(self, update):
 		key = '%s-%s-%s.json'%(update['liftpass-application'], extras.datetimeStamp(), update['user'])
@@ -59,22 +62,29 @@ class Analytics:
 
 
 
-	def processUpdate(self, data):
-		session = models.getSession()
+	def processUpdate(self, data, session):
+
+		# session = models.getSession()
 
 		for attribute in ['liftpass-ip', 'liftpass-application', 'user', 'events']:
 			if attribute not in data:
 				raise EventMissingAttributeError(attribute)
-			
+		
+		events = 0	
 
+		s = time.time()
 		for update in data['events']:
 			try:
 				event = self.processEvent(data['liftpass-application'], data['user'], update)
 				session.add(event)
+				events += 1
 			except Exception as e:
 				print(e)
 
-		session.commit()
+
+		# session.commit()
+
+		return events
 
 
 
@@ -162,25 +172,68 @@ class Analytics:
 
 		return event
 
+	def getApplication(self, application):
+		if application not in self.cachedApplications:
+			content = Content()
+			self.cachedApplications[application] = (content.getApplication(application) != None)
+		return self.cachedApplications[application]
 
-	def processUpdates(self):
-		content = Content()
 
-		totalFiles = self.storage.count()
+	def processThreadUpdate(self, filenames):
+		session = models.getSession()		
 
-		for i, filename in enumerate(self.storage.getFiles()):
+		events = 0
+		for filename in filenames:
 			if 'json' in filename:
-				print('[%d of %d] Processing...'%(i, totalFiles))
 
 				data = self.storage.load(filename)
 				data = json.loads(data)
-			
-				if content.getApplication(data['liftpass-application']) != None:
-					self.processUpdate(data)
+
+				if self.getApplication(data['liftpass-application']) != None:
+					events += self.processUpdate(data, session)
 
 				self.storage.delete(filename)
 
+		session.commit()
 
+		return events
+
+	def pushEventToDatabase(self, event):
+		self.conn.add(event)
+		self.connSize += 1
+
+		if self.connSize > 1000:
+			self.conn.commit()
+
+
+	def processUpdates(self, limit = None):
+		content = Content()
+
+		updates = self.storage.getFiles()
+
+		start = time.time()
+		count = 0
+		events = 0
+		pool = 3
+
+		queue = []
+		for p in range(pool):
+			queue.append(list(map(lambda x: updates.__next__(), range(limit))))
+
+		if pool == 1:
+			for q in queue:
+				events += self.processThreadUpdate(q)
+		else:
+			pool = multiprocessing.Pool(pool)
+			events = pool.map(self.processThreadUpdate, queue)
+			events = sum(events)
+		
+
+		count = len(queue)
+		elapse = time.time()-start
+
+		print('-'*30)
+		print('Analyzed %d and %d events.\n1 update per %.02fsec\n1 event per %.02fsec'%(count, events, elapse*1.0/count, elapse*1.0/events))
 		
 
 	def exportStream(self, application, fromDate, toDate):

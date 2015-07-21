@@ -31,7 +31,12 @@ elif sys.argv[1] == 'content':
 elif sys.argv[1] == 'analytics':
 	if sys.argv[2] == 'update':
 		import core.analytics.analytics as analytics
-		analytics.Analytics().processUpdates()
+
+		limit = None
+		if len(sys.argv) > 3:
+			limit = int(sys.argv[3])
+
+		analytics.Analytics().processUpdates(limit)
 elif sys.argv[1] == 'dashboard':
 	if sys.argv[2] == 'start':
 		import core.dashboard.main as main
