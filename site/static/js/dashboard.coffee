@@ -300,7 +300,7 @@ DashboardController = ($scope) ->
 		return  
 	$scope.errorMessage = (message) ->
 		noty({
-			layout: 'center'
+			layout: 'bottomRight'
 			text: message
 			type: 'error'
 			timeout: false
