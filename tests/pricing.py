@@ -298,6 +298,43 @@ class TestDTJSONEngine(unittest.TestCase):
 		d = p.getPrices(self.__makeProgress([12, 5], [20, 'IT']))
 		self.assertEqual(d['sword'][0], 1000)
 
+class TestSimEngine(unittest.TestCase):
+	def __makeProgress(self, p, v):
+		prog = [None] * 32
+		for i in range(len(p)):
+			prog[p[i]] = v[i]
+		return prog
+
+	def testValidate(self):
+		data = {
+			'prices': {
+				'sword': [100, 0, 0, 0, 0, 0, 0, 0],
+				'knife': [5200, 0, 0, 0, 0, 0, 0, 0],
+			},
+			'metric': 23
+		}
+
+		data = json.dumps(data)
+		p = pricing.SimDataEngine.validate({'data':data})
+
+	def testLookup(self):
+		data = {
+			'prices': {
+				'sword': [100, 0, 0, 0, 0, 0, 0, 0],
+				'knife': [5200, 0, 0, 0, 0, 0, 0, 0],
+			},
+			'metric': 23
+		}
+
+		data = json.dumps(data)
+		p = pricing.SimDataEngine({'data':data})
+
+		prog = self.__makeProgress([23],[50])
+
+		print(p.getPrices(prog))
+
+
+
 
 suite = unittest.TestSuite()
 suite.addTests(discoverTests(TestPricingEngine))
@@ -305,6 +342,7 @@ suite.addTests(discoverTests(TestCSVEngine))
 suite.addTests(discoverTests(TestJSONEngine))
 suite.addTests(discoverTests(TestMetricCSVEngine))
 suite.addTests(discoverTests(TestDTJSONEngine))
+suite.addTests(discoverTests(TestSimEngine))
 
 unittest.TextTestRunner(verbosity=2).run(suite)
 

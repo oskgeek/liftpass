@@ -9,6 +9,7 @@ from core.pricing.jsondata import *
 from core.pricing.csvdata import *
 from core.pricing.metriccsvdata import *
 from core.pricing.dtjsondata import *
+from core.pricing.simdata import *
 from core.pricing.exceptions import *
 import core.monitoring as monitor
 
@@ -63,6 +64,8 @@ class PricingEngine:
 			return MetricCSVDataEngine
 		elif name.upper() == 'DTJSON':
 			return DTJSONData
+		elif name.upper() == 'SIM':
+			return SimDataEngine
 		raise DataEngineException('Pricing data engine not recognized')
 
 	
