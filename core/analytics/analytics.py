@@ -94,7 +94,7 @@ class Analytics:
 				except Exception as e:
 					print(e)
 
-			return events
+		return events
 
 
 
@@ -193,10 +193,8 @@ class Analytics:
 		return event
 
 	def getApplication(self, application):
-
 		if application not in self.cachedApplications:
 			content = Content()
-			content.getApplication(application)
 			self.cachedApplications[application] = (content.getApplicationExists(application) > 0)
 		return self.cachedApplications[application]
 
@@ -209,9 +207,13 @@ class Analytics:
 
 		for filename in filenames:
 			if 'json' in filename:
-
-				data = self.storage.load(filename)
-				data = json.loads(data)
+				
+				try:
+					data = self.storage.load(filename)
+					data = json.loads(data)
+				except:
+					self.storage.delete(filename)
+					continue
 
 				if self.getApplication(data['liftpass-application']) != None:
 					currentEvents = self.processUpdate(data, session)
