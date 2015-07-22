@@ -56,6 +56,14 @@ class Content:
 		
 		return app
 
+	def getApplicationExists(self, application_key):
+		session = models.getSession()
+		app = session.query(models.Application).filter_by(key=application_key).count()
+
+		session.close()
+		
+		return app
+
 	def getApplicationWithName(self, name):
 		session = models.getSession()
 		app = session.query(models.Application).filter_by(name=name).first()		

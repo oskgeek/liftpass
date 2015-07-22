@@ -69,7 +69,7 @@ class Analytics:
 			if attribute not in data:
 				raise EventMissingAttributeError(attribute)
 		
-		events = 0	
+		events = []
 		ip = data['liftpass-ip']
 		
 		try:
@@ -81,9 +81,7 @@ class Analytics:
 		s = time.time()
 		for update in data['events']:
 			try:
-				event = self.processEvent(data['liftpass-application'], data['user'], ip, country, update)
-				session.add(event)
-				events += 1
+				events.append(self.processEvent(data['liftpass-application'], data['user'], ip, country, update))
 			except Exception as e:
 				print(e)
 
@@ -101,53 +99,53 @@ class Analytics:
 		if len(data['progress']) != 32:
 			raise EventMissingMetricError()
 
-		event = models.Events()
-		event.application_key = application
-		event.user = user
-		event.name = data['name']
-		event.ip = ip
-		event.country = country
+		event = {}
+		event['application_key'] = application
+		event['user'] = user
+		event['name'] = data['name']
+		event['ip'] = ip
+		event['country'] = country
 
 
 		try:
-			event.timestamp = datetime.datetime.utcfromtimestamp(data['time'])
+			event['timestamp'] = datetime.datetime.utcfromtimestamp(data['time'])
 		except:
 			raise EventTimestampError()
 
 		# Try processing each progress metric
 		try:
-			event.metricString1 = checkString(data['progress'][0])
-			event.metricString2 = checkString(data['progress'][1])
-			event.metricString3 = checkString(data['progress'][2])
-			event.metricString4 = checkString(data['progress'][3])
-			event.metricString5 = checkString(data['progress'][4])
-			event.metricString6 = checkString(data['progress'][5])
-			event.metricString7 = checkString(data['progress'][6])
-			event.metricString8 = checkString(data['progress'][7])
-			event.metricNumber1 = checkFloat(data['progress'][8])
-			event.metricNumber2 = checkFloat(data['progress'][9])
-			event.metricNumber3 = checkFloat(data['progress'][10])
-			event.metricNumber4 = checkFloat(data['progress'][11])
-			event.metricNumber5 = checkFloat(data['progress'][12])
-			event.metricNumber6 = checkFloat(data['progress'][13])
-			event.metricNumber7 = checkFloat(data['progress'][14])
-			event.metricNumber8 = checkFloat(data['progress'][15])
-			event.metricNumber9 = checkFloat(data['progress'][16])
-			event.metricNumber10 = checkFloat(data['progress'][17])
-			event.metricNumber11 = checkFloat(data['progress'][18])
-			event.metricNumber12 = checkFloat(data['progress'][19])
-			event.metricNumber13 = checkFloat(data['progress'][20])
-			event.metricNumber14 = checkFloat(data['progress'][21])
-			event.metricNumber15 = checkFloat(data['progress'][22])
-			event.metricNumber16 = checkFloat(data['progress'][23])
-			event.metricNumber17 = checkFloat(data['progress'][24])
-			event.metricNumber18 = checkFloat(data['progress'][25])
-			event.metricNumber19 = checkFloat(data['progress'][26])
-			event.metricNumber20 = checkFloat(data['progress'][27])
-			event.metricNumber21 = checkFloat(data['progress'][28])
-			event.metricNumber22 = checkFloat(data['progress'][29])
-			event.metricNumber23 = checkFloat(data['progress'][30])
-			event.metricNumber24 = checkFloat(data['progress'][31])
+			event['metricString1'] = checkString(data['progress'][0])
+			event['metricString2'] = checkString(data['progress'][1])
+			event['metricString3'] = checkString(data['progress'][2])
+			event['metricString4'] = checkString(data['progress'][3])
+			event['metricString5'] = checkString(data['progress'][4])
+			event['metricString6'] = checkString(data['progress'][5])
+			event['metricString7'] = checkString(data['progress'][6])
+			event['metricString8'] = checkString(data['progress'][7])
+			event['metricNumber1'] = checkFloat(data['progress'][8])
+			event['metricNumber2'] = checkFloat(data['progress'][9])
+			event['metricNumber3'] = checkFloat(data['progress'][10])
+			event['metricNumber4'] = checkFloat(data['progress'][11])
+			event['metricNumber5'] = checkFloat(data['progress'][12])
+			event['metricNumber6'] = checkFloat(data['progress'][13])
+			event['metricNumber7'] = checkFloat(data['progress'][14])
+			event['metricNumber8'] = checkFloat(data['progress'][15])
+			event['metricNumber9'] = checkFloat(data['progress'][16])
+			event['metricNumber10'] = checkFloat(data['progress'][17])
+			event['metricNumber11'] = checkFloat(data['progress'][18])
+			event['metricNumber12'] = checkFloat(data['progress'][19])
+			event['metricNumber13'] = checkFloat(data['progress'][20])
+			event['metricNumber14'] = checkFloat(data['progress'][21])
+			event['metricNumber15'] = checkFloat(data['progress'][22])
+			event['metricNumber16'] = checkFloat(data['progress'][23])
+			event['metricNumber17'] = checkFloat(data['progress'][24])
+			event['metricNumber18'] = checkFloat(data['progress'][25])
+			event['metricNumber19'] = checkFloat(data['progress'][26])
+			event['metricNumber20'] = checkFloat(data['progress'][27])
+			event['metricNumber21'] = checkFloat(data['progress'][28])
+			event['metricNumber22'] = checkFloat(data['progress'][29])
+			event['metricNumber23'] = checkFloat(data['progress'][30])
+			event['metricNumber24'] = checkFloat(data['progress'][31])
 		except Exception:
 			raise EventProgressMetricFormatError()
 
@@ -157,22 +155,22 @@ class Analytics:
 				raise EventMissingAttributeError()
 
 			try:
-				event.attributeString1 = checkString(data['attributes'][0])
-				event.attributeString2 = checkString(data['attributes'][1])
-				event.attributeString3 = checkString(data['attributes'][2])
-				event.attributeString4 = checkString(data['attributes'][3])
-				event.attributeNumber1 = checkFloat(data['attributes'][4])
-				event.attributeNumber2 = checkFloat(data['attributes'][5])
-				event.attributeNumber3 = checkFloat(data['attributes'][6])
-				event.attributeNumber4 = checkFloat(data['attributes'][7])
-				event.attributeNumber5 = checkFloat(data['attributes'][8])
-				event.attributeNumber6 = checkFloat(data['attributes'][9])
-				event.attributeNumber7 = checkFloat(data['attributes'][10])
-				event.attributeNumber8 = checkFloat(data['attributes'][11])
-				event.attributeNumber9 = checkFloat(data['attributes'][12])
-				event.attributeNumber10 = checkFloat(data['attributes'][13])
-				event.attributeNumber11 = checkFloat(data['attributes'][14])
-				event.attributeNumber12 = checkFloat(data['attributes'][15])
+				event['attributeString1'] = checkString(data['attributes'][0])
+				event['attributeString2'] = checkString(data['attributes'][1])
+				event['attributeString3'] = checkString(data['attributes'][2])
+				event['attributeString4'] = checkString(data['attributes'][3])
+				event['attributeNumber1'] = checkFloat(data['attributes'][4])
+				event['attributeNumber2'] = checkFloat(data['attributes'][5])
+				event['attributeNumber3'] = checkFloat(data['attributes'][6])
+				event['attributeNumber4'] = checkFloat(data['attributes'][7])
+				event['attributeNumber5'] = checkFloat(data['attributes'][8])
+				event['attributeNumber6'] = checkFloat(data['attributes'][9])
+				event['attributeNumber7'] = checkFloat(data['attributes'][10])
+				event['attributeNumber8'] = checkFloat(data['attributes'][11])
+				event['attributeNumber9'] = checkFloat(data['attributes'][12])
+				event['attributeNumber10'] = checkFloat(data['attributes'][13])
+				event['attributeNumber11'] = checkFloat(data['attributes'][14])
+				event['attributeNumber12'] = checkFloat(data['attributes'][15])
 			except Exception:
 				raise EventAttributeFormatError()
 
@@ -181,14 +179,15 @@ class Analytics:
 	def getApplication(self, application):
 		if application not in self.cachedApplications:
 			content = Content()
-			self.cachedApplications[application] = (content.getApplication(application) != None)
+			self.cachedApplications[application] = (content.getApplicationExists(application) > 0)
 		return self.cachedApplications[application]
 
 
 	def processThreadUpdate(self, filenames):
 		session = models.getSession()		
 
-		events = 0
+		events = []
+
 		for filename in filenames:
 			if 'json' in filename:
 
@@ -196,21 +195,14 @@ class Analytics:
 				data = json.loads(data)
 
 				if self.getApplication(data['liftpass-application']) != None:
-					events += self.processUpdate(data, session)
+					events.extend(self.processUpdate(data, session))
 
 				self.storage.delete(filename)
 
+		session.execute(models.Events.__table__.insert(), events)
 		session.commit()
 
-		return events
-
-	def pushEventToDatabase(self, event):
-		self.conn.add(event)
-		self.connSize += 1
-
-		if self.connSize > 1000:
-			self.conn.commit()
-
+		return len(events)
 
 	def processUpdates(self, processors = 1, limit = 100):
 		content = Content()
