@@ -177,8 +177,10 @@ class Analytics:
 		return event
 
 	def getApplication(self, application):
+
 		if application not in self.cachedApplications:
 			content = Content()
+			content.getApplication(application)
 			self.cachedApplications[application] = (content.getApplicationExists(application) > 0)
 		return self.cachedApplications[application]
 
@@ -244,6 +246,8 @@ class Analytics:
 	def exportStream(self, application, fromDate, toDate):
 		session = models.getSession()
 		
+
+
 		q = session.query(models.Events).filter(models.Events.application_key==application, models.Events.created>=fromDate, models.Events.created<toDate)
 
 		for row in q:

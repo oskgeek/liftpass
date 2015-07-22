@@ -7,12 +7,16 @@ import core.pricing.pricing as pricing
 import core.util.debug as debug
 
 
-def cacheObject(obj):
-	list(map(lambda i: getattr(obj, i), dir(obj)))
+def cacheObject(obj, skip = []):
+	
+	for k in dir(obj):
+		if k not in skip and k.startswith('__') == False:
+			getattr(obj, k)
+
 	return obj
 
-def cacheObjects(objs):
-	list(map(lambda o: cacheObject(o), objs))
+def cacheObjects(objs, skip = []):
+	list(map(lambda o: cacheObject(o, skip), objs))
 	return objs
 
 class Content:
@@ -42,7 +46,7 @@ class Content:
 		session = models.getSession()
 		applications = session.query(models.Application).all()
 
-		cacheObjects(applications)
+		cacheObjects(applications, ['currencies', 'abtest', 'events', 'metrics', 'goods', 'prices'])
 		session.close()
 
 		return applications
@@ -51,7 +55,7 @@ class Content:
 		session = models.getSession()
 		app = session.query(models.Application).filter_by(key=application_key).first()
 
-		cacheObject(app)
+		cacheObject(app, ['currencies', 'abtest', 'events', 'metrics', 'goods', 'prices'])
 		session.close()
 		
 		return app
@@ -68,7 +72,7 @@ class Content:
 		session = models.getSession()
 		app = session.query(models.Application).filter_by(name=name).first()		
 		
-		cacheObject(app)
+		cacheObject(app, ['currencies', 'abtest', 'events', 'metrics', 'goods', 'prices'])
 		session.close()
 		
 		return app
