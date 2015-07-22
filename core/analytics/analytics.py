@@ -212,7 +212,7 @@ class Analytics:
 			self.conn.commit()
 
 
-	def processUpdates(self, limit = None):
+	def processUpdates(self, processors = 1, limit = 100):
 		content = Content()
 
 		updates = self.storage.getFiles()
@@ -220,17 +220,17 @@ class Analytics:
 		start = time.time()
 		count = 0
 		events = 0
-		pool = 2
+		
 
 		queue = []
-		for p in range(pool):
+		for p in range(processors):
 			queue.append(list(map(lambda x: updates.__next__(), range(limit))))
 
-		if pool == 1:
+		if processors == 1:
 			for q in queue:
 				events += self.processThreadUpdate(q)
 		else:
-			pool = multiprocessing.Pool(pool)
+			pool = multiprocessing.Pool(processors)
 			events = pool.map(self.processThreadUpdate, queue)
 			events = sum(events)
 		

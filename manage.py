@@ -33,10 +33,13 @@ elif sys.argv[1] == 'analytics':
 		import core.analytics.analytics as analytics
 
 		limit = None
-		if len(sys.argv) > 3:
-			limit = int(sys.argv[3])
-
-		analytics.Analytics().processUpdates(limit)
+		if len(sys.argv) > 4:
+			processors = int(sys.argv[3])
+			limit = int(sys.argv[4])
+			analytics.Analytics().processUpdates(processors, limit)
+		else:
+			analytics.Analytics().processUpdates()
+			
 elif sys.argv[1] == 'dashboard':
 	if sys.argv[2] == 'start':
 		import core.dashboard.main as main
