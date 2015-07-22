@@ -10,6 +10,8 @@ import core.util.extras as extras
 import core.util.debug as debug
 import core.content.models as models
 from core.content.content import Content
+import core.monitoring as monitor
+
 
 import config
 
@@ -58,45 +60,56 @@ class Analytics:
 		self.cachedApplications = {}
 
 	def saveUpdate(self, update):
+		monitor.getMonitor().count('AnalyticsSaveUpdateCount')
+
 		key = '%s-%s-%s.json'%(update['liftpass-application'], extras.datetimeStamp(), update['user'])
 		self.storage.save(key, json.dumps(update))
 
 
 
 	def processUpdate(self, data, session):
+		monitor.getMonitor().count('AnalyticsProcessUpdateCount')
 
-		for attribute in ['liftpass-ip', 'liftpass-application', 'user', 'events']:
-			if attribute not in data:
-				raise EventMissingAttributeError(attribute)
-		
-		events = []
-		ip = data['liftpass-ip']
-		
-		try:
-			country = geolite2.reader().get(ip)
-			country = country['country']['iso_code']
-		except:
-			country = None
-
-		s = time.time()
-		for update in data['events']:
+		with monitor.getMonitor().time('AnalyticsProcessUpdateTime'):
+			for attribute in ['liftpass-ip', 'liftpass-application', 'user', 'events']:
+				if attribute not in data:
+					monitor.getMonitor().count('AnalyticsUpdateMissingAttributeCount')
+					raise EventMissingAttributeError(attribute)
+			
+			events = []
+			ip = data['liftpass-ip']
+			
 			try:
-				events.append(self.processEvent(data['liftpass-application'], data['user'], ip, country, update))
-			except Exception as e:
-				print(e)
+				country = geolite2.reader().get(ip)
+				country = country['country']['iso_code']
+			except:
+				country = None
 
-		return events
+			s = time.time()
+			for update in data['events']:
+				try:
+					with monitor.getMonitor().time('AnalyticsProcessUpdateEventTime'):
+						monitor.getMonitor().count('AnalyticsEventCount')
+						events.append(self.processEvent(data['liftpass-application'], data['user'], ip, country, update))
+				except Exception as e:
+					print(e)
+
+			return events
 
 
 
 	def processEvent(self, application, user, ip, country, data):
 		if 'name' not in data:
+			monitor.getMonitor().count('AnalyticsEventMissingNameCount')
 			raise EventAttributeMissingError('name')
 		if 'time' not in data:
+			monitor.getMonitor().count('AnalyticsEventMissingTimeCount')
 			raise EventAttributeMissingError('time')
 		if 'progress' not in data:
+			monitor.getMonitor().count('AnalyticsEventMissingProgressCount')
 			raise EventAttributeMissingError('progress')
 		if len(data['progress']) != 32:
+			monitor.getMonitor().count('AnalyticsEventIncompleteProgressCount')
 			raise EventMissingMetricError()
 
 		event = {}
@@ -110,6 +123,7 @@ class Analytics:
 		try:
 			event['timestamp'] = datetime.datetime.utcfromtimestamp(data['time'])
 		except:
+			monitor.getMonitor().count('AnalyticsEventBadTimeCount')
 			raise EventTimestampError()
 
 		# Try processing each progress metric
@@ -147,6 +161,7 @@ class Analytics:
 			event['metricNumber23'] = checkFloat(data['progress'][30])
 			event['metricNumber24'] = checkFloat(data['progress'][31])
 		except Exception:
+			monitor.getMonitor().count('AnalyticsEventBadMetricCount')
 			raise EventProgressMetricFormatError()
 
 		# If attributes defined, add them to the event
@@ -172,6 +187,7 @@ class Analytics:
 				event['attributeNumber11'] = checkFloat(data['attributes'][14])
 				event['attributeNumber12'] = checkFloat(data['attributes'][15])
 			except Exception:
+				monitor.getMonitor().count('AnalyticsEventBadAttributeCount')
 				raise EventAttributeFormatError()
 
 		return event
