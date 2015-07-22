@@ -17,3 +17,5 @@ SQLAlchemy==1.0.4
 tornado==4.2b1
 Werkzeug==0.10.4
 CoffeeScript==1.1.0
+maxminddb==1.2.0
+maxminddb-geolite2==2015.0708

@@ -3,6 +3,7 @@ import datetime
 import time
 import multiprocessing
 import functools
+from geolite2 import geolite2
 
 import core.storage as storage
 import core.util.extras as extras
@@ -64,31 +65,33 @@ class Analytics:
 
 	def processUpdate(self, data, session):
 
-		# session = models.getSession()
-
 		for attribute in ['liftpass-ip', 'liftpass-application', 'user', 'events']:
 			if attribute not in data:
 				raise EventMissingAttributeError(attribute)
 		
 		events = 0	
+		ip = data['liftpass-ip']
+		
+		try:
+			country = geolite2.reader().get(ip)
+			country = country['country']['iso_code']
+		except:
+			country = None
 
 		s = time.time()
 		for update in data['events']:
 			try:
-				event = self.processEvent(data['liftpass-application'], data['user'], update)
+				event = self.processEvent(data['liftpass-application'], data['user'], ip, country, update)
 				session.add(event)
 				events += 1
 			except Exception as e:
 				print(e)
 
-
-		# session.commit()
-
 		return events
 
 
 
-	def processEvent(self, application, user, data):
+	def processEvent(self, application, user, ip, country, data):
 		if 'name' not in data:
 			raise EventAttributeMissingError('name')
 		if 'time' not in data:
@@ -102,6 +105,9 @@ class Analytics:
 		event.application_key = application
 		event.user = user
 		event.name = data['name']
+		event.ip = ip
+		event.country = country
+
 
 		try:
 			event.timestamp = datetime.datetime.utcfromtimestamp(data['time'])
@@ -214,7 +220,7 @@ class Analytics:
 		start = time.time()
 		count = 0
 		events = 0
-		pool = 3
+		pool = 2
 
 		queue = []
 		for p in range(pool):
@@ -233,7 +239,7 @@ class Analytics:
 		elapse = time.time()-start
 
 		print('-'*30)
-		print('Analyzed %d and %d events.\n1 update per %.02fsec\n1 event per %.02fsec'%(count, events, elapse*1.0/count, elapse*1.0/events))
+		print('Analyzed %d and %d events.\n1 update per %.03fsec\n1 event per %.03fsec'%(count, events, elapse*1.0/count, elapse*1.0/events))
 		
 
 	def exportStream(self, application, fromDate, toDate):
