@@ -186,6 +186,7 @@ class Analytics:
 	def processThreadUpdate(self, filenames):
 		session = models.getSession()		
 
+		eventsCount = 0
 		events = []
 
 		for filename in filenames:
@@ -195,14 +196,20 @@ class Analytics:
 				data = json.loads(data)
 
 				if self.getApplication(data['liftpass-application']) != None:
-					events.extend(self.processUpdate(data, session))
+					currentEvents = self.processUpdate(data, session)
+					eventsCount += len(currentEvents)
+					events.extend(currentEvents)
 
 				self.storage.delete(filename)
+
+			if len(events) > 1000:
+				session.execute(models.Events.__table__.insert(), events)
+				events = []
 
 		session.execute(models.Events.__table__.insert(), events)
 		session.commit()
 
-		return len(events)
+		return eventsCount
 
 	def processUpdates(self, processors = 1, limit = 100):
 		content = Content()
