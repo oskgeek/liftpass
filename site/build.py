@@ -5,16 +5,17 @@ from bs4 import BeautifulSoup
 import csv
 import shutil
 import dbm
-import sass
 import yaml
 import coffeescript
 import jinja2_highlight
 import datetime
 import re
 
-import sys
-import os
-
+try:
+	import sass
+except:
+	print('Please install libsass via pip.')
+	sys.exit(0)
 
 # Import Liftpass config 
 BasePath = os.path.abspath('../')
