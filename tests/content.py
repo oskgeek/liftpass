@@ -314,9 +314,10 @@ class TestExport(APITest):
 		# Create game
 		backend = content.Content()
 		theAnalytics = analytics.Analytics()
+		session = content.models.getSession()
 
 		a = backend.addApplication('Export Data Game') 
-
+	
 		for i in range(10):
 			update = {
 				'liftpass-application': a.key,
@@ -330,7 +331,7 @@ class TestExport(APITest):
 					}
 				]*5
 			}
-			theAnalytics.processUpdate(update)
+			theAnalytics.processUpdate(update, session)
 
 		query = {
 			'application': a.key,

@@ -331,8 +331,6 @@ class TestSimEngine(unittest.TestCase):
 
 		prog = self.__makeProgress([23],[50])
 
-		print(p.getPrices(prog))
-
 
 
 
