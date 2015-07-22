@@ -11,6 +11,8 @@ from flask import make_response
 from flask import Response
 from flask.ext.cors import CORS
 
+from geolite2 import geolite2
+
 import config
 import core.content.content as content
 import core.storage as storage
@@ -276,11 +278,16 @@ def update(version):
 		return errors.ApplicationUpdateMissingEvents
 	
 	# Save update (include IP address of user)
-
 	with monitor.getMonitor().time('ApplicationUpdateSaveUpdate'):
 		request.values['liftpass-ip'] = request.environ.get('HTTP_X_REAL_IP')
 		theAnalytics.saveUpdate(request.values)
 	
+	# Lookup player country
+	try:
+		country = geolite2.reader().get(ip)
+		country = country['country']['iso_code']
+	except:
+		country = None
 	
 	response = None
 	with monitor.getMonitor().time('ApplicationUpdateBuildResponse'):
