@@ -228,6 +228,19 @@ class TestMetricCSVEngine(unittest.TestCase):
 		with self.assertRaises(pricing.DataEngineException):
 			p = pricing.MetricCSVDataEngine.validate({'data':data})
 
+		# Test country
+		data = """
+			country, Default, US, BR, DE
+			sword, 100, 200, 400, 500
+		"""
+		p = pricing.MetricCSVDataEngine({'data':data})
+		r = p.getPrices(self.__makeProgress(0,''), country='US')
+		self.assertEqual(r['sword'][0], 200)
+		r = p.getPrices(self.__makeProgress(0,''), country='DE')
+		self.assertEqual(r['sword'][0], 500)
+		r = p.getPrices(self.__makeProgress(0,''), country='JP')
+		self.assertEqual(r['sword'][0], 100)
+
 
 class TestDTJSONEngine(unittest.TestCase):
 	def __makeProgress(self, p, v):
@@ -297,6 +310,25 @@ class TestDTJSONEngine(unittest.TestCase):
 		self.assertEqual(c['sword'][0], 500)
 		d = p.getPrices(self.__makeProgress([12, 5], [20, 'IT']))
 		self.assertEqual(d['sword'][0], 1000)
+
+	def testCountry(self):
+		data = {
+			'metric': 'country',
+			'method': 'lookup',
+			'keys': [['US', 'BR'], ['JP', 'IT'], ['*']],
+			'values': [{'sword': 1000}, {'sword': 500}, {'sword': 100}]
+		}
+		data = json.dumps(data)
+		p = pricing.DTJSONData({'data':data})
+
+		a = p.getPrices(self.__makeProgress([12], [8]), 'BR')
+		self.assertEqual(a['sword'][0], 1000)
+
+		b = p.getPrices(self.__makeProgress([12], [13]), 'IT')
+		self.assertEqual(b['sword'][0], 500)
+
+		b = p.getPrices(self.__makeProgress([12], [13]), 'VT')
+		self.assertEqual(b['sword'][0], 100)
 
 class TestSimEngine(unittest.TestCase):
 	def __makeProgress(self, p, v):

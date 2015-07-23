@@ -63,6 +63,16 @@ knife, 50, 50, 100, 150
 
 <div class="alert alert-warning">MetricCSV does not support more than a single currency pricing/rewards per good, per progress metric. Namely the price/reward entered represents the first currency the game has.</div>
 
+<p>Liftpass also has the ability to lookup the user's location based on the IP address. The country code derived on the server can also be used for looking up prices. Instead of using metrics like metricString4 or metricNumber12, use country instead. </p>
+
+
+<pre><code>country, Default, US, BR, DE
+sword, 100, 200, 50, 75
+knife, 50, 50, 100, 150
+</code></pre>
+
+<p>Just like in the previous example, the price returned to the user will be based on their location. Except that instead of looking at the player progress data sent by the player to derive a price, this time the country code found by the server is used.</p>
+
 
 <h3>DTJSON</h3>
 
@@ -130,5 +140,19 @@ knife, 50, 50, 100, 150
 {% endhighlight %}
 
 <p>Now if progress mertric 12 is 7 and progress metric 5 is 'UK' then the user will see that the price for the sword is 1000.</p>
+
+<p>The metric can also the country the user is in, derived by the server based on his/her IP address. When metric "country" is used, it must be also used with the "lookup" method.</p>
+
+{% highlight 'json' %}
+{
+	'metric': 'country',
+	'method': 'lookup',
+	'keys': [['US', 'BR'], ['JP', 'IT'], ['*']],
+	'values': [{'sword': 1000}, {'sword': 500}, {'sword': 100}]
+}
+{% endhighlight %}
+
+<p>If the user, based on the IP address, is in Japan, the price for the sword will be 500.</p>
+
 
 {% endblock %}

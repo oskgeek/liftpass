@@ -18,15 +18,27 @@ class DTJSONData(DataEngine):
 
 				defaultIndex = None
 				nextRoot = None
-				for i, key in enumerate(root['keys']):
-					if root['method'] == 'lookup' and progress[index] in set(key):
-						nextRoot = root['values'][i]
-						break
-					elif root['method'] == 'range' and progress[index] >= key[0] and progress[index] <= key[1]:
-						nextRoot = root['values'][i]
-						break
-					elif '*' in key:
-						defaultIndex = i
+
+				if type(index) == int:
+					for i, key in enumerate(root['keys']):
+						if root['method'] == 'lookup' and progress[index] in set(key):
+							nextRoot = root['values'][i]
+							break
+						elif root['method'] == 'range' and progress[index] >= key[0] and progress[index] <= key[1]:
+							nextRoot = root['values'][i]
+							break
+						elif '*' in key:
+							defaultIndex = i
+				elif type(index) == str:
+					index = index.lower().strip()
+					if index == 'country':
+						for i, key in enumerate(root['keys']):
+							if root['method'] == 'lookup' and country in set(key):
+								nextRoot = root['values'][i]
+								break
+							elif '*' in key:
+								defaultIndex = i
+
 
 				if nextRoot == None and defaultIndex != None:
 					nextRoot = root['values'][defaultIndex]

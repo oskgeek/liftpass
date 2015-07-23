@@ -7,7 +7,10 @@ from core.pricing.exceptions import *
 
 class MetricCSVDataEngine(DataEngine):
 	def getPrices(self, progress, country=None):
-		p = progress[self.data['metric']]
+		if type(self.data['metric']) == int:
+			p = progress[self.data['metric']]
+		elif self.data['metric'] == 'country':
+			p = country
 		
 		if type(p) == str:
 			p = p.strip().lower()
@@ -35,24 +38,29 @@ class MetricCSVDataEngine(DataEngine):
 				metric = int(metric[12:])-1
 			elif 'metricNumber' in metric:
 				metric = int(metric[12:])+8-1
+			elif metric.lower().strip() == 'country':
+				metric = metric.lower().strip()
 			else:
 				assert(False)
-			assert(metric<32 and metric>-1)
+			assert((type(metric)==int and metric<32 and metric>-1) or (metric=='country'))
 		except:
 			raise DataEngineException('Metric name not valid/recognized')
 
-		if metric<8:
+		if type(metric) == int:
+			if metric<8:
+				progress = list(map(lambda p: p.strip().lower(), rows[0][1:]))
+			else:
+				try:
+					progress = []
+					for p in rows[0][1:]:
+						if p.strip().lower() == 'default':
+							progress.append('default')
+						else:
+							progress.append(float(p))
+				except: 
+					raise DataEngineException('Numberic progress metric must have numeric progress values for the columns')
+		elif type(metric) == str:
 			progress = list(map(lambda p: p.strip().lower(), rows[0][1:]))
-		else:
-			try:
-				progress = []
-				for p in rows[0][1:]:
-					if p.strip().lower() == 'default':
-						progress.append('default')
-					else:
-						progress.append(float(p))
-			except: 
-				raise DataEngineException('Numberic progress metric must have numeric progress values for the columns')
 
 		data = dict(map(lambda p: (p, {}), progress))
 
