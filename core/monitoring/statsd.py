@@ -1,5 +1,6 @@
 import statsd
 import threading
+import time
 
 connection = None
 connectionLock = threading.Lock()
