@@ -268,7 +268,7 @@ class Analytics:
 	def exportStream(self, application, fromDate, toDate, streaming = True):
 		session = models.getSession()
 		
-		q = session.query(models.Events).filter_by(application_key=application).all()#, models.Events.created>=fromDate, models.Events.created<toDate)
+		q = session.query(models.Events).filter(models.Events.application_key==application, models.Events.created>=fromDate, models.Events.created<toDate)
 		out = ''
 
 		for row in q:
