@@ -1,5 +1,6 @@
 import os
 import sys
+import datetime
 
 try:
 	import config
@@ -57,6 +58,20 @@ elif sys.argv[1] == 'demo':
 elif sys.argv[1] == 'configure':
 	import core.configure as configure
 	configure.run()
+elif sys.argv[1] == 'export':
+	if len(sys.argv) < 4:
+		print('Missing arguments: <application key> <from date yyyy/mm/dd> <to date yyyy/mm/dd>')
+		sys.exit(0)
+
+	import core.analytics.analytics as analytics
+	import datetime
+	
+	fromDate = datetime.datetime.strptime(sys.argv[3], '%Y/%m/%d')
+	toDate = datetime.datetime.strptime(sys.argv[4], '%Y/%m/%d')
+	print('Exporting %s from %s to %s'%(sys.argv[2], fromDate, toDate))
+
+	analytics.Analytics().exportFile(sys.argv[2], fromDate, toDate, sys.stdout)
+
 elif sys.argv[1] == 'test':
 	if sys.argv[2] == 'content':
 		import tests.content

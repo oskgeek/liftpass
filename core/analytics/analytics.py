@@ -265,20 +265,23 @@ class Analytics:
 		print('Analyzed %d and %d events.\n1 update per %.03fsec\n1 event per %.03fsec'%(count, events, elapse*1.0/count, elapse*1.0/events))
 		
 
-	def exportStream(self, application, fromDate, toDate, streaming = True):
+	def exportStream(self, application, fromDate, toDate, file = None):
+
 		session = models.getSession()
 		
 		q = session.query(models.Events).filter(models.Events.application_key==application, models.Events.created>=fromDate, models.Events.created<toDate)
-		out = ''
-
+		
+		
 		for row in q:
-
-			if streaming:
+			if file == None:
 				yield extras.toJSON(row.as_dict())+'\n'
 			else:
-				out += extras.toJSON(row.as_dict())+'\n'
+				file.write(extras.toJSON(row.as_dict())+'\n')
 		
-		if streaming == False:
-			return out
-
-
+	def exportFile(self, application, fromDate, toDate, file):
+		session = models.getSession()
+		q = session.query(models.Events).filter(models.Events.application_key==application, models.Events.created>=fromDate, models.Events.created<toDate)
+		
+		for row in q:	
+			file.write(extras.toJSON(row.as_dict())+'\n')
+			file.flush()

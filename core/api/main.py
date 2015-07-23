@@ -337,7 +337,7 @@ def exportJSON(version):
 	fromDate = extras.unixTimestampToDatetime(request.values['from'])
 	toDate = extras.unixTimestampToDatetime(request.values['to'])
 	
-	return rest.streamResponse(lambda: theAnalytics.exportStream(request.values['application'], fromDate, toDate, streaming=True))
+	return rest.streamResponse(lambda: theAnalytics.exportStream(request.values['application'], fromDate, toDate))
 
 
 @app.errorhandler(500)
