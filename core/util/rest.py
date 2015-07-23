@@ -1,6 +1,7 @@
 from flask import jsonify
 from flask import request
 from flask import Response
+from flask import stream_with_context
 import hmac
 import hashlib
 from functools import wraps
@@ -26,7 +27,7 @@ SUCCESS_CREATED = 201
 
 
 def streamResponse(stream):
-	return Response(stream(), mimetype='application/json')
+	return Response(stream_with_context(stream()), mimetype='application/json')
 
 def successResponse(data, status=200):
 	res = jsonify(data)

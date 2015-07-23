@@ -5,7 +5,7 @@ from core.pricing.exceptions import *
 
 class JSONDataEngine(DataEngine):
 
-	def getPrices(self, progress):
+	def getPrices(self, progress, country=None):
 		res = {}
 		for g in self.data:
 			if isinstance(self.data[g], list):

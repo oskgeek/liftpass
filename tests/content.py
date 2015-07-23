@@ -332,7 +332,7 @@ class TestExport(APITest):
 				]*5
 			}
 			theAnalytics.processUpdate(update, session)
-
+			
 		query = {
 			'application': a.key,
 			'from': extras.unixTimestamp()-86400,
@@ -340,6 +340,7 @@ class TestExport(APITest):
 		}
 
 		(status, a) = self.request('GET', '/export/json/v1/', query, raw=True)
+		
 		
 		self.assertEqual(len(a.split('\n')), 51)
 

@@ -5,7 +5,7 @@ from core.pricing.exceptions import *
 
 class SimDataEngine(DataEngine):
 
-	def getPrices(self, progress):
+	def getPrices(self, progress, country=None):
 		res = {}
 		for g in self.data['prices']:
 			if isinstance(self.data['prices'][g], list):

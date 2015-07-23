@@ -81,7 +81,7 @@ class PricingEngine:
 		engine.validate(price)
 
 
-	def getPrices(self, user, progress):
+	def getPrices(self, user, progress, country=None):
 		
 		userID = int(user, 16)
 		
@@ -89,12 +89,12 @@ class PricingEngine:
 
 		if userID % self.abtest['modulus'] <= self.abtest['modulusLimit']:
 			if self.groupAPrices:
-				return (self.abtest['groupAPrices_key'], self.groupAPrices.getPrices(progress))
+				return (self.abtest['groupAPrices_key'], self.groupAPrices.getPrices(progress, country))
 			else:
 				raise NoPricingForGroup()
 		else:
 			if self.groupBPrices:
-				return (self.abtest['groupBPrices_key'], self.groupBPrices.getPrices(progress))
+				return (self.abtest['groupBPrices_key'], self.groupBPrices.getPrices(progress, country))
 			else:
 				monitor.getMonitor().count('PricingNoPrice')
 				raise NoPricingForGroup()

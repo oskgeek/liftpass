@@ -6,7 +6,7 @@ from core.pricing.exceptions import *
 
 class DTJSONData(DataEngine):
 
-	def getPrices(self, progress):
+	def getPrices(self, progress, country=None):
 		root = self.data
 
 		while True:

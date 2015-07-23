@@ -8,7 +8,7 @@ from core.pricing.exceptions import *
 class CSVDataEngine(DataEngine):
 
 
-	def getPrices(self, progress):
+	def getPrices(self, progress, country=None):
 		return self.data
 
 	@staticmethod

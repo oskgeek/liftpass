@@ -6,7 +6,7 @@ from core.pricing.exceptions import *
 
 
 class MetricCSVDataEngine(DataEngine):
-	def getPrices(self, progress):
+	def getPrices(self, progress, country=None):
 		p = progress[self.data['metric']]
 		
 		if type(p) == str:

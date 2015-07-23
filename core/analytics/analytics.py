@@ -67,7 +67,7 @@ class Analytics:
 
 
 
-	def processUpdate(self, data, session):
+	def processUpdate(self, data, session=None):
 		monitor.getMonitor().count('AnalyticsProcessUpdateCount')
 
 		with monitor.getMonitor().time('AnalyticsProcessUpdateTime'):
@@ -93,6 +93,10 @@ class Analytics:
 						events.append(self.processEvent(data['liftpass-application'], data['user'], ip, country, update))
 				except Exception as e:
 					print(e)
+
+		if session != None: 
+			session.execute(models.Events.__table__.insert(), events)
+			session.commit()
 
 		return events
 
@@ -216,7 +220,7 @@ class Analytics:
 					continue
 
 				if self.getApplication(data['liftpass-application']) != None:
-					currentEvents = self.processUpdate(data, session)
+					currentEvents = self.processUpdate(data)
 					eventsCount += len(currentEvents)
 					events.extend(currentEvents)
 
@@ -261,15 +265,20 @@ class Analytics:
 		print('Analyzed %d and %d events.\n1 update per %.03fsec\n1 event per %.03fsec'%(count, events, elapse*1.0/count, elapse*1.0/events))
 		
 
-	def exportStream(self, application, fromDate, toDate):
+	def exportStream(self, application, fromDate, toDate, streaming = True):
 		session = models.getSession()
 		
-
-
-		q = session.query(models.Events).filter(models.Events.application_key==application, models.Events.created>=fromDate, models.Events.created<toDate)
+		q = session.query(models.Events).filter_by(application_key=application).all()#, models.Events.created>=fromDate, models.Events.created<toDate)
+		out = ''
 
 		for row in q:
-			yield extras.toJSON(row.as_dict())+'\n'
-				
+
+			if streaming:
+				yield extras.toJSON(row.as_dict())+'\n'
+			else:
+				out += extras.toJSON(row.as_dict())+'\n'
+		
+		if streaming == False:
+			return out
 
 
