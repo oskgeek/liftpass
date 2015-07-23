@@ -78,6 +78,8 @@ def userAuthenticate(secretLookup):
 	def decorator(f): 
 		def aux(*args, **kwargs):
 			
+			monitor.getMonitor().count('UserRequestCount')
+
 			message = request.get_data()
 			if 'json' in request.args:
 				message = base64.b64decode(request.args['json'])
@@ -88,23 +90,28 @@ def userAuthenticate(secretLookup):
 
 			# If JSON not specified
 			if request.values == None:
+				monitor.getMonitor().count('UserRequestMissingBodyCount')
 				return buildResponse({'status': ERROR_BAD_REQUEST, 'message': 'No JSON body specified with request'}, secret)
 
 			# JSON must include time and user key
 			if not all(map(lambda k: k in request.values, ['liftpass-time', 'liftpass-user'])):
+				monitor.getMonitor().count('UserRequestMissingHeaderCount')
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing liftpass-time and/or liftpass-user keys'}, secret)
 
 			# HTTP header must include hash for all requests
 			if 'liftpass-hash' not in request.headers:
+				monitor.getMonitor().count('UserRequestMissingHashCount')
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing liftpass-hash in header'}, secret)
 
 			secret = secretLookup(request.values['liftpass-user'])
 			digest = hmac.new(secret, message, hashlib.sha256).hexdigest()
 			
 			if digest != request.headers['liftpass-hash']:
+				monitor.getMonitor().count('UserRequestBadHashCount')
 				return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'}, secret)
 			
-			return buildResponse(f(*args, **kwargs), secret)
+			with monitor.getMonitor().time('UserProcessResponseTime'):
+				return buildResponse(f(*args, **kwargs), secret)
 		return update_wrapper(aux, f)
 	return decorator
 
