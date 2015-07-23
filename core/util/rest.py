@@ -113,11 +113,11 @@ def applicationAuthenticate(secretLookup):
 	def decorator(f): 
 		def aux(*args, **kwargs):
 
-			monitor.getMonitor().count('ApplicationRequest')
+			monitor.getMonitor().count('ApplicationRequestCount')
 			
 			debug.log('%s %s %s'%(request.method, request.path, request.environ.get('HTTP_X_REAL_IP')))
 
-			with monitor.getMonitor().time('ApplicationValidate'):
+			with monitor.getMonitor().time('ApplicationValidateTime'):
 				
 				# All user input goes to the values field of the request
 				message = request.get_data()
@@ -130,27 +130,27 @@ def applicationAuthenticate(secretLookup):
 
 				# JSON must include time and user key
 				if not all(map(lambda k: k in request.values, ['liftpass-time', 'liftpass-application'])):
-					monitor.getMonitor().count('ApplicationRequestMissingHeader')
+					monitor.getMonitor().count('ApplicationRequestMissingHeaderCount')
 					return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'JSON missing liftpass-time and/or liftpass-application keys'}, secret)
 
 				# HTTP header must include hash for all requests
 				if 'liftpass-hash' not in request.headers:
-					monitor.getMonitor().count('ApplicationRequestMissingHash')
+					monitor.getMonitor().count('ApplicationRequestMissingHashCount')
 					return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'HTTP request missing liftpass-hash in header'}, secret)
 
 				secret = secretLookup(request.values['liftpass-application'])
 				if secret == None:
-					monitor.getMonitor().count('ApplicationRequestApplicationNotFound')
+					monitor.getMonitor().count('ApplicationRequestApplicationNotFoundCount')
 					return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Application key not valid'}, secret)
 
 				secret = secret.encode('utf-8')	
 				digest = hmac.new(secret, message, hashlib.sha256).hexdigest()
 				
 				if digest != request.headers['liftpass-hash']:
-					monitor.getMonitor().count('ApplicationRequestBadHash')
+					monitor.getMonitor().count('ApplicationRequestBadHashCount')
 					return buildResponse({'status': ERROR_UNAUTHORIZED, 'message':'Failed to authenticate'}, secret)
 				
-				with monitor.getMonitor().time('ApplicationProcessResponse'):
+				with monitor.getMonitor().time('ApplicationProcessResponseTime'):
 					return buildResponse(f(*args, **kwargs), secret, request.values['liftpass-application'])
 		return update_wrapper(aux, f)
 	return decorator

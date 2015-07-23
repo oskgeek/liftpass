@@ -260,25 +260,25 @@ def update(version):
 
 	# Check minimum number of keys required in JSON update
 	if extras.keysInDict(request.values, ['user', 'events']) == False:
-		monitor.getMonitor().count('ApplicationUpdateMissingKeys')
+		monitor.getMonitor().count('ApplicationUpdateMissingKeysCount')
 		return errors.ApplicationUpdateIncomplete
 
 	if len(request.values['user']) != 32:
-		monitor.getMonitor().count('ApplicationUpdateMissingUsers')
+		monitor.getMonitor().count('ApplicationUpdateMissingUsersCount')
 		return errors.ApplicationUpdateBadUser
 
 	# Events must have at least one item
 	if len(request.values['events']) == 0:
-		monitor.getMonitor().count('ApplicationUpdateNoEvents')
+		monitor.getMonitor().count('ApplicationUpdateNoEventsCount')
 		return errors.ApplicationUpdateMissingEvents
 	
 	# Event has progress
 	if 'progress' not in request.values['events'][-1]:
-		monitor.getMonitor().count('ApplicationUpdateMissingProgress')
+		monitor.getMonitor().count('ApplicationUpdateMissingProgressCount')
 		return errors.ApplicationUpdateMissingEvents
 	
 	# Save update (include IP address of user)
-	with monitor.getMonitor().time('ApplicationUpdateSaveUpdate'):
+	with monitor.getMonitor().time('ApplicationUpdateSaveUpdateTime'):
 		request.values['liftpass-ip'] = request.environ.get('HTTP_X_REAL_IP')
 		theAnalytics.saveUpdate(request.values)
 	
@@ -290,19 +290,19 @@ def update(version):
 		country = None
 	
 	response = None
-	with monitor.getMonitor().time('ApplicationUpdateBuildResponse'):
+	with monitor.getMonitor().time('ApplicationUpdateBuildResponseTime'):
 		# Try getting price engine
 		try:
 			prices = backend.getPricingEngine(request.values['liftpass-application'])
 		except pricing.ApplicationNotFoundException as e:
-			monitor.getMonitor().count('ApplicationUpdateNoApplication')
+			monitor.getMonitor().count('ApplicationUpdateNoApplicationCount')
 			return errors.ApplicationNotConfigured
 
 		# Try getting price for user + progress
 		try:
 			userPrices = prices.getPrices(request.values['user'], request.values['events'][-1]['progress'])
 		except pricing.NoPricingForGroup:
-			monitor.getMonitor().count('ApplicationUpdateNoPrice')
+			monitor.getMonitor().count('ApplicationUpdateNoPriceCount')
 			return errors.ApplicationHasNoPriceForUser
 		
 		# Build response
@@ -343,7 +343,7 @@ def exportJSON(version):
 @app.errorhandler(500)
 def page_not_found(e):
 	debug.stacktrace(e)
-	monitor.getMonitor().count('APIError500')
+	monitor.getMonitor().count('APIError500Count')
 	return rest.errorResponse({'status': 500, 'message': 'An unexpected error occured. If it continues please contact the system administrator.'})
 
 @app.route('/ping/', methods=['GET'])

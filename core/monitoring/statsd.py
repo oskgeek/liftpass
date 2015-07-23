@@ -16,7 +16,7 @@ class StatsDTimer:
 		self.start = time.time()
 
 	def __exit__(self, type, value, traceback):
-		self.monitor.put(self.metric, time.time()-self.start, 'Milliseconds')
+		self.monitor.put(self.metric, (time.time()-self.start)*1000, 'Milliseconds')
 
 
 class StatsD:
