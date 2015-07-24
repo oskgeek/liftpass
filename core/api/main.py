@@ -4,6 +4,7 @@ import json
 from functools import wraps
 from functools import update_wrapper
 import datetime
+import socket
 
 from flask import Flask
 from flask import request
@@ -348,7 +349,7 @@ def page_not_found(e):
 
 @app.route('/ping/', methods=['GET'])
 def ping():
-	return '%s'%datetime.datetime.now()
+	return '%s %s'%(socket.gethostname(), datetime.datetime.now())
 
 def start():
 	global app
