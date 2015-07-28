@@ -301,3 +301,8 @@ def flush():
 			debug.error('%s'%e)
 	
 
+def execute(sql):
+
+	session = getSession()
+	session.execute(sql)
+	session.close()

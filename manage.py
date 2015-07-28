@@ -12,6 +12,7 @@ if len(sys.argv) < 2:
 	print(' - manage content flush/create')
 	print(' - manage analytics update')
 	print(' - manage dashboard start')
+	print(' - manage sql <command>')
 	print(' - manage demo build')
 	print(' - manage configure')
 	print(' - manage test API/pricing/analytics/all/coverage')
@@ -45,6 +46,10 @@ elif sys.argv[1] == 'dashboard':
 	if sys.argv[2] == 'start':
 		import core.dashboard.main as main
 		main.start()
+elif sys.argv[1] == 'sql':
+	if len(sys.argv)>2:
+		import core.content.models as models
+		models.execute(sys.argv[2])
 elif sys.argv[1] == 'demo':
 	answer = input('Are you sure you want to setup demo? All data will be lost. [y/n]')
 	answer = answer.lower().strip()
