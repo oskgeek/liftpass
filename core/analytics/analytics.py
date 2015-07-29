@@ -3,6 +3,7 @@ import datetime
 import time
 import multiprocessing
 import functools
+import threading
 from geolite2 import geolite2
 
 import core.storage as storage
@@ -216,7 +217,11 @@ class Analytics:
 					data = self.storage.load(filename)
 					data = json.loads(data)
 				except:
-					self.storage.delete(filename)
+					monitor.getMonitor().count('AnalyticsUpdateBadParse')
+					try:
+						self.storage.delete(filename)
+					except:
+						monitor.getMonitor().count('AnalyticsUpdateBadDelete')
 					continue
 
 				if self.getApplication(data['liftpass-application']) != None:
@@ -227,6 +232,7 @@ class Analytics:
 				self.storage.delete(filename)
 
 			if len(events) > 1000:
+				print('Saving: %s saved %d (%d so far)'%(multiprocessing.current_process(), len(events), eventsCount))
 				session.execute(models.Events.__table__.insert(), events)
 				events = []
 
@@ -249,6 +255,8 @@ class Analytics:
 		for p in range(processors):
 			queue.append(list(map(lambda x: updates.__next__(), range(limit))))
 
+		# print(list(map(lambda x: len(x), queue)))
+		
 		if processors == 1:
 			for q in queue:
 				events += self.processThreadUpdate(q)
