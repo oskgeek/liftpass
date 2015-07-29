@@ -288,6 +288,7 @@ def update(version):
 		country = geolite2.reader().get(ip)
 		country = country['country']['iso_code']
 	except:
+		monitor.getMonitor().count('ApplicationUpdateNoCountryCount')
 		country = None
 	
 	response = None
