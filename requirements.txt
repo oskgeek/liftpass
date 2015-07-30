@@ -19,4 +19,4 @@ CoffeeScript==1.1.0
 maxminddb==1.2.0
 maxminddb-geolite2==2015.0708
 python-statsd==1.7.2
-
+python-geoip-geolite2==2015.0303
