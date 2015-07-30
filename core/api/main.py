@@ -285,9 +285,9 @@ def update(version):
 	
 	# Lookup player country
 	try:
-		country = geolite2.reader().get(ip)
+		country = geolite2.reader().get(request.environ.get('HTTP_X_REAL_IP'))
 		country = country['country']['iso_code']
-	except:
+	except Exception as e:
 		monitor.getMonitor().count('ApplicationUpdateNoCountryCount')
 		country = None
 	
