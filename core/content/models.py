@@ -8,6 +8,8 @@ import datetime
 import uuid
 import functools
 import threading
+import io 
+import csv
 
 import config
 import core.util.debug as debug
@@ -302,7 +304,11 @@ def flush():
 	
 
 def execute(sql):
-
 	session = getSession()
-	session.execute(sql)
+	res = session.execute(sql)
+	buffer = io.StringIO()
+	out = csv.writer(buffer)
+	for row in res:
+		out.writerow(row)
+	print(buffer.getvalue())
 	session.close()

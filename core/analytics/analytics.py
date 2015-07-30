@@ -171,9 +171,10 @@ class Analytics:
 
 		# If attributes defined, add them to the event
 		if 'attributes' in data:
-			if len(data['attributes']) != 16:
-				raise EventMissingAttributeError()
 
+			if len(data['attributes']) != 16:
+				monitor.getMonitor().count('AnalyticsEventBadAttributeCount')
+				raise EventMissingAttributeError()
 			try:
 				event['attributeString1'] = checkString(data['attributes'][0])
 				event['attributeString2'] = checkString(data['attributes'][1])
@@ -231,12 +232,13 @@ class Analytics:
 
 				self.storage.delete(filename)
 
+
 			if len(events) > 1000:
 				print('Saving: %s saved %d (%d so far)'%(multiprocessing.current_process(), len(events), eventsCount))
-				session.execute(models.Events.__table__.insert(), events)
+				session.bulk_insert_mappings(models.Events, events)
 				events = []
-
-		session.execute(models.Events.__table__.insert(), events)
+				
+		session.bulk_insert_mappings(models.Events, events)
 		session.commit()
 
 		return eventsCount
@@ -255,7 +257,6 @@ class Analytics:
 		for p in range(processors):
 			queue.append(list(map(lambda x: updates.__next__(), range(limit))))
 
-		# print(list(map(lambda x: len(x), queue)))
 		
 		if processors == 1:
 			for q in queue:
