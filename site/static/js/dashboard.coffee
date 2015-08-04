@@ -220,7 +220,7 @@ DashboardController = ($scope) ->
 
 	$scope.viewPrice = (price) =>
 		$scope.textModal = {
-			message: if price.data then price.data else price.path
+			message: if price.path.length>1 then price.path else price.data
 		}
 		$('#textModal').modal('show')
 		return
